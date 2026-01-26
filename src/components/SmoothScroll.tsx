@@ -15,7 +15,7 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true,
-      touchMultiplier: 2,
+      touchMultiplier: 1,
     });
 
     // 1. Synchronize Lenis scrolling with GSAP's ScrollTrigger

@@ -10,7 +10,6 @@ function Bracket({ position, rotation, color = "#ccff00" }: { position: [number,
   
   return (
     <group position={position} rotation={rotation}>
-      {/* Top part of angle bracket */}
       <mesh position={[0, 0.5, 0]} rotation={[0, 0, Math.PI / 4]}>
         <capsuleGeometry args={[0.15, 1, 4, 8]} />
         <meshStandardMaterial 
@@ -21,7 +20,6 @@ function Bracket({ position, rotation, color = "#ccff00" }: { position: [number,
           metalness={0.8}
         />
       </mesh>
-      {/* Bottom part of angle bracket */}
       <mesh position={[0, -0.5, 0]} rotation={[0, 0, -Math.PI / 4]}>
         <capsuleGeometry args={[0.15, 1, 4, 8]} />
         <meshStandardMaterial 
@@ -41,7 +39,6 @@ function CodeSymbol() {
 
   useFrame((state) => {
     if (group.current) {
-      // Gentle rotation
       group.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.2;
       group.current.rotation.z = Math.cos(state.clock.elapsedTime * 0.3) * 0.1;
     }
@@ -50,11 +47,8 @@ function CodeSymbol() {
   return (
     <group ref={group}>
       <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
-        {/* Left Bracket < */}
         <Bracket position={[-0.8, 0, 0]} rotation={[0, 0, 0]} />
-        {/* Right Bracket > */}
         <Bracket position={[0.8, 0, 0]} rotation={[0, Math.PI, 0]} />
-        {/* Slash / */}
         <mesh position={[0, 0, 0]} rotation={[0, 0, 0.3]}>
            <capsuleGeometry args={[0.12, 2.5, 4, 8]} />
            <meshStandardMaterial 

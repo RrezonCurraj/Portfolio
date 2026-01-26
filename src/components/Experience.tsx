@@ -58,8 +58,22 @@ export function Experience() {
             <div key={index} className="timeline-item relative flex flex-col md:flex-row gap-8 md:gap-0 items-start md:items-center group">
               <div className="md:w-1/2 md:pr-16 md:text-right md:order-1 order-2 pl-12 md:pl-0">
                 <h3 className="text-3xl font-bold text-white group-hover:text-[var(--color-primary)] transition-colors">{job.company}</h3>
-                <p className="text-[var(--color-primary)] font-medium text-lg mb-2">{job.role}</p>
-                <p className="text-zinc-400 leading-relaxed">{job.description}</p>
+                <p className="text-[var(--color-primary)] font-medium text-lg mb-4">{job.role}</p>
+                <ul className="space-y-2 text-left md:text-right">
+                  {job.description.split('\n').filter(Boolean).map((line, i) => (
+                    <li key={i} className="text-zinc-400 leading-relaxed flex md:justify-end gap-3 md:gap-3 relative pl-4 md:pl-0 md:pr-0">
+                      {/* Mobile Line Indicator (Left) */}
+                      <span className="absolute left-0 top-1.5 bottom-1.5 w-[2px] bg-[var(--color-primary)] md:hidden rounded-full opacity-40" />
+                      
+                      <span className="md:order-1 text-left md:text-right">{line.replace(/^[•-]\s*/, '')}</span>
+                      
+                      {/* Desktop Line Indicator (Right) */}
+                      <div className="hidden md:flex flex-col justify-center items-center self-stretch py-1.5 md:order-2 opacity-40">
+                        <span className="w-[2px] h-full bg-[var(--color-primary)] rounded-full" />
+                      </div>
+                    </li>
+                  ))}
+                </ul>
               </div>
               
               <div className="absolute left-[-6px] md:left-1/2 md:-ml-1.5 w-4 h-4 bg-zinc-900 border-2 border-[var(--color-primary)] rounded-full z-10 md:order-2 order-1 group-hover:bg-[var(--color-primary)] group-hover:scale-150 transition-all duration-300" />

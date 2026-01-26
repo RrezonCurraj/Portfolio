@@ -23,11 +23,33 @@ export function TextReveal({ children, className, delay = 0, activeColor, baseCo
   const originalFontWeightsRef = useRef<string[]>([]);
   const originalWidthsRef = useRef<number[]>([]);
 
-  // Entrance Animation
   useGSAP(() => {
     if (!containerRef.current) return;
     const chars = containerRef.current.querySelectorAll(".char-outer");
     
+    const isMobile = window.innerWidth < 768;
+
+    if (isMobile) {
+      gsap.fromTo(
+        chars,
+        { y: 100, opacity: 0, rotateX: -80, filter: "blur(10px)" },
+        {
+          y: 0,
+          opacity: 1,
+          rotateX: 0,
+          filter: "blur(0px)",
+          stagger: 0.01,
+          duration: 0.5,
+          ease: "power4.out",
+          delay: 0
+        }
+      );
+      if (containerRef.current) {
+        containerRef.current.style.overflow = "visible";
+      }
+      return;
+    }
+
     gsap.fromTo(
       chars,
       { y: 100, opacity: 0, rotateX: -80, filter: "blur(10px)" },
@@ -54,8 +76,41 @@ export function TextReveal({ children, className, delay = 0, activeColor, baseCo
     );
   }, { scope: containerRef });
 
-  // Unified Interaction Effect
   useEffect(() => {
+    const isMobile = window.innerWidth < 768;
+
+    if (isMobile) {
+      const chars = charsRef.current.filter(Boolean);
+      
+      gsap.set(chars, {
+        opacity: 1,
+        filter: "blur(0px)",
+        scale: 1,
+        color: baseColor || "rgba(255, 255, 255, 0.5)", 
+        fontWeight: 400
+      });
+
+      const ctx = gsap.context(() => {
+        const tl = gsap.timeline({ repeat: -1, repeatDelay: 2 });
+        
+        tl.to(chars, {
+          color: activeColor || "#ffffff",
+          textShadow: "0 0 10px rgba(255,255,255,0.5)",
+          scale: 1.1,
+          fontWeight: 600,
+          stagger: {
+            each: 0.1, 
+            yoyo: true,
+            repeat: 1, 
+          },
+          duration: 0.5, 
+          ease: "sine.inOut",
+        });
+      });
+
+      return () => ctx.revert(); 
+    }
+
     charsRef.current.forEach((char, i) => {
       if (char) {
         const style = window.getComputedStyle(char);
@@ -68,36 +123,49 @@ export function TextReveal({ children, className, delay = 0, activeColor, baseCo
     let focusX = -1000;
     let focusY = -1000;
     let isMouseActive = false;
+    let autoScanFrameId: number | null = null;
 
     const updateEffects = () => {
-      const focusRadius = 50; // Increased radius to prevent edge jitter
+      // If mouse is NOT active, everything should be clear (default state)
+      if (!isMouseActive) {
+        charsRef.current.forEach((char, i) => {
+            if (!char) return;
+            // Reset to clean state
+            gsap.to(char, {
+                scale: 1,
+                filter: "blur(0px)",
+                opacity: 1,
+                color: originalColorsRef.current[i] || "inherit",
+                fontWeight: originalFontWeightsRef.current[i] || 400,
+                duration: 0.5,
+                ease: "power2.out"
+            });
+            // Reset width wrapper if it exists
+            if (char.parentElement) {
+                const originalWidth = originalWidthsRef.current[i] || 0;
+                gsap.to(char.parentElement, {
+                    width: originalWidth,
+                    duration: 0.5,
+                    ease: "power2.out"
+                });
+            }
+        });
+        
+        // Reset focus points so they don't linger
+        focusX = -1000;
+        focusY = -1000;
+        
+        autoScanFrameId = requestAnimationFrame(updateEffects);
+        return; 
+      }
+
+      // Mouse IS active: Apply Spotlight Focus logic
+      const focusRadius = 80; 
       const blurRange = 250;  
-      const maxBlur = 8;      
+      const maxBlur = 4; // Subtle blur for non-focused items     
       const maxDistance = 120;
       const maxScale = 1.35;
       const minScale = 1;
-      const activationRange = 300; 
-
-      // If mouse hasn't moved yet (Mobile), use center screen focus
-      if (!isMouseActive) {
-        focusX = window.innerWidth / 2;
-        focusY = window.innerHeight / 2;
-      }
-
-      let minDistanceToGroup = Infinity;
-      charsRef.current.forEach((char) => {
-        if (!char) return;
-        const rect = char.getBoundingClientRect();
-        const charCenterX = rect.left + rect.width / 2;
-        const charCenterY = rect.top + rect.height / 2;
-        const dist = Math.sqrt(Math.pow(focusX - charCenterX, 2) + Math.pow(focusY - charCenterY, 2));
-        if (dist < minDistanceToGroup) minDistanceToGroup = dist;
-      });
-
-      const isEngaged = minDistanceToGroup < activationRange;
-      const globalIntensity = isEngaged 
-        ? Math.pow(1 - (minDistanceToGroup / activationRange), 1.5) 
-        : 0;
 
       charsRef.current.forEach((char, i) => {
         if (!char) return;
@@ -112,7 +180,6 @@ export function TextReveal({ children, className, delay = 0, activeColor, baseCo
         let opacity = 1;
         let color = originalColorsRef.current[i] || "inherit";
 
-        // Font Weight Logic
         const originalWeightStr = originalFontWeightsRef.current[i] || "400";
         let startWeight = 400;
         if (originalWeightStr === "bold") startWeight = 700;
@@ -121,20 +188,29 @@ export function TextReveal({ children, className, delay = 0, activeColor, baseCo
         
         let fontWeight = startWeight;
 
+        // Interaction Zone (scaling + bolding)
         if (distance < maxDistance) {
           const effectStrength = Math.cos((distance / maxDistance) * (Math.PI / 2));
           scale = minScale + (maxScale - minScale) * effectStrength;
           
           const targetWeight = Math.max(startWeight, 700);
           fontWeight = startWeight + (targetWeight - startWeight) * effectStrength;
+          
+          // Switch to active color when very close
+          if (activeColor) {
+             color = activeColor;
+          }
         }
 
+        // Blur Zone (Outside Focus)
+        // If we are interacting, blur everything OUTSIDE the focus radius
         if (distance > focusRadius) {
           const blurStrength = Math.min((distance - focusRadius) / blurRange, 1);
-          blur = blurStrength * maxBlur * globalIntensity;
-          opacity = 1 - (blurStrength * 0.5 * globalIntensity);
+          blur = blurStrength * maxBlur; 
+          opacity = 1 - (blurStrength * 0.3); // Dim slightly
         } else {
-           color = activeColor || "white";
+           // Inside focus radius: Sharp
+           blur = 0;
            opacity = 1;
         }
 
@@ -150,11 +226,9 @@ export function TextReveal({ children, className, delay = 0, activeColor, baseCo
           zIndex: distance < focusRadius ? 10 : 1
         });
 
-        // Animate width of the wrapper to prevent overlap (only on desktop)
-        if (char.parentElement && window.innerWidth >= 768) {
+        if (char.parentElement) {
             const originalWidth = originalWidthsRef.current[i] || 0;
-            // Add a small buffer to scale to give a bit more breathing room/spacing
-            const targetWidth = originalWidth * scale; // Standard expansion
+            const targetWidth = originalWidth * scale; 
             
             gsap.to(char.parentElement, {
                 width: targetWidth,
@@ -164,29 +238,36 @@ export function TextReveal({ children, className, delay = 0, activeColor, baseCo
             });
         }
       });
+
+      autoScanFrameId = requestAnimationFrame(updateEffects);
     };
 
     const handleMouseMove = (e: MouseEvent) => {
       isMouseActive = true;
       focusX = e.clientX;
       focusY = e.clientY;
-      requestAnimationFrame(updateEffects);
+    };
+
+    const handleMouseLeave = () => {
+        isMouseActive = false;
     };
 
     const handleScroll = () => {
-      // Keep isMouseActive state as is! Do not reset it.
-      // Just update positions relative to scroll.
-      requestAnimationFrame(updateEffects);
     };
 
+    autoScanFrameId = requestAnimationFrame(updateEffects);
+
     window.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseleave", handleMouseLeave); 
     window.addEventListener("scroll", handleScroll);
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseleave", handleMouseLeave);
       window.removeEventListener("scroll", handleScroll);
+      if (autoScanFrameId) cancelAnimationFrame(autoScanFrameId);
     };
-  }, [activeColor]);
+  }, [activeColor, baseColor]);
 
   return (
     <div ref={containerRef} className={cn("overflow-hidden leading-tight p-4 -m-4 relative", className)}>

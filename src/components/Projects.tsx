@@ -20,12 +20,11 @@ export function Projects() {
 
     const mm = gsap.matchMedia();
 
-    // Desktop: Horizontal Scroll
     mm.add("(min-width: 768px)", () => {
       const getScrollAmount = () => {
         const totalWidth = scrollContainer.scrollWidth;
         const viewportWidth = window.innerWidth;
-        return Math.max(0, totalWidth - viewportWidth + 100); // +100 for some padding
+        return Math.max(0, totalWidth - viewportWidth + 100); 
       };
       
       gsap.to(scrollContainer, {
@@ -42,18 +41,18 @@ export function Projects() {
       });
     });
 
-    // Mobile: Stacking Cards Animation
     mm.add("(max-width: 767px)", () => {
       const cards = gsap.utils.toArray(".project-card");
       cards.forEach((card: any) => {
          gsap.to(card, {
-            scale: 0.95, // Subtle scale to show depth
-            opacity: 1,  // Keep fully visible so stack is clear
+            scale: 0.9, 
+            opacity: 1,
+            filter: "blur(10px)",
             scrollTrigger: {
                trigger: card,
-               start: "top 15%", // When card hits the stack pile
-               end: "bottom top", 
-               scrub: true
+               start: "top top", 
+               end: "bottom 50%", 
+               scrub: true,
             }
          });
       });
@@ -62,35 +61,37 @@ export function Projects() {
   }, { scope: sectionRef });
 
   return (
-    // Explicit overflow-visible for mobile to ensure sticky works
     <section ref={sectionRef} id="projects" className="min-h-screen py-24 bg-black flex flex-col justify-center overflow-visible md:overflow-hidden">
-      <div className="container mx-auto px-6 mb-16">
+      <div className="container mx-auto px-6 mb-16 text-center">
         <TextReveal activeColor="var(--color-primary)" className="text-3xl sm:text-4xl md:text-6xl font-bold">Selected Projects</TextReveal>
       </div>
       
       <div 
-        ref={containerRef} 
+        ref={containerRef}  
         className="flex flex-col md:flex-row gap-8 md:gap-12 px-6 w-full md:w-max"
       >
         {portfolioData.projects.map((project, index) => (
           <div
             key={index}
-            className="project-card w-full md:w-[700px] flex-shrink-0 group relative bg-zinc-900 border border-white/5 rounded-3xl overflow-hidden hover:border-[var(--color-primary)] transition-all duration-500 shadow-2xl md:static sticky"
+            className={`project-card w-full md:w-[700px] flex-shrink-0 group relative bg-zinc-900 border border-white/5 rounded-3xl overflow-hidden hover:border-[var(--color-primary)] transition-all duration-500 shadow-2xl md:static sticky ${
+              index === portfolioData.projects.length - 1 ? 'mb-0' : 'mb-[40vh]'
+            } md:mb-0`}
             style={{ 
               zIndex: index + 1,
-              // Dynamic top value creates the visible "1, 2, 3" stack pile
-              top: `calc(100px + ${index * 20}px)` 
+              top: '100px'
             }}
           >
-            <div className="aspect-video bg-zinc-800 relative overflow-hidden">
-              <div className="absolute inset-0 flex items-center justify-center text-zinc-500 font-mono text-sm bg-zinc-800 group-hover:scale-105 transition-transform duration-700">
-                {project.title} Preview
-              </div>
-              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4 backdrop-blur-sm">
-                <a href={project.link} className="p-3 bg-white text-black rounded-full hover:bg-[var(--color-primary)] transition-colors transform hover:scale-110 duration-300">
+            <div className="aspect-video bg-zinc-800 relative overflow-hidden group-hover:scale-[1.02] transition-transform duration-700">
+              <img 
+                src={project.image} 
+                alt={`${project.title} Preview`}
+                className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500"
+              />
+              <div className="absolute inset-0 bg-black/20 md:bg-black/60 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4 backdrop-blur-none md:backdrop-blur-sm">
+                <a href={project.link} target="_blank" rel="noopener noreferrer" className="p-3 bg-white text-black rounded-full hover:bg-[var(--color-primary)] transition-colors transform hover:scale-110 duration-300">
                   <ExternalLink size={24} />
                 </a>
-                <a href="#" className="p-3 bg-zinc-800 text-white rounded-full hover:bg-[var(--color-primary)] hover:text-black transition-colors transform hover:scale-110 duration-300">
+                <a href={project.github} target="_blank" rel="noopener noreferrer" className="p-3 bg-zinc-800 text-white rounded-full hover:bg-[var(--color-primary)] hover:text-black transition-colors transform hover:scale-110 duration-300">
                   <Github size={24} />
                 </a>
               </div>

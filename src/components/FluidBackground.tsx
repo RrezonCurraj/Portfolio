@@ -19,7 +19,6 @@ const FluidShader = {
     uniform vec3 uColor;
     varying vec2 vUv;
 
-    // Simplex 2D noise
     vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
     float snoise(vec2 v){
       const vec4 C = vec4(0.211324865405187, 0.366025403784439,
@@ -50,36 +49,23 @@ const FluidShader = {
     void main() {
       vec2 uv = vUv;
       
-      // Aspect ratio correction (assume roughly square for simplicity or pass resolution)
-      // For a background, UVs usually suffice if plane covers screen.
-
-      // Slow moving noise
       float time = uTime * 0.2;
       
-      // Mouse interaction
       float dist = distance(uv, uMouse);
       float mouseInfluence = smoothstep(0.5, 0.0, dist);
       
-      // Layered noise for smoke/fluid look
       float n1 = snoise(uv * 3.0 + time + uMouse * 0.2);
       float n2 = snoise(uv * 6.0 - time * 1.5);
       float n3 = snoise(uv * 12.0 + time * 2.0);
       
-      // Combine noise
       float f = n1 * 0.5 + n2 * 0.25 + n3 * 0.125;
       
-      // Add subtle distortion based on mouse
       f += mouseInfluence * 0.5;
       
-      // Color mixing
-      // Base dark background
-      vec3 bg = vec3(0.04, 0.04, 0.04); // #0a0a0a roughly
+      vec3 bg = vec3(0.04, 0.04, 0.04); 
       
-      // Mix with primary color (Lime) based on noise intensity
-      // uColor is passed as uniform
       vec3 color = mix(bg, uColor, smoothstep(-0.2, 0.6, f) * 0.4);
       
-      // Vignette to fade edges
       float vignette = smoothstep(1.5, 0.5, length(uv - 0.5) * 2.0);
       color *= vignette;
 
@@ -92,12 +78,11 @@ function GradientMesh() {
   const meshRef = useRef<any>(null);
   const { viewport, mouse } = useThree();
   
-  // Uniforms
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
       uMouse: { value: new Vector2(0.5, 0.5) },
-      uColor: { value: new Color("#ccff00") }, // Electric Lime
+      uColor: { value: new Color("#ccff00") }, 
     }),
     []
   );
@@ -106,12 +91,9 @@ function GradientMesh() {
     if (meshRef.current) {
       meshRef.current.material.uniforms.uTime.value = state.clock.getElapsedTime();
       
-      // Smooth mouse follow
-      // mouse.x/y are -1 to 1. Convert to 0 to 1 for UVs
       const targetX = (state.mouse.x + 1) / 2;
       const targetY = (state.mouse.y + 1) / 2;
       
-      // Simple lerp for smoothness
       meshRef.current.material.uniforms.uMouse.value.x += (targetX - meshRef.current.material.uniforms.uMouse.value.x) * 0.05;
       meshRef.current.material.uniforms.uMouse.value.y += (targetY - meshRef.current.material.uniforms.uMouse.value.y) * 0.05;
     }

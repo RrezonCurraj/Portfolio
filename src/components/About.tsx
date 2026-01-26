@@ -1,14 +1,15 @@
 import { portfolioData } from "@/data/portfolio";
 import Image from "next/image";
 import profileImg from "@/images/profile.png";
+import { TextReveal } from "@/components/ui/TextReveal";
 
 export function About() {
   return (
     <section id="about" className="py-24 px-6 bg-zinc-900/50">
       <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-        <div>
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">About Me</h2>
-          <div className="w-20 h-1 bg-[var(--color-primary)] mb-8" />
+        <div className="text-center md:text-left">
+          <TextReveal activeColor="var(--color-primary)" className="text-4xl md:text-5xl font-bold mb-6">About Me</TextReveal>
+          <div className="w-20 h-1 bg-[var(--color-primary)] mb-8 mx-auto md:mx-0" />
           <p className="text-zinc-400 text-lg leading-relaxed mb-6">
             With a passion for design and code, I bridge the gap between aesthetics and functionality.
             I start every project with a clear goal: to create something that not only looks good but works perfectly.

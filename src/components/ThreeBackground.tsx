@@ -3,7 +3,6 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Points, PointMaterial, Float } from "@react-three/drei";
 import { useRef, useState } from "react";
-// @ts-ignore
 import * as random from "maath/random/dist/maath-random.esm";
 
 function Particles(props: any) {
@@ -23,7 +22,7 @@ function Particles(props: any) {
           <Points ref={ref} positions={sphere} stride={3} frustumCulled={false} {...props}>
             <PointMaterial
               transparent
-              color="#ccff00" // Lime green from your theme
+              color="#ccff00" 
               size={0.005}
               sizeAttenuation={true}
               depthWrite={false}

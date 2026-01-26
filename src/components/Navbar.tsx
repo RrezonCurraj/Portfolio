@@ -9,7 +9,6 @@ const navItems = [
   { name: "Skills", href: "#skills" },
   { name: "Projects", href: "#projects" },
   { name: "Experience", href: "#experience" },
-  { name: "Contact", href: "#contact" },
 ];
 
 export function Navbar() {
@@ -20,8 +19,17 @@ export function Navbar() {
       className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-6"
     >
       <div className="bg-black/80 backdrop-blur-md border border-white/10 rounded-full px-6 py-3 flex items-center gap-6 shadow-2xl">
-        <Link href="/" className="font-bold text-xl tracking-tighter text-white">
-          RZ<span className="text-[var(--color-primary)]">.</span>
+        <Link 
+          href="/" 
+          onClick={(e) => {
+            if (window.location.pathname === "/") {
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+          }}
+          className="font-bold text-xl tracking-tighter text-white"
+        >
+          RC<span className="text-[var(--color-primary)]">.</span>
         </Link>
         <div className="hidden md:flex items-center gap-6">
           {navItems.map((item) => (

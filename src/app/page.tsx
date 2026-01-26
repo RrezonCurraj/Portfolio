@@ -11,7 +11,6 @@ export default function Home() {
     <main className="min-h-screen bg-black text-white selection:bg-[var(--color-primary)] selection:text-black">
       <Navbar />
       
-      {/* Main Scroll Content */}
       <div className="relative z-10 bg-black mb-[85vh] shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-b-3xl border-b border-zinc-900">
         <Hero />
         <About />
@@ -20,10 +19,8 @@ export default function Home() {
         <Experience />
       </div>
       
-      {/* Scroll Anchor for Contact */}
       <div id="contact" className="h-px w-full" />
       
-      {/* Fixed Footer Reveal */}
       <div className="fixed bottom-0 left-0 right-0 h-[85vh] z-0">
         <Contact />
       </div>
