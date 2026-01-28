@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Rrezon | Creative Frontend Developer Portfolio
 
-## Getting Started
+[![Live Demo](https://img.shields.io/badge/demo-online-green.svg)](https://www.rrezon.dev)
 
-First, run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+A modern, high-performance portfolio website built with the cutting-edge React ecosystem. This project showcases the intersection of technical engineering and creative design, featuring physics-based animations, 3D elements, and a cinematic feel.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Built on the bleeding edge of web technology:
 
-## Learn More
+- **Framework:** [Next.js 16 (App Router)](https://nextjs.org/)
+- **Core:** [React 19](https://react.dev/)
+- **Styling:** [Tailwind CSS v4](https://tailwindcss.com/)
+- **Animations:**
+  - [GSAP](https://gsap.com/) (Complex timelines & physics)
+  - [Framer Motion](https://www.framer.com/motion/) (Transitions)
+  - [React Three Fiber](https://docs.pmnd.rs/react-three-fiber) (3D Elements)
+- **UX:** [Lenis](https://github.com/darkroomengineering/lenis) (Smooth Scrolling)
 
-To learn more about Next.js, take a look at the following resources:
+## ✨ Key Features
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Liquid Text Effects:** Custom physics-based text interactions using GSAP.
+- **Cinematic Atmosphere:** Global noise overlay and fluid background elements.
+- **3D Integration:** Interactive 3D components seamlessly integrated into the DOM.
+- **Performance First:** Optimized for Core Web Vitals with Next.js 16.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🛠️ Getting Started
 
-## Deploy on Vercel
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/RrezonCurraj/rrezon_portfolio.git
+   cd rrezon_portfolio
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. **Run the development server**
+   ```bash
+   npm run dev
+   ```
+
+4. **Build for production**
+   ```bash
+   npm run build
+   npm run start
+   ```
+
+## 📂 Project Structure
+
+- `src/app`: Next.js App Router pages and layouts.
+- `src/components`: Reusable UI components and complex feature blocks.
+- `src/data`: Content separation (portfolio data, projects, skills).
+- `src/lib`: Utilities and helpers.
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
