@@ -49,7 +49,7 @@ const FluidShader = {
     void main() {
       vec2 uv = vUv;
       
-      float time = uTime * 0.2;
+      float time = uTime * 0.4;
       
       float dist = distance(uv, uMouse);
       float mouseInfluence = smoothstep(0.5, 0.0, dist);

@@ -33,7 +33,7 @@ export function Experience() {
       gsap.from(item, {
         opacity: 0,
         x: -30,
-        duration: 0.8,
+        duration: 0.4,
         scrollTrigger: {
           trigger: item,
           start: "top 80%",

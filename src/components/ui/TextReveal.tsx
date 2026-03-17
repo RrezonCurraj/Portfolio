@@ -123,41 +123,49 @@ export function TextReveal({ children, className, delay = 0, activeColor, baseCo
     let focusX = -1000;
     let focusY = -1000;
     let isMouseActive = false;
+    let wasMouseActive = false;
     let autoScanFrameId: number | null = null;
 
     const updateEffects = () => {
       // If mouse is NOT active, everything should be clear (default state)
       if (!isMouseActive) {
-        charsRef.current.forEach((char, i) => {
-            if (!char) return;
-            // Reset to clean state
-            gsap.to(char, {
-                scale: 1,
-                filter: "blur(0px)",
-                opacity: 1,
-                color: originalColorsRef.current[i] || "inherit",
-                fontWeight: originalFontWeightsRef.current[i] || 400,
-                duration: 0.5,
-                ease: "power2.out"
-            });
-            // Reset width wrapper if it exists
-            if (char.parentElement) {
-                const originalWidth = originalWidthsRef.current[i] || 0;
-                gsap.to(char.parentElement, {
-                    width: originalWidth,
+        if (wasMouseActive || focusX !== -1000) {
+            charsRef.current.forEach((char, i) => {
+                if (!char) return;
+                // Reset to clean state
+                gsap.to(char, {
+                    scale: 1,
+                    filter: "blur(0px)",
+                    opacity: 1,
+                    color: originalColorsRef.current[i] || "inherit",
+                    fontWeight: originalFontWeightsRef.current[i] || 400,
                     duration: 0.5,
+                    overwrite: "auto",
                     ease: "power2.out"
                 });
-            }
-        });
-        
-        // Reset focus points so they don't linger
-        focusX = -1000;
-        focusY = -1000;
+                // Reset width wrapper if it exists
+                if (char.parentElement) {
+                    const originalWidth = originalWidthsRef.current[i] || 0;
+                    gsap.to(char.parentElement, {
+                        width: originalWidth,
+                        duration: 0.5,
+                        overwrite: "auto",
+                        ease: "power2.out"
+                    });
+                }
+            });
+            
+            // Reset focus points so they don't linger
+            focusX = -1000;
+            focusY = -1000;
+            wasMouseActive = false;
+        }
         
         autoScanFrameId = requestAnimationFrame(updateEffects);
         return; 
       }
+      
+      wasMouseActive = true;
 
       // Mouse IS active: Apply Spotlight Focus logic
       const focusRadius = 80; 

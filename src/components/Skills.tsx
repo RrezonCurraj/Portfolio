@@ -22,7 +22,7 @@ export function Skills() {
         { scaleX: 0 },
         { 
           scaleX: 1,
-          duration: 0.8,
+          duration: 0.4,
           ease: "power2.out",
           scrollTrigger: {
             trigger: bar,

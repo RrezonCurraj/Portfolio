@@ -6,8 +6,8 @@ import { ArrowRight } from "lucide-react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { TextReveal } from "@/components/ui/TextReveal";
-import { ThreeBackground } from "@/components/ThreeBackground";
-
+import dynamic from "next/dynamic";
+const ThreeBackground = dynamic(() => import("@/components/ThreeBackground").then(mod => mod.ThreeBackground), { ssr: false });
 export function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -15,8 +15,8 @@ export function Hero() {
     gsap.from(".hero-fade-in", {
       y: 20,
       opacity: 0,
-      duration: 0.8,
-      stagger: 0.1,
+      duration: 0.4,
+      stagger: 0.05,
       delay: 0,
       ease: "power2.out",
     });

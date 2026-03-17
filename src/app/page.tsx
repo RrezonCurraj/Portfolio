@@ -1,11 +1,12 @@
 import { Navbar } from "@/components/Navbar";
 import { Hero } from "@/components/Hero";
-import { About } from "@/components/About";
-import { Skills } from "@/components/Skills";
-import { Projects } from "@/components/Projects";
-import { Experience } from "@/components/Experience";
-import { Contact } from "@/components/Contact";
+import dynamic from "next/dynamic";
 
+const About = dynamic(() => import("@/components/About").then(mod => mod.About));
+const Skills = dynamic(() => import("@/components/Skills").then(mod => mod.Skills));
+const Projects = dynamic(() => import("@/components/Projects").then(mod => mod.Projects));
+const Experience = dynamic(() => import("@/components/Experience").then(mod => mod.Experience));
+const Contact = dynamic(() => import("@/components/Contact").then(mod => mod.Contact));
 export default function Home() {
   return (
     <main className="min-h-screen bg-black text-white selection:bg-[var(--color-primary)] selection:text-black">

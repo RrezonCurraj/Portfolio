@@ -73,7 +73,7 @@ export function Projects() {
         {portfolioData.projects.map((project, index) => (
           <div
             key={index}
-            className={`project-card w-full md:w-[700px] flex-shrink-0 group relative bg-zinc-900 border border-white/5 rounded-3xl overflow-hidden hover:border-[var(--color-primary)] transition-all duration-500 shadow-2xl md:static sticky ${
+            className={`project-card w-full md:w-[700px] flex-shrink-0 group relative bg-zinc-900 border border-white/5 rounded-3xl overflow-hidden hover:border-[var(--color-primary)] transition-all duration-300 shadow-2xl md:static sticky ${
               index === portfolioData.projects.length - 1 ? 'mb-0' : 'mb-[40vh]'
             } md:mb-0`}
             style={{ 
@@ -81,11 +81,11 @@ export function Projects() {
               top: '100px'
             }}
           >
-            <div className="aspect-video bg-zinc-800 relative overflow-hidden group-hover:scale-[1.02] transition-transform duration-700">
+            <div className="aspect-video bg-zinc-800 relative overflow-hidden group-hover:scale-[1.02] transition-transform duration-300">
               <img 
                 src={project.image} 
                 alt={`${project.title} Preview`}
-                className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500"
+                className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300"
               />
               <div className="absolute inset-0 bg-black/20 md:bg-black/60 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4 backdrop-blur-none md:backdrop-blur-sm">
                 <a href={project.link} target="_blank" rel="noopener noreferrer" className="p-3 bg-white text-black rounded-full hover:bg-[var(--color-primary)] transition-colors transform hover:scale-110 duration-300">
