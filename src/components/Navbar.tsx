@@ -1,8 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
 
 const navItems = [
   { name: "About", href: "#about" },
@@ -12,11 +13,19 @@ const navItems = [
 ];
 
 export function Navbar() {
+  const navRef = useRef<HTMLElement>(null);
+
+  useGSAP(() => {
+    gsap.from(navRef.current, {
+      y: -100,
+      duration: 0.3,
+      ease: "power2.out",
+    });
+  }, { scope: navRef });
+
   return (
-    <motion.nav 
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.3, ease: "easeOut" }}
+    <nav 
+      ref={navRef}
       className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-6"
     >
       <div className="bg-black/80 backdrop-blur-md border border-white/10 rounded-full px-6 py-3 flex items-center gap-6 shadow-2xl">
@@ -50,6 +59,6 @@ export function Navbar() {
           Hire Me
         </Link>
       </div>
-    </motion.nav>
+    </nav>
   );
 }

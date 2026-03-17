@@ -7,6 +7,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TextReveal } from "@/components/ui/TextReveal";
+import Image from "next/image";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -42,8 +43,8 @@ export function Projects() {
     });
 
     mm.add("(max-width: 767px)", () => {
-      const cards = gsap.utils.toArray(".project-card");
-      cards.forEach((card: any) => {
+      const cards = gsap.utils.toArray<HTMLElement>(".project-card");
+      cards.forEach((card) => {
          gsap.to(card, {
             scale: 0.9, 
             opacity: 1,
@@ -82,10 +83,12 @@ export function Projects() {
             }}
           >
             <div className="aspect-video bg-zinc-800 relative overflow-hidden group-hover:scale-[1.02] transition-transform duration-300">
-              <img 
+              <Image 
                 src={project.image} 
                 alt={`${project.title} Preview`}
-                className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+                fill
+                sizes="(max-width: 768px) 100vw, 700px"
+                className="object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300"
               />
               <div className="absolute inset-0 bg-black/20 md:bg-black/60 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4 backdrop-blur-none md:backdrop-blur-sm">
                 <a href={project.link} target="_blank" rel="noopener noreferrer" className="p-3 bg-white text-black rounded-full hover:bg-[var(--color-primary)] transition-colors transform hover:scale-110 duration-300">

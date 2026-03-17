@@ -17,7 +17,7 @@ export function Skills() {
     // Cards are now static visible elements
 
     // Animate Progress Bars (This gives the requested scroll effect safely)
-    gsap.utils.toArray(".skill-bar-fill").forEach((bar: any) => {
+    gsap.utils.toArray<HTMLElement>(".skill-bar-fill").forEach((bar) => {
       gsap.fromTo(bar, 
         { scaleX: 0 },
         { 

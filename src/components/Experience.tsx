@@ -29,7 +29,7 @@ export function Experience() {
     );
 
     // Fade in items
-    gsap.utils.toArray(".timeline-item").forEach((item: any) => {
+    gsap.utils.toArray<HTMLElement>(".timeline-item").forEach((item) => {
       gsap.from(item, {
         opacity: 0,
         x: -30,
