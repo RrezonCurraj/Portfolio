@@ -26,9 +26,9 @@ export function Navbar() {
   return (
     <nav 
       ref={navRef}
-      className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-6"
+      className="fixed top-0 left-0 w-full z-50 flex justify-between items-start p-4 md:p-8 pointer-events-none"
     >
-      <div className="bg-black/80 backdrop-blur-md border border-white/10 rounded-full px-6 py-3 flex items-center gap-6 shadow-2xl">
+      <div className="bg-black border-2 border-[var(--color-primary)] px-4 py-3 md:px-6 flex items-center gap-8 pointer-events-auto transform transition-transform hover:translate-y-1 hover:-translate-x-1 shadow-[4px_4px_0px_var(--color-primary)]">
         <Link 
           href="/" 
           onClick={(e) => {
@@ -37,26 +37,30 @@ export function Navbar() {
               window.scrollTo({ top: 0, behavior: "smooth" });
             }
           }}
-          className="font-bold text-xl tracking-tighter text-white"
+          className="font-black text-2xl tracking-tighter text-white"
         >
-          RC<span className="text-[var(--color-primary)]">.</span>
+          RREZON<span className="text-[var(--color-primary)]">_</span>
         </Link>
-        <div className="hidden md:flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-6 font-mono text-sm uppercase tracking-widest font-bold">
           {navItems.map((item) => (
             <Link
               key={item.name}
               href={item.href}
-              className="text-sm font-medium text-zinc-400 hover:text-[var(--color-primary)] transition-colors"
+              className="text-zinc-500 hover:text-[var(--color-primary)] transition-colors relative group"
             >
               {item.name}
+              <span className="absolute -bottom-1 left-0 w-full h-[2px] bg-[var(--color-primary)] scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
             </Link>
           ))}
         </div>
+      </div>
+      
+      <div className="pointer-events-auto">
         <Link 
           href="#contact"
-          className="bg-white text-black px-4 py-1.5 rounded-full text-sm font-bold hover:bg-[var(--color-primary)] transition-colors"
+          className="bg-[var(--color-primary)] text-black border-2 border-[var(--color-primary)] px-6 py-3 font-black font-mono uppercase tracking-widest text-sm hover:bg-black hover:text-[var(--color-primary)] transition-colors inline-block transform hover:translate-y-1 hover:-translate-x-1 shadow-[4px_4px_0px_var(--color-primary)] hover:shadow-none"
         >
-          Hire Me
+          [ INITIALIZE ]
         </Link>
       </div>
     </nav>

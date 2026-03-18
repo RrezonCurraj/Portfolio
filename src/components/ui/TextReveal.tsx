@@ -87,7 +87,7 @@ export function TextReveal({ children, className, delay = 0, activeColor, baseCo
         filter: "blur(0px)",
         scale: 1,
         color: baseColor || "rgba(255, 255, 255, 0.5)", 
-        fontWeight: 400
+        fontWeight: 700
       });
 
       const ctx = gsap.context(() => {
@@ -96,8 +96,9 @@ export function TextReveal({ children, className, delay = 0, activeColor, baseCo
         tl.to(chars, {
           color: activeColor || "#ffffff",
           textShadow: "0 0 10px rgba(255,255,255,0.5)",
+          filter: "blur(1.5px)",
           scale: 1.1,
-          fontWeight: 600,
+          fontWeight: 900,
           stagger: {
             each: 0.1, 
             yoyo: true,

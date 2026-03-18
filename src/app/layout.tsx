@@ -1,17 +1,19 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
+import { Bricolage_Grotesque, JetBrains_Mono, Instrument_Serif } from "next/font/google";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { NoiseOverlay } from "@/components/ui/NoiseOverlay";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const instrumentSerif = Instrument_Serif({
@@ -19,6 +21,7 @@ const instrumentSerif = Instrument_Serif({
   variable: "--font-instrument",
   subsets: ["latin"],
   style: ["normal", "italic"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -32,9 +35,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark scroll-smooth">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} antialiased bg-black text-white`}
+        className={`${bricolage.variable} ${jetbrainsMono.variable} ${instrumentSerif.variable} antialiased bg-black text-white relative`}
       >
         <SmoothScroll>
           <NoiseOverlay />
