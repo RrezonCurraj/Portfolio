@@ -4,7 +4,7 @@
   --font-sans: var(--font-bricolage);
   --font-mono: var(--font-jetbrains-mono);
   --font-serif: var(--font-instrument);
-  
+
   --color-primary: #ccff00;
   --color-primary-foreground: #000000;
 }
@@ -24,16 +24,19 @@ body {
 /* Background grid utility */
 .bg-grid {
   background-size: 40px 40px;
-  background-image: 
+  background-image:
     linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
 }
 
 @utility text-glow {
-  text-shadow: 0 0 20px rgba(204, 255, 0, 0.6), 0 0 40px rgba(204, 255, 0, 0.2);
+  text-shadow:
+    0 0 20px rgba(204, 255, 0, 0.6),
+    0 0 40px rgba(204, 255, 0, 0.2);
 }
 
 @utility text-outline {
   -webkit-text-stroke: 2px rgba(255, 255, 255, 0.5);
-  color: transparent;
+  color: black;
+  paint-order: stroke fill;
 }
