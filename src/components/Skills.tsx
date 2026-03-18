@@ -64,9 +64,6 @@ export function Skills() {
                   className="skill-bar-fill h-full bg-black origin-left" 
                   style={{ width: `${skill.level}%` }}
                 />
-                <div className="absolute inset-0 flex items-center justify-end px-6 font-mono text-xl font-bold mix-blend-difference text-white pointer-events-none">
-                  {skill.level}.00%
-                </div>
               </div>
             </div>
           ))}

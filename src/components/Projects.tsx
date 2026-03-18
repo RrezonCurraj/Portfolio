@@ -62,8 +62,8 @@ export function Projects() {
   }, { scope: sectionRef });
 
   return (
-    <section ref={sectionRef} id="projects" className="min-h-screen py-24 bg-black flex flex-col justify-center overflow-visible md:overflow-hidden bg-grid relative z-10">
-      <div className="container mx-auto px-6 mb-16 flex justify-between items-end border-b-2 border-white/10 pb-8">
+    <section ref={sectionRef} id="projects" className="py-8 md:h-screen bg-black flex flex-col overflow-visible md:overflow-hidden bg-grid relative z-10">
+      <div className="container mx-auto px-6 mb-6 flex justify-between items-end border-b-2 border-white/10 pb-4">
         <TextReveal activeColor="var(--color-primary)" className="text-5xl sm:text-6xl md:text-8xl font-black uppercase tracking-tighter">PROJECTS</TextReveal>
         <div className="hidden md:block text-white/30 font-mono text-xl">
           [ {portfolioData.projects.length} WORKS ]
@@ -72,12 +72,12 @@ export function Projects() {
       
       <div 
         ref={containerRef}  
-        className="flex flex-col md:flex-row gap-8 md:gap-16 px-6 w-full md:w-max"
+        className="flex flex-col md:flex-row gap-8 md:gap-16 px-6 w-full md:w-max md:flex-1 md:min-h-0"
       >
         {portfolioData.projects.map((project, index) => (
           <div
             key={index}
-            className={`project-card w-full md:w-[800px] flex-shrink-0 group relative bg-black border-2 border-white/10 overflow-hidden hover:border-[var(--color-primary)] hover:shadow-[10px_10px_0px_var(--color-primary)] transition-all duration-300 md:static sticky ${
+            className={`project-card w-full md:w-[800px] md:max-h-full flex-shrink-0 group relative bg-black border-2 border-white/10 overflow-hidden hover:border-[var(--color-primary)] hover:shadow-[10px_10px_0px_var(--color-primary)] transition-all duration-300 md:static sticky md:flex md:flex-col ${
               index === portfolioData.projects.length - 1 ? 'mb-0' : 'mb-[40vh]'
             } md:mb-0`}
             style={{ 
@@ -92,7 +92,7 @@ export function Projects() {
               </div>
             </div>
 
-            <div className="aspect-[16/9] bg-zinc-900 relative overflow-hidden group-hover:scale-y-[0.98] transition-transform duration-500 origin-top">
+            <div className="aspect-[16/9] md:aspect-[16/8] bg-zinc-900 relative overflow-hidden group-hover:scale-y-[0.98] transition-transform duration-500 origin-top">
               <Image 
                 src={project.image} 
                 alt={`${project.title} Preview`}
@@ -110,11 +110,11 @@ export function Projects() {
               </div>
             </div>
             
-            <div className="p-6 md:p-8 bg-black relative">
-              <h3 className="text-3xl md:text-5xl font-black mb-4 uppercase tracking-tighter group-hover:text-[var(--color-primary)] transition-colors">
+            <div className="p-4 md:p-6 bg-black relative flex-1">
+              <h3 className="text-3xl md:text-4xl font-black mb-3 uppercase tracking-tighter group-hover:text-[var(--color-primary)] transition-colors">
                 {project.title}
               </h3>
-              <p className="text-zinc-400 mb-8 text-lg font-mono leading-relaxed border-l-2 border-white/10 pl-4 group-hover:border-[var(--color-primary)] transition-colors">
+              <p className="text-zinc-400 mb-4 text-base font-mono leading-relaxed border-l-2 border-white/10 pl-4 group-hover:border-[var(--color-primary)] transition-colors">
                 {project.description}
               </p>
               <div className="flex flex-wrap gap-3 mt-auto">
