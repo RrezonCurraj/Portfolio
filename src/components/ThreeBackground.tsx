@@ -7,7 +7,9 @@ import * as random from "maath/random/dist/maath-random.esm";
 
 function Particles(props: any) {
   const ref = useRef<any>(null);
-  const [sphere] = useState(() => random.inSphere(new Float32Array(6000), { radius: 1.5 }));
+  // Reduced particle count from 6000 (2000 particles) to 3000 (1000 particles).
+  // Note: Float32Array length must be a multiple of 3 because of stride={3} (x, y, z).
+  const [sphere] = useState(() => random.inSphere(new Float32Array(3000), { radius: 1.5 }));
 
   useFrame((state, delta) => {
     if (ref.current) {
@@ -36,7 +38,7 @@ function Particles(props: any) {
 export function ThreeBackground() {
   return (
     <div className="absolute inset-0 z-0 pointer-events-none">
-      <Canvas camera={{ position: [0, 0, 1] }}>
+      <Canvas camera={{ position: [0, 0, 1] }} dpr={[1, 1.5]}>
         <Particles />
       </Canvas>
     </div>

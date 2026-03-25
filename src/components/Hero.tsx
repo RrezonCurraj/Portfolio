@@ -24,9 +24,6 @@ export function Hero() {
 
   return (
     <section ref={containerRef} className="min-h-screen flex flex-col justify-center px-4 md:px-12 pt-24 relative overflow-hidden bg-grid">
-      <div className="absolute top-[20%] right-[10%] w-[500px] h-[500px] bg-[var(--color-primary)] rounded-full blur-[200px] opacity-20 pointer-events-none" />
-      <div className="absolute -bottom-32 -left-32 w-[600px] h-[600px] bg-[var(--color-primary)] rounded-full blur-[250px] opacity-10 pointer-events-none" />
-      
       <ThreeBackground />
 
       <div className="w-full max-w-[1400px] mx-auto z-10 relative">

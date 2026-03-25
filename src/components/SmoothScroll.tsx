@@ -27,8 +27,7 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       lenis.raf(time * 1000);
     });
 
-    // 3. Disable GSAP lag smoothing to prevent stutter during heavy scroll
-    gsap.ticker.lagSmoothing(0);
+    // We do NOT disable lag smoothing, to prevent violent stutters if frames drop.
 
     const handleAnchorClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;

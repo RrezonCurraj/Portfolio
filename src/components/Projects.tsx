@@ -46,9 +46,8 @@ export function Projects() {
       const cards = gsap.utils.toArray<HTMLElement>(".project-card");
       cards.forEach((card) => {
          gsap.to(card, {
-            scale: 0.9, 
-            opacity: 1,
-            filter: "blur(10px)",
+            scale: 0.95, 
+            opacity: 0.5,
             scrollTrigger: {
                trigger: card,
                start: "top top", 
