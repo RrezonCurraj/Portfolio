@@ -50,14 +50,14 @@ export function TextReveal({ children, className, delay = 0, activeColor, baseCo
       return;
     }
 
+    // Remove blur from initial entry animation to prevent massive CPU spike on load
     gsap.fromTo(
       chars,
-      { y: 100, opacity: 0, rotateX: -80, filter: "blur(10px)" },
+      { y: 100, opacity: 0, rotateX: -80 },
       {
         y: 0,
         opacity: 1,
         rotateX: 0,
-        filter: "blur(0px)",
         stagger: 0.02,
         duration: 1,
         ease: "power4.out",

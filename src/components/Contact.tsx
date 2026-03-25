@@ -7,7 +7,10 @@ import { TextReveal } from "@/components/ui/TextReveal";
 export function Contact() {
   return (
     <section className="w-full h-full flex flex-col items-center justify-center bg-[#050505] text-center px-4 md:px-12 bg-grid relative overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[300px] bg-[var(--color-primary)] opacity-5 blur-[100px] pointer-events-none" />
+        <div 
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[600px] pointer-events-none opacity-10" 
+          style={{ background: "radial-gradient(ellipse, var(--color-primary) 0%, transparent 60%)" }}
+        />
         
         <div className="w-full max-w-[1400px] mx-auto z-10">
             <div className="mb-12 relative">

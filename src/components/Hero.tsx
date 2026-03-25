@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { portfolioData } from "@/data/portfolio";
 import { ArrowRight } from "lucide-react";
 import gsap from "gsap";
@@ -8,8 +8,38 @@ import { useGSAP } from "@gsap/react";
 import { TextReveal } from "@/components/ui/TextReveal";
 import dynamic from "next/dynamic";
 const ThreeBackground = dynamic(() => import("@/components/ThreeBackground").then(mod => mod.ThreeBackground), { ssr: false });
+
 export function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [showThree, setShowThree] = useState(false);
+
+  useEffect(() => {
+    // Delay mounting heavy Three.js canvas to dramatically improve Lighthouse/PageSpeed scores.
+    // Mounts immediately upon user interaction, or falls back to a 2.5s delay so the CPU isn't blocked during initial paint.
+    let mounted = false;
+    const mountThree = () => {
+      if (!mounted) {
+        mounted = true;
+        setShowThree(true);
+        cleanup();
+      }
+    };
+
+    const timer = setTimeout(mountThree, 2500);
+
+    const cleanup = () => {
+      window.removeEventListener("mousemove", mountThree);
+      window.removeEventListener("touchstart", mountThree);
+      window.removeEventListener("scroll", mountThree);
+      clearTimeout(timer);
+    };
+
+    window.addEventListener("mousemove", mountThree, { once: true });
+    window.addEventListener("touchstart", mountThree, { once: true });
+    window.addEventListener("scroll", mountThree, { once: true });
+
+    return cleanup;
+  }, []);
 
   useGSAP(() => {
     gsap.from(".hero-fade-in", {
@@ -24,7 +54,7 @@ export function Hero() {
 
   return (
     <section ref={containerRef} className="min-h-screen flex flex-col justify-center px-4 md:px-12 pt-24 relative overflow-hidden bg-grid">
-      <ThreeBackground />
+      {showThree && <ThreeBackground />}
 
       <div className="w-full max-w-[1400px] mx-auto z-10 relative">
         <div className="hero-fade-in mb-12 flex justify-start">

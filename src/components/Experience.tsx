@@ -13,21 +13,6 @@ export function Experience() {
   const containerRef = useRef<HTMLElement>(null);
 
   useGSAP(() => {
-    // Animate Line
-    gsap.fromTo(".timeline-line", 
-      { height: "0%" },
-      { 
-        height: "100%", 
-        ease: "none",
-        scrollTrigger: {
-          trigger: ".timeline-wrapper",
-          start: "top center",
-          end: "bottom center",
-          scrub: 1,
-        }
-      }
-    );
-
     // Fade in items
     gsap.utils.toArray<HTMLElement>(".timeline-item").forEach((item) => {
       gsap.from(item, {

@@ -5,7 +5,10 @@ import { TextReveal } from "@/components/ui/TextReveal";
 export function About() {
   return (
     <section id="about" className="py-32 px-4 md:px-12 bg-black text-white relative border-y-2 border-white/10 overflow-hidden">
-      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[var(--color-primary)] rounded-full blur-[250px] opacity-5 pointer-events-none" />
+      <div 
+        className="absolute top-0 right-0 w-[800px] h-[800px] rounded-full pointer-events-none opacity-10" 
+        style={{ background: "radial-gradient(circle, var(--color-primary) 0%, transparent 60%)" }}
+      />
       <div className="max-w-[1400px] mx-auto grid md:grid-cols-12 gap-12 items-center relative z-10">
         
         <div className="md:col-span-7 flex flex-col justify-center">
@@ -48,7 +51,6 @@ export function About() {
               fill
               className="object-cover object-center filter grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
               sizes="(max-width: 768px) 100vw, 50vw"
-              priority
             />
             <div className="absolute inset-0 bg-black/20 mix-blend-overlay"></div>
             <div className="absolute bottom-6 left-6 right-6">
