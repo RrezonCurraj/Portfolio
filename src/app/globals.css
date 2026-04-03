@@ -1,17 +1,21 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: var(--font-bricolage);
-  --font-mono: var(--font-jetbrains-mono);
-  --font-serif: var(--font-instrument);
+  --font-sans: var(--font-archivo);
+  --font-mono: var(--font-space-grotesk);
 
-  --color-primary: #ccff00;
-  --color-primary-foreground: #000000;
+  --color-primary: #22c55e;
+  --color-primary-foreground: #0f172a;
 }
 
 :root {
-  --background: #050505;
-  --foreground: #ededed;
+  --background: #0f172a;
+  --foreground: #f8fafc;
+}
+
+html.recruiter-mode body {
+  background: white !important;
+  color: #18181b !important;
 }
 
 body {
@@ -25,18 +29,26 @@ body {
 .bg-grid {
   background-size: 40px 40px;
   background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+}
+
+html.recruiter-mode .bg-grid {
+  background-image: none !important;
+}
+
+html.recruiter-mode .noise-overlay {
+  display: none !important;
 }
 
 @utility text-glow {
   text-shadow:
-    0 0 20px rgba(204, 255, 0, 0.6),
-    0 0 40px rgba(204, 255, 0, 0.2);
+    0 0 20px rgba(34, 197, 94, 0.6),
+    0 0 40px rgba(34, 197, 94, 0.2);
 }
 
 @utility text-outline {
-  -webkit-text-stroke: 2px rgba(255, 255, 255, 0.5);
-  color: black;
+  -webkit-text-stroke: 2px rgba(248, 250, 252, 0.5);
+  color: var(--background);
   paint-order: stroke fill;
 }

@@ -1,26 +1,19 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, JetBrains_Mono, Instrument_Serif } from "next/font/google";
+import { Archivo, Space_Grotesk } from "next/font/google";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { NoiseOverlay } from "@/components/ui/NoiseOverlay";
+import { ModeProvider } from "@/components/Providers";
 import "./globals.css";
 
-const bricolage = Bricolage_Grotesque({
-  variable: "--font-bricolage",
+const archivo = Archivo({
+  variable: "--font-archivo",
   subsets: ["latin"],
   display: "swap",
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
   subsets: ["latin"],
-  display: "swap",
-});
-
-const instrumentSerif = Instrument_Serif({
-  weight: "400",
-  variable: "--font-instrument",
-  subsets: ["latin"],
-  style: ["normal", "italic"],
   display: "swap",
 });
 
@@ -37,12 +30,14 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark scroll-smooth">
       <body
-        className={`${bricolage.variable} ${jetbrainsMono.variable} ${instrumentSerif.variable} antialiased bg-black text-white relative`}
+        className={`${archivo.variable} ${spaceGrotesk.variable} antialiased bg-[#0f172a] text-[#f8fafc] relative`}
       >
-        <SmoothScroll>
-          <NoiseOverlay />
-          {children}
-        </SmoothScroll>
+        <ModeProvider>
+          <SmoothScroll>
+            <NoiseOverlay />
+            {children}
+          </SmoothScroll>
+        </ModeProvider>
       </body>
     </html>
   );

@@ -30,18 +30,18 @@ export function TextReveal({ children, className, delay = 0, activeColor, baseCo
     const isMobile = window.innerWidth < 768;
 
     if (isMobile) {
+      // Much simpler, lighter mobile intro without heavy blur
       gsap.fromTo(
         chars,
-        { y: 100, opacity: 0, rotateX: -80, filter: "blur(10px)" },
+        { y: 50, opacity: 0, rotateX: -45 },
         {
           y: 0,
           opacity: 1,
           rotateX: 0,
-          filter: "blur(0px)",
-          stagger: 0.01,
-          duration: 0.5,
-          ease: "power4.out",
-          delay: 0
+          stagger: 0.02,
+          duration: 0.6,
+          ease: "power3.out",
+          delay: delay
         }
       );
       if (containerRef.current) {
@@ -80,33 +80,15 @@ export function TextReveal({ children, className, delay = 0, activeColor, baseCo
     const isMobile = window.innerWidth < 768;
 
     if (isMobile) {
+      // Remove heavy loop! Just set static nice styles for mobile
       const chars = charsRef.current.filter(Boolean);
-      
       gsap.set(chars, {
         opacity: 1,
         scale: 1,
-        color: baseColor || "rgba(255, 255, 255, 0.5)", 
-        fontWeight: 700
+        color: activeColor || "inherit", 
+        fontWeight: "inherit"
       });
-
-      const ctx = gsap.context(() => {
-        const tl = gsap.timeline({ repeat: -1, repeatDelay: 2 });
-        
-        tl.to(chars, {
-          color: activeColor || "#ffffff",
-          scale: 1.05,
-          fontWeight: 900,
-          stagger: {
-            each: 0.1, 
-            yoyo: true,
-            repeat: 1, 
-          },
-          duration: 0.5, 
-          ease: "sine.inOut",
-        });
-      });
-
-      return () => ctx.revert(); 
+      return; 
     }
 
     charsRef.current.forEach((char, i) => {
