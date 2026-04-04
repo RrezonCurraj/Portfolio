@@ -18,13 +18,13 @@ export function Projects() {
     const cards = gsap.utils.toArray<HTMLElement>(".project-card");
     cards.forEach((card, i) => {
       gsap.from(card, {
-        y: 100,
+        y: 40,
         opacity: 0,
-        duration: 0.8,
-        ease: "power3.out",
+        duration: 0.4,
+        ease: "power2.out",
         scrollTrigger: {
           trigger: card,
-          start: "top bottom-=100",
+          start: "top bottom-=20",
           toggleActions: "play none none reverse",
         }
       });
