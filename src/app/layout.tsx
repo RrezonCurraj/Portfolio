@@ -18,8 +18,24 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Rrezon - Creative Developer",
-  description: "Portfolio of a creative full-stack developer.",
+  title: "Rrezon Curraj | Frontend Developer & UI Designer",
+  description: "Portfolio of Rrezon Curraj, a creative Frontend Developer specializing in React, Next.js, and modern UI design. I build digital experiences.",
+  keywords: ["Rrezon", "Rrezon Curraj", "Frontend Developer", "Next.js", "React", "Portfolio", "Web Developer", "UI Designer", "Freelance Developer"],
+  authors: [{ name: "Rrezon Curraj" }],
+  creator: "Rrezon Curraj",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://rrezon.dev",
+    title: "Rrezon Curraj | Frontend Developer & UI Designer",
+    description: "Portfolio of Rrezon Curraj, a creative Frontend Developer specializing in React, Next.js, and modern UI design.",
+    siteName: "Rrezon Curraj Portfolio",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Rrezon Curraj | Frontend Developer",
+    description: "I build modern, responsive, and performant digital experiences.",
+  },
 };
 
 export default function RootLayout({
