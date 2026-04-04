@@ -31,7 +31,7 @@ export function Navbar() {
       className="fixed top-0 left-0 w-full z-50 px-4 md:px-12 py-4 md:py-6 pointer-events-none"
     >
       <div className="max-w-[1400px] mx-auto flex justify-between items-start">
-        <div className="bg-[#1e293b] border-2 border-[var(--color-primary)] px-4 py-3 md:px-6 flex items-center gap-8 pointer-events-auto transform transition-transform hover:translate-y-1 hover:-translate-x-1 shadow-[4px_4px_0px_var(--color-primary)]">
+        <div className="bg-[#1e293b] border-2 border-[var(--color-primary)] px-3 py-2 md:px-6 md:py-3 flex items-center gap-8 pointer-events-auto transform transition-transform hover:translate-y-1 hover:-translate-x-1 shadow-[4px_4px_0px_var(--color-primary)]">
           <Link 
             href="/" 
             onClick={(e) => {
@@ -40,7 +40,7 @@ export function Navbar() {
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }
             }}
-            className="font-black text-2xl tracking-tighter text-[#f8fafc]"
+            className="font-black text-xl md:text-2xl tracking-tighter text-[#f8fafc]"
           >
             RREZON<span className="text-[var(--color-primary)]">_</span>
           </Link>
@@ -58,16 +58,17 @@ export function Navbar() {
           </div>
         </div>
         
-        <div className="pointer-events-auto flex items-center gap-4">
+        <div className="pointer-events-auto flex items-center gap-2 md:gap-4">
           <button 
             onClick={toggleMode}
-            className={`border-2 px-4 py-3 font-black font-mono uppercase tracking-widest text-xs md:text-sm transition-colors inline-block transform hover:translate-y-1 hover:-translate-x-1 shadow-[4px_4px_0px_currentColor] hover:shadow-none ${
+            className={`border-2 px-2 py-2 md:px-4 md:py-3 font-black font-mono uppercase tracking-widest text-[10px] md:text-sm transition-colors inline-block transform hover:translate-y-1 hover:-translate-x-1 shadow-[4px_4px_0px_currentColor] hover:shadow-none ${
               isRecruiterMode 
                 ? "bg-[#0f172a] text-[var(--color-primary)] border-[var(--color-primary)]" 
                 : "bg-white text-[#0f172a] border-[#0f172a]"
             }`}
           >
-            [ RECRUITER MODE: {isRecruiterMode ? "ON" : "OFF"} ]
+            <span className="hidden md:inline">[ RECRUITER MODE: {isRecruiterMode ? "ON" : "OFF"} ]</span>
+            <span className="md:hidden">[ RECRUITER: {isRecruiterMode ? "ON" : "OFF"} ]</span>
           </button>
           <Link 
             href="#contact"
