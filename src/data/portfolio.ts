@@ -1,6 +1,6 @@
 export const portfolioData = {
   personal: {
-    name: "Rrezon",
+    name: "Rrezon Curraj",
     role: "Frontend Developer",
     tagline: "I Build Digital Experiences.",
     bio: "I am a passionate developer who specializes in building modern, responsive, and performant websites. I turn complex problems into simple, beautiful, and intuitive designs.",
@@ -84,5 +84,35 @@ export const portfolioData = {
 • Diagnosed and resolved critical production bugs to improve application stability.
 • Implemented RESTful APIs to support scalable data handling.`,
     },
+  ],
+  education: [
+    {
+      degree: 'Bachelor of Science (BSc) in Computer Science with Specialization in Software Design',
+      institution: 'University of Prizren "Ukshin Hoti"',
+      location: 'Prizren, Kosovo',
+      period: '2019 - 2025',
+      description: '• Bachelor Thesis: "Cloud Computing Usage Costs and Optimization"\n• Officially recognized by the ZAB as equivalent to a German Bachelor’s degree.',
+    },
+    {
+      degree: 'Microsoft Azure Cloud',
+      institution: 'Cacttus Education',
+      location: 'Prizren, Kosovo',
+      period: '11.2023 - 04.2024',
+      description: '',
+    },
+    {
+      degree: 'iOS Developer',
+      institution: 'Rit Kosovo / Cactus Education',
+      location: 'Prishtina, Kosovo',
+      period: '05.2022 - 11.2022',
+      description: '',
+    },
+    {
+      degree: 'Graphic Designer',
+      institution: 'UnitedPixels',
+      location: 'Prishtina, Kosovo',
+      period: '11.2020 - 02.2021',
+      description: '',
+    }
   ],
 };
