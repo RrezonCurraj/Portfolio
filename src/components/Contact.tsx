@@ -33,18 +33,18 @@ export function Contact() {
   };
 
   return (
-    <section id="contact" className="w-full flex flex-col items-center justify-center bg-[#0f172a] text-center px-4 md:px-12 py-32 relative overflow-hidden">
+    <section id="contact" className="w-full flex flex-col items-center justify-center bg-[#0f172a] text-center px-4 md:px-12 py-16 md:py-32 relative overflow-x-hidden">
       <div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[600px] pointer-events-none opacity-20"
         style={{ background: "radial-gradient(ellipse, var(--color-primary) 0%, transparent 60%)" }}
       />
 
       <div className="w-full max-w-[1400px] mx-auto z-10">
-        <div className="mb-12 relative">
-          <TextReveal activeColor="var(--color-primary)" className="text-6xl sm:text-8xl md:text-[12rem] font-black uppercase tracking-tighter whitespace-nowrap text-[#f8fafc] leading-none mx-auto drop-shadow-xl">
+        <div className="mb-8 md:mb-12 relative">
+          <TextReveal activeColor="var(--color-primary)" className="text-5xl sm:text-8xl md:text-[12rem] font-black uppercase tracking-tighter md:whitespace-nowrap text-[#f8fafc] leading-none mx-auto drop-shadow-xl">
             INITIATE
           </TextReveal>
-          <div className="text-5xl sm:text-7xl md:text-[9rem] font-mono italic text-[#f8fafc] opacity-50 -mt-8 md:-mt-16 tracking-tighter">
+          <div className="text-4xl sm:text-7xl md:text-[9rem] font-mono italic text-[#f8fafc] opacity-50 -mt-4 md:-mt-16 tracking-tighter">
             Contact
           </div>
         </div>
@@ -118,7 +118,7 @@ export function Contact() {
                 </div>
               )}
 
-              <div className="flex items-center justify-between flex-wrap gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <a
                   href={`mailto:${portfolioData.personal.email}`}
                   className="font-mono text-xs text-zinc-500 hover:text-[var(--color-primary)] transition-colors"
@@ -128,7 +128,7 @@ export function Contact() {
                 <button
                   type="submit"
                   disabled={status === "sending"}
-                  className="bg-[var(--color-primary)] text-[#0f172a] px-8 py-4 font-black font-mono uppercase tracking-widest text-sm border-2 border-[var(--color-primary)] hover:-translate-y-1 hover:translate-x-1 hover:shadow-[-4px_4px_0_0_rgba(248,250,252,1)] active:translate-y-0 active:translate-x-0 active:shadow-none transition-all duration-200 flex items-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white"
+                  className="w-full sm:w-auto justify-center bg-[var(--color-primary)] text-[#0f172a] px-8 py-4 font-black font-mono uppercase tracking-widest text-sm border-2 border-[var(--color-primary)] hover:-translate-y-1 hover:translate-x-1 hover:shadow-[-4px_4px_0_0_rgba(248,250,252,1)] active:translate-y-0 active:translate-x-0 active:shadow-none transition-all duration-200 flex items-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white"
                 >
                   {status === "sending" ? "Sending..." : "Send Message"}
                   <Send className="w-4 h-4" aria-hidden="true" />
