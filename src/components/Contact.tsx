@@ -68,7 +68,7 @@ export function Contact() {
               </button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-4" noValidate aria-live="polite">
+            <form onSubmit={handleSubmit} className="space-y-4" noValidate>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1">
                   <label htmlFor="name" className="font-mono text-xs uppercase tracking-widest text-zinc-400">
@@ -116,12 +116,14 @@ export function Contact() {
                 />
               </div>
 
-              {form.status === "error" && (
-                <div className="flex items-center gap-2 text-red-400 font-mono text-sm">
-                  <AlertCircle className="w-4 h-4" />
-                  <span>{form.errorMsg ?? "Failed to send. Try emailing me directly."}</span>
-                </div>
-              )}
+              <div aria-live="polite" aria-atomic="true">
+                {form.status === "error" && (
+                  <div className="flex items-center gap-2 text-red-400 font-mono text-sm">
+                    <AlertCircle className="w-4 h-4" />
+                    <span>{form.errorMsg ?? "Failed to send. Try emailing me directly."}</span>
+                  </div>
+                )}
+              </div>
 
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <a

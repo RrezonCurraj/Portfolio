@@ -6,12 +6,13 @@ import { useGSAP } from "@gsap/react";
 import Link from "next/link";
 import { useMode } from "@/components/Providers";
 import { prefersReducedMotion } from "@/lib/motion";
+import { openCommandPalette } from "@/components/CommandPalette";
 
 const navItems = [
-  { name: "About", href: "#about", id: "about" },
-  { name: "Skills", href: "#skills", id: "skills" },
-  { name: "Projects", href: "#projects", id: "projects" },
-  { name: "Experience", href: "#experience", id: "experience" },
+  { name: "About", id: "about" },
+  { name: "Skills", id: "skills" },
+  { name: "Projects", id: "projects" },
+  { name: "Experience", id: "experience" },
 ];
 
 export function Navbar() {
@@ -70,7 +71,7 @@ export function Navbar() {
               return (
                 <Link
                   key={item.name}
-                  href={item.href}
+                  href={`#${item.id}`}
                   className={`transition-colors relative group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] ${isActive ? "text-[var(--color-primary)]" : "text-zinc-400 hover:text-[var(--color-primary)]"}`}
                 >
                   {item.name}
@@ -79,7 +80,7 @@ export function Navbar() {
               );
             })}
             <button
-              onClick={() => { window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true, bubbles: true })); }}
+              onClick={openCommandPalette}
               aria-label="Open command palette"
               className="text-zinc-500 hover:text-[var(--color-primary)] transition-colors font-mono text-xs tracking-widest border border-zinc-700 px-2 py-1 hover:border-[var(--color-primary)]"
             >

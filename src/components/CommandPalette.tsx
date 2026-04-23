@@ -4,6 +4,9 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { Search, ArrowRight, Download, Mail, Github, Linkedin } from "lucide-react";
 import { portfolioData } from "@/data/portfolio";
 
+let _setOpen: ((v: boolean) => void) | null = null;
+export function openCommandPalette() { _setOpen?.(true); }
+
 type Command = {
   id: string;
   label: string;
@@ -88,7 +91,6 @@ export function CommandPalette() {
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
-  const listRef = useRef<HTMLUListElement>(null);
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
 
   const filtered = query.trim()
@@ -123,6 +125,11 @@ export function CommandPalette() {
   }, [close]);
 
   useEffect(() => {
+    _setOpen = setOpen;
+    return () => { _setOpen = null; };
+  }, []);
+
+  useEffect(() => {
     if (open) {
       setSelected(0);
       setTimeout(() => inputRef.current?.focus(), 10);
@@ -131,18 +138,12 @@ export function CommandPalette() {
 
   useEffect(() => { setSelected(0); }, [query]);
 
-  // Scroll selected item into view when navigating with keyboard
   useEffect(() => {
     itemRefs.current[selected]?.scrollIntoView({ block: "nearest" });
   }, [selected]);
 
-  // Lock page scroll while palette is open
   useEffect(() => {
-    if (open) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    document.body.style.overflow = open ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [open]);
 
@@ -184,14 +185,17 @@ export function CommandPalette() {
           <kbd className="hidden sm:inline font-mono text-[10px] text-zinc-500 border border-zinc-700 px-1.5 py-0.5">ESC</kbd>
         </div>
 
-        <ul ref={listRef} className="max-h-72 overflow-y-auto py-2" role="listbox">
+        <ul className="max-h-72 overflow-y-auto py-2" role="listbox">
           {filtered.length === 0 && (
             <li className="px-4 py-3 text-zinc-500 font-mono text-sm">No commands found.</li>
           )}
           {filtered.map((cmd, i) => (
             <li
               key={cmd.id}
-              ref={(el) => { itemRefs.current[i] = el; }}
+              ref={(el) => {
+                itemRefs.current[i] = el;
+                if (i === filtered.length - 1) itemRefs.current.length = filtered.length;
+              }}
               role="option"
               aria-selected={i === selected}
               onMouseEnter={() => setSelected(i)}
