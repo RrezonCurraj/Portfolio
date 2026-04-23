@@ -6,29 +6,34 @@ import { Linkedin, Github, Send, CheckCircle, AlertCircle } from "lucide-react";
 import { TextReveal } from "@/components/ui/TextReveal";
 
 type Status = "idle" | "sending" | "sent" | "error";
+type FormState = { status: Status; errorMsg?: string };
 
 export function Contact() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
-  const [status, setStatus] = useState<Status>("idle");
+  const [form, setForm] = useState<FormState>({ status: "idle" });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus("sending");
+    setForm({ status: "sending" });
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, message }),
       });
-      if (!res.ok) throw new Error();
-      setStatus("sent");
+      const data = await res.json();
+      if (!res.ok) {
+        setForm({ status: "error", errorMsg: data.error });
+        return;
+      }
+      setForm({ status: "sent" });
       setName("");
       setEmail("");
       setMessage("");
     } catch {
-      setStatus("error");
+      setForm({ status: "error", errorMsg: "Network error. Try emailing directly." });
     }
   };
 
@@ -50,20 +55,20 @@ export function Contact() {
         </div>
 
         <div className="max-w-2xl mx-auto text-left mb-16">
-          {status === "sent" ? (
+          {form.status === "sent" ? (
             <div className="flex flex-col items-center justify-center gap-4 py-16 border-2 border-[var(--color-primary)] bg-[#1e293b]">
               <CheckCircle className="w-12 h-12 text-[var(--color-primary)]" />
               <p className="font-mono text-lg text-[var(--color-primary)] uppercase tracking-widest">Signal received.</p>
               <p className="font-mono text-sm text-zinc-400">I'll get back to you within 24 hours.</p>
               <button
-                onClick={() => setStatus("idle")}
+                onClick={() => setForm({ status: "idle" })}
                 className="mt-4 font-mono text-xs uppercase tracking-widest text-zinc-500 hover:text-white transition-colors underline"
               >
                 Send another
               </button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+            <form onSubmit={handleSubmit} className="space-y-4" noValidate aria-live="polite">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1">
                   <label htmlFor="name" className="font-mono text-xs uppercase tracking-widest text-zinc-400">
@@ -111,10 +116,10 @@ export function Contact() {
                 />
               </div>
 
-              {status === "error" && (
+              {form.status === "error" && (
                 <div className="flex items-center gap-2 text-red-400 font-mono text-sm">
                   <AlertCircle className="w-4 h-4" />
-                  <span>Failed to send. Try emailing me directly.</span>
+                  <span>{form.errorMsg ?? "Failed to send. Try emailing me directly."}</span>
                 </div>
               )}
 
@@ -127,10 +132,10 @@ export function Contact() {
                 </a>
                 <button
                   type="submit"
-                  disabled={status === "sending"}
+                  disabled={form.status === "sending"}
                   className="w-full sm:w-auto justify-center bg-[var(--color-primary)] text-[#0f172a] px-8 py-4 font-black font-mono uppercase tracking-widest text-sm border-2 border-[var(--color-primary)] hover:-translate-y-1 hover:translate-x-1 hover:shadow-[-4px_4px_0_0_rgba(248,250,252,1)] active:translate-y-0 active:translate-x-0 active:shadow-none transition-all duration-200 flex items-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white"
                 >
-                  {status === "sending" ? "Sending..." : "Send Message"}
+                  {form.status === "sending" ? "Sending..." : "Send Message"}
                   <Send className="w-4 h-4" aria-hidden="true" />
                 </button>
               </div>
