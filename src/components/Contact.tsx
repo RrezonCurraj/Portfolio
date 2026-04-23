@@ -33,7 +33,7 @@ export function Contact() {
   };
 
   return (
-    <section id="contact" className="w-full flex flex-col items-center justify-center bg-[#0f172a] text-center px-4 md:px-12 py-16 md:py-32 relative overflow-x-hidden">
+    <section id="contact" className="w-full flex flex-col items-center bg-[#0f172a] text-center px-4 md:px-12 pt-16 md:pt-32 pb-24 md:pb-40 relative overflow-x-hidden">
       <div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[600px] pointer-events-none opacity-20"
         style={{ background: "radial-gradient(ellipse, var(--color-primary) 0%, transparent 60%)" }}
@@ -160,7 +160,7 @@ export function Contact() {
         </div>
       </div>
 
-      <footer className="absolute bottom-8 w-full flex justify-between px-12 text-zinc-500 font-mono text-xs uppercase tracking-widest">
+      <footer className="md:absolute md:bottom-8 w-full flex justify-between px-4 md:px-12 mt-12 md:mt-0 text-zinc-500 font-mono text-xs uppercase tracking-widest">
         <span>© {new Date().getFullYear()} RREZON_CURRAJ</span>
         <span className="hidden md:inline">SYSTEM: ONLINE</span>
       </footer>
