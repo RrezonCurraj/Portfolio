@@ -5,6 +5,7 @@ import { portfolioData } from "@/data/portfolio";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { prefersReducedMotion } from "@/lib/motion";
 
 
 gsap.registerPlugin(ScrollTrigger);
@@ -13,7 +14,7 @@ export function Experience() {
   const containerRef = useRef<HTMLElement>(null);
 
   useGSAP(() => {
-    // Fade in items
+    if (prefersReducedMotion()) return;
     gsap.utils.toArray<HTMLElement>(".timeline-item").forEach((item) => {
       gsap.from(item, {
         opacity: 0,
@@ -28,7 +29,7 @@ export function Experience() {
   }, { scope: containerRef });
 
   return (
-    <section ref={containerRef} id="experience" className="py-32 px-4 md:px-12 bg-[#0f172a] text-[#f8fafc] bg-grid relative z-10 border-t-4 border-white/10">
+    <section ref={containerRef} id="experience" className="py-32 px-4 md:px-12 bg-[#0f172a] text-[#f8fafc] relative z-10 border-t-4 border-white/10">
       <div className="max-w-[1400px] mx-auto">
         <div className="mb-20 flex flex-col md:flex-row justify-between items-start md:items-end border-b-4 border-white/20 pb-8 gap-8">
              <h2 className="text-6xl sm:text-7xl md:text-9xl font-black uppercase tracking-tighter text-outline drop-shadow-xl">

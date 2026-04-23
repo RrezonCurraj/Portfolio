@@ -4,7 +4,7 @@ import { TextReveal } from "@/components/ui/TextReveal";
 
 export function About() {
   return (
-    <section id="about" className="py-32 px-4 md:px-12 bg-[#0f172a] text-[#f8fafc] relative border-t-4 border-[#1e293b] overflow-hidden bg-grid">
+    <section id="about" className="py-32 px-4 md:px-12 bg-[#0f172a] text-[#f8fafc] relative border-t-4 border-[#1e293b] overflow-hidden">
       <div 
         className="absolute top-0 right-0 w-[800px] h-[800px] rounded-full pointer-events-none opacity-20" 
         style={{ background: "radial-gradient(circle, var(--color-primary) 0%, transparent 60%)" }}

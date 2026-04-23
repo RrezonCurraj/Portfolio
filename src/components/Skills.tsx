@@ -5,6 +5,7 @@ import { portfolioData } from "@/data/portfolio";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { prefersReducedMotion } from "@/lib/motion";
 
 
 gsap.registerPlugin(ScrollTrigger);
@@ -13,6 +14,7 @@ export function Skills() {
   const containerRef = useRef<HTMLElement>(null);
 
   useGSAP(() => {
+    if (prefersReducedMotion()) return;
     gsap.utils.toArray<HTMLElement>(".skill-bar-fill").forEach((bar) => {
       gsap.fromTo(bar, 
         { scaleX: 0 },

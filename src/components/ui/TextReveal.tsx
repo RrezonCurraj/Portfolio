@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { cn } from "@/lib/utils";
+import { prefersReducedMotion } from "@/lib/motion";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -24,9 +25,9 @@ export function TextReveal({ children, className, delay = 0, activeColor, baseCo
   const originalWidthsRef = useRef<number[]>([]);
 
   useGSAP(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || prefersReducedMotion()) return;
     const chars = containerRef.current.querySelectorAll(".char-outer");
-    
+
     const isMobile = window.innerWidth < 768;
 
     if (isMobile) {

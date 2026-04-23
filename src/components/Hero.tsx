@@ -2,10 +2,11 @@
 
 import { useRef, useState, useEffect } from "react";
 import { portfolioData } from "@/data/portfolio";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Download } from "lucide-react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { TextReveal } from "@/components/ui/TextReveal";
+import { prefersReducedMotion } from "@/lib/motion";
 import dynamic from "next/dynamic";
 const ThreeBackground = dynamic(() => import("@/components/ThreeBackground").then(mod => mod.ThreeBackground), { ssr: false });
 
@@ -14,6 +15,8 @@ export function Hero() {
   const [showThree, setShowThree] = useState(false);
 
   useEffect(() => {
+    if (prefersReducedMotion()) return;
+
     let mounted = false;
     const mountThree = () => {
       if (!mounted) {
@@ -40,6 +43,7 @@ export function Hero() {
   }, []);
 
   useGSAP(() => {
+    if (prefersReducedMotion()) return;
     gsap.from(".hero-fade-in", {
       y: 20,
       opacity: 0,
@@ -51,7 +55,7 @@ export function Hero() {
   }, { scope: containerRef });
 
   return (
-    <section ref={containerRef} className="min-h-screen flex flex-col justify-center px-4 md:px-12 pt-24 md:pt-32 relative overflow-hidden bg-grid">
+    <section ref={containerRef} className="min-h-screen flex flex-col justify-center px-4 md:px-12 pt-24 md:pt-32 relative overflow-hidden">
       {showThree && <ThreeBackground />}
 
       <div className="w-full max-w-[1400px] mx-auto z-10 relative">
@@ -96,15 +100,25 @@ export function Hero() {
           </div>
           
           <div className="hero-fade-in md:col-start-8 md:col-span-5 flex flex-wrap gap-4 justify-start md:justify-end">
-            <a 
+            <a
               href="#projects"
-              className="bg-[var(--color-primary)] text-[#0f172a] px-6 py-4 md:px-8 md:py-4 font-black font-sans uppercase tracking-wider text-sm md:text-base border-2 border-[var(--color-primary)] hover:-translate-y-1 hover:translate-x-1 hover:shadow-[-4px_4px_0_0_rgba(248,250,252,1)] active:translate-y-0 active:translate-x-0 active:shadow-none transition-all duration-200 flex items-center gap-3 w-full sm:w-auto justify-center"
+              aria-label="View my projects"
+              className="bg-[var(--color-primary)] text-[#0f172a] px-6 py-4 md:px-8 md:py-4 font-black font-sans uppercase tracking-wider text-sm md:text-base border-2 border-[var(--color-primary)] hover:-translate-y-1 hover:translate-x-1 hover:shadow-[-4px_4px_0_0_rgba(248,250,252,1)] active:translate-y-0 active:translate-x-0 active:shadow-none transition-all duration-200 flex items-center gap-3 w-full sm:w-auto justify-center focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f172a]"
             >
-              View Work <ArrowRight className="w-5 h-5" />
+              View Work <ArrowRight className="w-5 h-5" aria-hidden="true" />
             </a>
-            <a 
+            <a
+              href="/Rrezon_Curraj_CV.pdf"
+              download
+              aria-label="Download my CV as PDF"
+              className="bg-[#1e293b] px-6 py-4 md:px-8 md:py-4 font-black font-sans uppercase tracking-wider text-sm md:text-base text-white border-2 border-white/20 hover:border-white hover:-translate-y-1 hover:translate-x-1 hover:shadow-[-4px_4px_0_0_rgba(34,197,94,1)] active:translate-y-0 active:translate-x-0 active:shadow-none transition-all duration-200 flex items-center gap-3 w-full sm:w-auto justify-center focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f172a]"
+            >
+              CV <Download className="w-5 h-5" aria-hidden="true" />
+            </a>
+            <a
               href="#contact"
-              className="bg-[#1e293b] px-6 py-4 md:px-8 md:py-4 font-black font-sans uppercase tracking-wider text-sm md:text-base text-white border-2 border-white/20 hover:border-white hover:-translate-y-1 hover:translate-x-1 hover:shadow-[-4px_4px_0_0_rgba(34,197,94,1)] active:translate-y-0 active:translate-x-0 active:shadow-none transition-all duration-200 w-full sm:w-auto text-center"
+              aria-label="Go to contact section"
+              className="bg-[#0f172a] px-6 py-4 md:px-8 md:py-4 font-black font-sans uppercase tracking-wider text-sm md:text-base text-white border-2 border-white/20 hover:border-white hover:-translate-y-1 hover:translate-x-1 hover:shadow-[-4px_4px_0_0_rgba(34,197,94,1)] active:translate-y-0 active:translate-x-0 active:shadow-none transition-all duration-200 w-full sm:w-auto text-center focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f172a]"
             >
               Contact
             </a>
