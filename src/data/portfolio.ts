@@ -76,33 +76,6 @@ export const portfolioData = {
         "Component-driven architecture",
         "Resend-powered contact flow",
       ],
-      caseStudy: {
-        role: "Solo. I handled UI design, component architecture, frontend development, and deployment.",
-        problem:
-          "Premium streaming and subscription platforms often feel visually generic — the same card grid, the same layout, the same washed-out UI that could be any SaaS product. I wanted to build something that actually felt premium: confident, dark, opinionated, and conversion-focused.",
-        approach:
-          "I started from the marketing angle, not the tech stack. What does a streaming platform look like when it prioritizes perceived value and trust? I designed the layout in iterations, focusing on hierarchy and whitespace first, then layered in the component structure. Vite gave me a fast dev loop while I tuned the visual details. Resend handled the waitlist/contact email flow server-side so leads didn't disappear into a mailto void.",
-        decisions: [
-          {
-            title: "Vite over Next.js",
-            body: "HyperCast is a pure marketing frontend — no dynamic routes, no SSR data requirements, no API layer. Next.js would've added complexity with zero benefit. Vite gave instant HMR and a lean build, keeping the focus on the UI rather than framework plumbing.",
-          },
-          {
-            title: "Resend for the contact / waitlist flow",
-            body: "A subscription platform with a mailto: link kills the illusion of being a real product. Resend's API let me wire up a proper form-to-inbox flow in under an hour with good deliverability, without needing a backend server or managing SMTP credentials.",
-          },
-          {
-            title: "Component-driven architecture from day one",
-            body: "I split every repeated UI pattern — pricing tiers, feature rows, hero variants — into composable components early on. This made iterating on the marketing copy and layout fast, and would make A/B testing straightforward if the project scaled.",
-          },
-        ],
-        stack:
-          "React.js for the component layer, Tailwind CSS for styling, Vite as the build tool, Lucide React for icons, and Resend API for transactional email. Deployed on Vercel.",
-        outcome:
-          "A polished, fast-loading frontend that reads as a real product rather than a portfolio exercise. The Resend integration means any contact form submission actually arrives somewhere actionable.",
-        learnings:
-          "Marketing copy and UI hierarchy matter as much as the component code. I spent as much time on heading weight, contrast ratios, and CTA placement as I did on the components themselves — and the result looks more professional for it.",
-      },
     },
     {
       slug: "fleurdeliza",
@@ -116,33 +89,6 @@ export const portfolioData = {
         "Live Swiss client site",
         "Mobile-first, EmailJS bookings",
       ],
-      caseStudy: {
-        role: "Solo freelance. I handled client consultation, design direction, frontend development, and Vercel deployment.",
-        problem:
-          "The client — a boutique flower shop in Switzerland — had no web presence at all. Their business ran entirely on word of mouth and Instagram. They needed a site that looked premium enough to attract Swiss clientele, was easy to update without technical knowledge, and let customers make booking inquiries without a phone call.",
-        approach:
-          "I designed around the product itself — flowers. Lots of whitespace, rich photography, and soft motion to give the site an editorial feel. Mobile-first was a hard constraint since the client's customers browse on phones. I used CSS3 keyframe animations instead of a heavy animation library to keep load times tight and avoid hydration issues with Next.js 15. EmailJS handled inquiry routing so the client receives booking requests directly in her inbox without any backend infrastructure.",
-        decisions: [
-          {
-            title: "Next.js 15 + TypeScript for a client site",
-            body: "A flower shop doesn't need a framework — but Next.js 15's App Router gave me image optimization out of the box (critical for a gallery-heavy site), great SEO defaults, and Vercel deployment in minutes. TypeScript caught several prop mismatches during development that would have been runtime bugs on mobile.",
-          },
-          {
-            title: "EmailJS over a custom backend",
-            body: "The client had no server budget and no technical maintenance capacity. EmailJS let me wire up a working contact/booking form that sends directly to her inbox, with zero server dependency. If EmailJS breaks, the form breaks — but for a small business site, that's a better tradeoff than maintaining a Node server.",
-          },
-          {
-            title: "CSS3 keyframes over a motion library",
-            body: "I reached for CSS animations rather than Framer Motion or GSAP for the hero and gallery transitions. The animations are simple enough that a library would be overhead, and CSS animations don't add to the JS bundle — important for First Contentful Paint on mobile connections.",
-          },
-        ],
-        stack:
-          "Next.js 15 with App Router, TypeScript, Tailwind CSS for layout and utility styles, PostCSS for custom transforms, CSS3 keyframe animations, and EmailJS for booking inquiries. Live and deployed on Vercel.",
-        outcome:
-          "A live production site for a paying Swiss client. The site is the primary booking channel for the shop — customers now inquire via the contact form instead of Instagram DMs, and the client reports that the visual quality matches the premium positioning of her arrangements.",
-        learnings:
-          "Real client work teaches you what portfolio projects don't — that 'done and working reliably' beats 'technically impressive.' I optimized for maintainability and uptime over showcasing every tool I know. The client doesn't know what Next.js is; she just knows her bookings come in.",
-      },
     },
     {
       slug: "maxi24",
@@ -156,33 +102,6 @@ export const portfolioData = {
         "Live production client site",
         "React 19 + Framer Motion",
       ],
-      caseStudy: {
-        role: "Solo freelance. I handled requirements gathering, design, full frontend development, and deployment. The client owns the live domain (maxi24gmbh.ch).",
-        problem:
-          "Maxi24 GmbH is a Swiss construction company that had no digital presence beyond a phone number. In the Swiss construction market, credibility is everything — potential clients want to see past work, understand the services offered, and feel confident they're hiring a professional company before they make contact. A missing or low-quality website actively costs them business.",
-        approach:
-          "The core goal was credibility at first glance. I structured the site around their strongest asset — the quality of their physical work — using a gallery-first layout. Framer Motion handled scroll-triggered reveals to give the site energy without distraction. React Router v7 made multi-page navigation fast and clean with no full-page reloads, which improves the perceived quality of the experience on slower Swiss mobile networks.",
-        decisions: [
-          {
-            title: "React + Vite over Next.js for a corporate brochure site",
-            body: "Maxi24 doesn't need SSR or SEO-critical server rendering — it's a corporate contact site, not a blog. Vite gave a fast build pipeline and zero Next.js configuration overhead. React Router v7 handled multi-page routing client-side, keeping the bundle small and load times tight.",
-          },
-          {
-            title: "Framer Motion for scroll animations",
-            body: "Construction is a physical, tactile business. Animations that reveal work as you scroll give the gallery a feeling of weight and quality — like leafing through a portfolio book. Framer Motion's spring physics matched this better than CSS transitions would have, without requiring me to hand-tune easing curves.",
-          },
-          {
-            title: "Mobile-first layout with high image density",
-            body: "Swiss tradespeople browse on phones. I designed mobile first and used Next.js image optimization patterns (via manual srcset in Vite) to serve appropriate resolution images per viewport. The gallery loads fast even on 4G, which matters when a contractor is checking the site between jobs.",
-          },
-        ],
-        stack:
-          "React 19, Tailwind CSS, Framer Motion for animations, Vite as the build tool, and React Router v7 for client-side routing. Live at maxi24gmbh.ch, deployed on Vercel with a custom domain.",
-        outcome:
-          "A live production site under a custom Swiss domain for a paying client. The company now has a professional digital presence that matches the quality of their construction work. The site is the primary channel through which new clients reach them.",
-        learnings:
-          "Client communication is as important as technical skill. I ran three rounds of design feedback before writing a line of code, which meant zero major structural revisions during development. The design phase felt slow; the build phase was fast because of it.",
-      },
     },
   ],
   experience: [
