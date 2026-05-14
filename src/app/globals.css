@@ -56,3 +56,46 @@ html.recruiter-mode .noise-overlay {
   color: var(--background);
   paint-order: stroke fill;
 }
+
+/* Mobile hero background — lime dot grid + diagonal scan + corner glow */
+.mobile-grid-dots {
+  background-image: radial-gradient(circle, rgba(34, 197, 94, 0.22) 1px, transparent 1.5px);
+  background-size: 26px 26px;
+  -webkit-mask-image: radial-gradient(ellipse at center, black 35%, transparent 85%);
+          mask-image: radial-gradient(ellipse at center, black 35%, transparent 85%);
+}
+.mobile-grid-scan {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent 0,
+    transparent 58px,
+    rgba(204, 255, 0, 0.07) 58px,
+    rgba(204, 255, 0, 0.07) 60px
+  );
+  animation: mobile-grid-scan-drift 14s linear infinite;
+  mix-blend-mode: screen;
+}
+.mobile-grid-glow {
+  background:
+    radial-gradient(circle at 12% 18%, rgba(34, 197, 94, 0.18), transparent 45%),
+    radial-gradient(circle at 88% 82%, rgba(204, 255, 0, 0.12), transparent 50%);
+}
+@keyframes mobile-grid-scan-drift {
+  from { background-position: 0 0; }
+  to   { background-position: 240px 240px; }
+}
+
+/* Hero ticker marquee */
+.ticker-track {
+  animation: ticker-scroll 32s linear infinite;
+  will-change: transform;
+}
+@keyframes ticker-scroll {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-grid-scan,
+  .ticker-track { animation: none; }
+}
