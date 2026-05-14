@@ -93,7 +93,6 @@ export function Navbar() {
           <button
             onClick={toggleMode}
             aria-pressed={isRecruiterMode}
-            aria-label={`Toggle recruiter mode ${isRecruiterMode ? "off" : "on"}`}
             className={`border-2 px-2 py-2 md:px-4 md:py-3 font-black font-mono uppercase tracking-widest text-[10px] md:text-sm transition-colors inline-block transform hover:translate-y-1 hover:-translate-x-1 shadow-[4px_4px_0px_currentColor] hover:shadow-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f172a] ${
               isRecruiterMode
                 ? "bg-[#0f172a] text-[var(--color-primary)] border-[var(--color-primary)]"

@@ -131,7 +131,7 @@ export function Hero() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-end" style={tilt(-16, -10)}>
-            <div className="hero-fade-in md:col-span-6 text-white/80 text-base md:text-xl font-mono leading-relaxed bg-[#1e293b] p-6 md:p-8 border-2 border-white/10 shadow-xl relative">
+            <div className="md:col-span-6 text-white/80 text-base md:text-xl font-mono leading-relaxed bg-[#1e293b] p-6 md:p-8 border-2 border-white/10 shadow-xl relative">
               <p>{portfolioData.personal.bio}</p>
               <div className="absolute top-0 left-0 w-2 h-full bg-[var(--color-primary)]"></div>
             </div>
@@ -139,7 +139,6 @@ export function Hero() {
             <div className="hero-fade-in md:col-start-8 md:col-span-5 flex flex-wrap gap-4 justify-start md:justify-end">
               <a
                 href="#projects"
-                aria-label="View my projects"
                 className="bg-[var(--color-primary)] text-[#0f172a] px-6 py-4 md:px-8 md:py-4 font-black font-sans uppercase tracking-wider text-sm md:text-base border-2 border-[var(--color-primary)] hover:-translate-y-1 hover:translate-x-1 hover:shadow-[-4px_4px_0_0_rgba(248,250,252,1)] active:translate-y-0 active:translate-x-0 active:shadow-none transition-all duration-200 flex items-center gap-3 w-full sm:w-auto justify-center focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f172a]"
               >
                 View Work <ArrowRight className="w-5 h-5" aria-hidden="true" />
