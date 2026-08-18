@@ -24,6 +24,19 @@ export const portfolioData = {
   ],
   projects: [
     {
+      slug: "fibo",
+      title: "Fibo - Strategic Brand Studio",
+      description: "A bilingual, motion-led website for a strategic brand studio in Mexico. The experience combines editorial typography, interactive storytelling, and a spatial 3D portfolio while staying responsive and accessible.",
+      tech: ["Next.js 15", "TypeScript", "Tailwind CSS", "next-intl", "GSAP", "Three.js"],
+      link: "https://somosfibo.com/es",
+      github: "https://github.com/RrezonCurraj/-fibo-website",
+      image: "/projects/fibo.webp",
+      metrics: [
+        "Live bilingual client site",
+        "3D WebGL gallery + motion system",
+      ],
+    },
+    {
       slug: "hireon",
       title: "Hireon - AI Resume Analyzer",
       description: "Hireon is a modern web application that democratizes access to professional resume feedback using cutting-edge AI technology. Job seekers can upload their PDF resumes and receive instant, comprehensive analysis powered by Claude 3.7 Sonnet.",
@@ -75,19 +88,6 @@ export const portfolioData = {
       metrics: [
         "Component-driven architecture",
         "Resend-powered contact flow",
-      ],
-    },
-    {
-      slug: "fleurdeliza",
-      title: "FleurDeLiza - Modern Flower Shop Website",
-      description: "A high-performance, elegant website for a Swiss boutique flower shop. Features a mobile-first design, custom gallery, and smooth animations to showcase floral arrangements.",
-      tech: ["Next.js 15", "Tailwind CSS", "TypeScript", "EmailJS", "PostCSS", 'CSS3 Keyframes'],
-      link: "https://fleurdeliza.vercel.app/",
-      github: "https://github.com/RrezonCurraj/FleurdeLiza-Flower-Store",
-      image: "/projects/fleurdeliza.png",
-      metrics: [
-        "Live Swiss client site",
-        "Mobile-first, EmailJS bookings",
       ],
     },
     {

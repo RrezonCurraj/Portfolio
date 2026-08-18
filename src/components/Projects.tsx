@@ -16,7 +16,7 @@ gsap.registerPlugin(ScrollTrigger);
 // Peek between stacked cards. Pin offset under the floating navbar is responsive.
 const STAGGER = 18;
 const pin = () =>
-  typeof window !== "undefined" && window.matchMedia("(min-width: 1024px)").matches ? 104 : 80;
+  typeof window !== "undefined" && window.matchMedia("(min-width: 1024px)").matches ? 104 : 72;
 
 export function Projects() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -80,16 +80,20 @@ export function Projects() {
       </div>
 
       <div className="container mx-auto px-4 md:px-12">
-        <div className="relative max-w-5xl mx-auto [--pin:80px] lg:[--pin:104px]">
+        <div className="relative max-w-5xl mx-auto [--pin:72px] lg:[--pin:104px]">
           {portfolioData.projects.map((project, index) => (
             <article
               key={index}
               aria-labelledby={`project-title-${index}`}
               style={{ top: `calc(var(--pin) + ${index * STAGGER}px)`, zIndex: index + 1 }}
-              className="project-card group sticky mb-[8vh] last:mb-0 bg-[#1e293b] border-2 border-white/10 overflow-hidden hover:border-[var(--color-primary)] transition-colors duration-300 flex flex-col lg:flex-row shadow-[0_24px_60px_-18px_rgba(0,0,0,0.85)]"
+              className={`project-card group sticky mb-[8vh] last:mb-0 ${
+                expanded.has(index) ? "" : "h-[84svh] max-h-[700px]"
+              } lg:h-auto lg:max-h-none bg-[#1e293b] border-2 border-white/10 overflow-hidden hover:border-[var(--color-primary)] transition-colors duration-300 flex flex-col lg:flex-row shadow-[0_24px_60px_-18px_rgba(0,0,0,0.85)]`}
             >
               {/* Media */}
-              <div className="relative lg:w-[46%] shrink-0 aspect-video sm:aspect-[4/3] lg:aspect-auto lg:min-h-[22rem] overflow-hidden border-b-2 lg:border-b-0 lg:border-r-2 border-white/10 bg-zinc-900">
+              <div className={`relative w-full flex-1 ${
+                expanded.has(index) ? "min-h-[44vw]" : "min-h-0"
+              } lg:flex-none lg:w-[46%] lg:min-h-[22rem] overflow-hidden border-b-2 lg:border-b-0 lg:border-r-2 border-white/10 bg-zinc-900`}>
                 <Image
                   src={project.image}
                   alt={`${project.title} Preview`}
@@ -125,13 +129,13 @@ export function Projects() {
               </div>
 
               {/* Content */}
-              <div className="p-6 md:p-8 relative flex-1 flex flex-col">
+              <div className="p-6 md:p-8 relative flex flex-col shrink-0 lg:flex-1 lg:min-h-0">
                 <div className="hidden sm:flex items-center gap-3 mb-4 font-mono text-xs uppercase tracking-widest text-white/40">
                   <span className="h-2 w-2 bg-[var(--color-primary)]" aria-hidden="true" />
                   <span className="truncate">{project.title}</span>
                 </div>
 
-                <h3 id={`project-title-${index}`} className="text-3xl md:text-4xl font-black mb-4 uppercase tracking-tighter group-hover:text-[var(--color-primary)] transition-colors">
+                <h3 id={`project-title-${index}`} className="text-2xl sm:text-3xl md:text-4xl font-black mb-3 sm:mb-4 uppercase tracking-tighter group-hover:text-[var(--color-primary)] transition-colors">
                   {project.title}
                 </h3>
                 <p
@@ -190,7 +194,7 @@ export function Projects() {
                   ))}
                 </div>
 
-                <div className="lg:hidden mt-6 pt-6 border-t-2 border-white/10 flex flex-col gap-3">
+                <div className="lg:hidden mt-5 pt-5 border-t-2 border-white/10 flex flex-col gap-3">
                   <div className="flex gap-3">
                     <a
                       href={project.link}
