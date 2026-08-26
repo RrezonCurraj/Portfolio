@@ -6,6 +6,7 @@ import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { cn } from "@/lib/utils";
 import { prefersReducedMotion } from "@/lib/motion";
+import { useMode } from "@/components/Providers";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -18,6 +19,7 @@ interface TextRevealProps {
 }
 
 export function TextReveal({ children, className, delay = 0, activeColor, baseColor }: TextRevealProps) {
+  const { theme } = useMode();
   const containerRef = useRef<HTMLDivElement>(null);
   const charsRef = useRef<(HTMLSpanElement | null)[]>([]);
   const originalColorsRef = useRef<string[]>([]);
@@ -79,14 +81,19 @@ export function TextReveal({ children, className, delay = 0, activeColor, baseCo
 
   useEffect(() => {
     const isMobile = window.innerWidth < 768;
+    const chars = charsRef.current.filter((char): char is HTMLSpanElement => Boolean(char));
+
+    // GSAP writes resolved RGB values inline. Clear the previous theme's value
+    // before measuring so the characters inherit the current theme color.
+    gsap.killTweensOf(chars);
+    chars.forEach((char) => char.style.removeProperty("color"));
 
     if (isMobile) {
       // Remove heavy loop! Just set static nice styles for mobile
-      const chars = charsRef.current.filter(Boolean);
       gsap.set(chars, {
         opacity: 1,
         scale: 1,
-        color: activeColor || "inherit", 
+        color: baseColor || "inherit",
         fontWeight: "inherit"
       });
       return; 
@@ -246,7 +253,7 @@ export function TextReveal({ children, className, delay = 0, activeColor, baseCo
     const container = containerRef.current;
     if (container) {
       container.addEventListener("mouseenter", handleMouseEnter);
-      container.addEventListener("mousemove", handleMouseMove as any);
+      container.addEventListener("mousemove", handleMouseMove);
       container.addEventListener("mouseleave", handleMouseLeave);
     }
     
@@ -255,12 +262,13 @@ export function TextReveal({ children, className, delay = 0, activeColor, baseCo
     return () => {
       if (container) {
         container.removeEventListener("mouseenter", handleMouseEnter);
-        container.removeEventListener("mousemove", handleMouseMove as any);
+        container.removeEventListener("mousemove", handleMouseMove);
         container.removeEventListener("mouseleave", handleMouseLeave);
       }
       window.removeEventListener("resize", updateCache);
+      gsap.killTweensOf(chars);
     };
-  }, [activeColor, baseColor]);
+  }, [activeColor, baseColor, theme]);
 
   return (
     <div ref={containerRef} className={cn("overflow-hidden leading-tight p-4 -m-4 relative", className)}>

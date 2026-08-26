@@ -4,7 +4,7 @@ import { CommandPalette } from "@/components/CommandPalette";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#0f172a] text-white selection:bg-[var(--color-primary)] selection:text-[#0f172a]">
+    <main className="min-h-screen bg-background text-foreground selection:bg-accent selection:text-accent-foreground">
       <Navbar />
       <PageContent />
       <CommandPalette />

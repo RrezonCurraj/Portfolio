@@ -49,11 +49,11 @@ export default async function ProjectCaseStudyPage(
   const cs = project.caseStudy;
 
   return (
-    <main className="min-h-screen bg-[#0f172a] text-[#f8fafc] py-24">
+    <main className="min-h-screen bg-background py-24 text-foreground">
       <div className="container mx-auto px-4 md:px-12 max-w-4xl">
         <Link
           href="/#projects"
-          className="inline-flex items-center gap-2 mb-12 font-mono text-xs uppercase tracking-widest text-zinc-400 hover:text-[var(--color-primary)] transition-colors"
+          className="mb-12 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-muted transition-colors hover:text-primary"
         >
           <ArrowLeft size={14} /> Back to Projects
         </Link>
@@ -69,7 +69,7 @@ export default async function ProjectCaseStudyPage(
           {project.tech.map((t) => (
             <span
               key={t}
-              className="px-3 py-1 bg-[#1e293b] text-xs font-mono uppercase tracking-wider border border-white/10 text-zinc-300"
+              className="border border-border bg-surface px-3 py-1 font-mono text-xs uppercase tracking-wider text-muted-strong"
             >
               {t}
             </span>
@@ -81,7 +81,7 @@ export default async function ProjectCaseStudyPage(
             href={project.link}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-5 py-3 bg-[var(--color-primary)] text-[#0f172a] font-bold uppercase tracking-widest text-sm border-2 border-[var(--color-primary)] inline-flex items-center gap-2"
+            className="inline-flex items-center gap-2 border-2 border-control bg-accent px-5 py-3 text-sm font-bold uppercase tracking-widest text-accent-foreground"
           >
             Launch <ExternalLink size={16} />
           </a>
@@ -89,13 +89,13 @@ export default async function ProjectCaseStudyPage(
             href={project.github}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-5 py-3 bg-[#1e293b] border-2 border-white/20 text-white font-bold uppercase tracking-widest text-sm inline-flex items-center gap-2"
+            className="inline-flex items-center gap-2 border-2 border-border-strong bg-surface px-5 py-3 text-sm font-bold uppercase tracking-widest text-foreground"
           >
             Source <GithubIcon size={16} />
           </a>
         </div>
 
-        <div className="relative aspect-[16/10] mb-16 border-2 border-white/10 overflow-hidden bg-[#1e293b]">
+        <div className="relative mb-16 aspect-[16/10] overflow-hidden border-2 border-border bg-surface">
           <Image
             src={project.image}
             alt={`${project.title} preview`}
@@ -128,7 +128,7 @@ export default async function ProjectCaseStudyPage(
                 <h3 className="text-xl md:text-2xl font-bold uppercase tracking-tight mb-2">
                   {d.title}
                 </h3>
-                <p className="text-zinc-400 leading-relaxed">{d.body}</p>
+                <p className="leading-relaxed text-muted">{d.body}</p>
               </div>
             ))}
           </div>
@@ -146,16 +146,16 @@ export default async function ProjectCaseStudyPage(
           <p>{cs.learnings}</p>
         </Section>
 
-        <div className="mt-16 pt-10 border-t-2 border-white/10 flex flex-wrap gap-4">
+        <div className="mt-16 flex flex-wrap gap-4 border-t-2 border-border pt-10">
           <Link
             href="/#projects"
-            className="inline-flex items-center gap-2 px-5 py-3 border-2 border-white/20 text-white font-mono text-xs uppercase tracking-widest hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-colors"
+            className="inline-flex items-center gap-2 border-2 border-border-strong px-5 py-3 font-mono text-xs uppercase tracking-widest text-foreground transition-colors hover:border-primary hover:text-primary"
           >
             <ArrowLeft size={14} /> Other Projects
           </Link>
           <Link
             href="/#contact"
-            className="inline-flex items-center gap-2 px-5 py-3 bg-[var(--color-primary)] text-[#0f172a] font-mono text-xs uppercase tracking-widest font-bold"
+            className="inline-flex items-center gap-2 border-2 border-control bg-accent px-5 py-3 font-mono text-xs font-bold uppercase tracking-widest text-accent-foreground"
           >
             Work With Me
           </Link>
@@ -184,7 +184,7 @@ function Section({
           {title}
         </h2>
       </div>
-      <div className="text-zinc-300 leading-relaxed text-base md:text-lg font-mono">
+      <div className="font-mono text-base leading-relaxed text-muted-strong md:text-lg">
         {children}
       </div>
     </section>

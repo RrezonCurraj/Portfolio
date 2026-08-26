@@ -3,6 +3,7 @@ import { Archivo, Space_Grotesk } from "next/font/google";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { NoiseOverlay } from "@/components/ui/NoiseOverlay";
 import { ModeProvider } from "@/components/Providers";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
@@ -72,21 +73,27 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark scroll-smooth">
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("portfolio-theme");if(t!=="light"&&t!=="dark"){t=window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"}var r=document.documentElement;r.dataset.theme=t;r.classList.toggle("dark",t==="dark");r.style.colorScheme=t}catch(e){}})();`,
+          }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
         />
       </head>
       <body
-        className={`${archivo.variable} ${spaceGrotesk.variable} antialiased bg-[#0f172a] text-[#f8fafc] relative`}
+        className={`${archivo.variable} ${spaceGrotesk.variable} relative bg-background text-foreground antialiased`}
       >
         <ModeProvider>
           <SmoothScroll>
             <NoiseOverlay />
             {children}
           </SmoothScroll>
+          <ThemeToggle />
         </ModeProvider>
         <Analytics />
         <SpeedInsights />

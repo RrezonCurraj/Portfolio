@@ -25,6 +25,7 @@ export const portfolioData = {
   projects: [
     {
       slug: "fibo",
+      featured: true,
       title: "Fibo - Strategic Brand Studio",
       description: "A bilingual, motion-led website for a strategic brand studio in Mexico. The experience combines editorial typography, interactive storytelling, and a spatial 3D portfolio while staying responsive and accessible.",
       tech: ["Next.js 15", "TypeScript", "Tailwind CSS", "next-intl", "GSAP", "Three.js"],
@@ -76,6 +77,20 @@ export const portfolioData = {
         learnings:
           "Prompt design is the product. The difference between a 'meh' analyzer and a useful one was almost entirely in how I structured the system prompt and forced the model to return categorized, specific, rewrite-style suggestions instead of vague advice.",
       },
+    },
+    {
+      slug: "ntsh-beli",
+      title: "Ntsh Beli - Electrical Distributor Platform",
+      description: "A production marketing and product-catalog platform for an authorized electrical distributor in Kosovo. The Albanian-localized experience combines product discovery, installation case studies, and conversion-focused quote and WhatsApp flows.",
+      tech: ["Next.js 16", "React 19", "TypeScript", "Tailwind CSS v4", "Drizzle ORM", "PostgreSQL"],
+      link: "https://ntshbeli.com/",
+      github: "https://github.com/RrezonCurraj/Beli",
+      image: "/projects/ntshbeli.png",
+      metrics: [
+        "70k+ product catalog",
+        "Quote + WhatsApp lead flows",
+        "Admin + Drizzle/Postgres data layer",
+      ],
     },
     {
       slug: "hypercast",

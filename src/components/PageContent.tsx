@@ -20,7 +20,7 @@ export function PageContent() {
 
   return (
     <>
-      <div className="relative z-10 bg-[#0f172a] mb-[85vh] shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-b-3xl border-b border-zinc-900">
+      <div className="relative z-10 mb-[85vh] rounded-b-3xl border-b border-border bg-background shadow-[0_20px_50px_var(--page-shadow)]">
         <Hero />
         <About />
         <Skills />

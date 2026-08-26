@@ -52,7 +52,7 @@ export default function OgImage() {
               background: "#1e293b",
             }}
           >
-            // Frontend Developer
+            {"// Frontend Developer"}
           </div>
         </div>
 

@@ -3,11 +3,9 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useRef } from "react";
 import { Float, Environment } from "@react-three/drei";
-import { Mesh, Vector3 } from "three";
+import type { Group } from "three";
 
 function Bracket({ position, rotation, color = "#ccff00" }: { position: [number, number, number], rotation: [number, number, number], color?: string }) {
-  const mesh = useRef<Mesh>(null);
-  
   return (
     <group position={position} rotation={rotation}>
       <mesh position={[0, 0.5, 0]} rotation={[0, 0, Math.PI / 4]}>
@@ -35,7 +33,7 @@ function Bracket({ position, rotation, color = "#ccff00" }: { position: [number,
 }
 
 function CodeSymbol() {
-  const group = useRef<any>(null);
+  const group = useRef<Group>(null);
 
   useFrame((state) => {
     if (group.current) {

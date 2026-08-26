@@ -21,7 +21,7 @@ export function TiltEnableButton({ status, onEnable }: Props) {
       type="button"
       onClick={onEnable}
       disabled={status === "pending"}
-      className="md:hidden fixed bottom-4 right-4 z-30 font-mono text-[10px] uppercase tracking-[0.2em] px-3 py-2 bg-[var(--color-primary)] text-[#0f172a] border-2 border-[var(--color-primary)] shadow-[3px_3px_0_0_rgba(15,23,42,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-transform"
+      className="fixed right-4 bottom-4 z-30 border-2 border-control bg-accent px-3 py-2 font-mono text-[10px] uppercase tracking-[0.2em] text-accent-foreground shadow-[3px_3px_0_0_var(--color-foreground)] transition-transform active:translate-x-[2px] active:translate-y-[2px] active:shadow-none md:hidden"
     >
       {label}
     </button>

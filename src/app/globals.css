@@ -3,19 +3,69 @@
 @theme {
   --font-sans: var(--font-archivo);
   --font-mono: var(--font-space-grotesk);
-
-  --color-primary: #22c55e;
-  --color-primary-foreground: #0f172a;
 }
 
-:root {
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-muted: var(--muted);
+  --color-muted-strong: var(--muted-strong);
+  --color-muted-soft: var(--muted-soft);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-control: var(--control);
+}
+
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
   --background: #0f172a;
   --foreground: #f8fafc;
+  --surface: #1e293b;
+  --surface-muted: #18181b;
+  --muted: #a1a1aa;
+  --muted-strong: #d4d4d8;
+  --muted-soft: #71717a;
+  --border: rgba(248, 250, 252, 0.1);
+  --border-strong: rgba(248, 250, 252, 0.2);
+  --primary: #22c55e;
+  --primary-foreground: #0f172a;
+  --accent: #22c55e;
+  --accent-foreground: #0f172a;
+  --control: #22c55e;
+  --outline: rgba(248, 250, 252, 0.5);
+  --page-shadow: rgba(0, 0, 0, 0.5);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --background: #f1eee4;
+  --foreground: #172016;
+  --surface: #fffdf7;
+  --surface-muted: #dfe5d8;
+  --muted: #4f5d4d;
+  --muted-strong: #293727;
+  --muted-soft: #667064;
+  --border: rgba(23, 32, 22, 0.18);
+  --border-strong: rgba(23, 32, 22, 0.44);
+  --primary: #3f6212;
+  --primary-foreground: #ffffff;
+  --accent: #bef264;
+  --accent-foreground: #172016;
+  --control: #172016;
+  --outline: rgba(23, 32, 22, 0.58);
+  --page-shadow: rgba(23, 32, 22, 0.2);
 }
 
 html.recruiter-mode body {
-  background: white !important;
-  color: #18181b !important;
+  background: var(--background) !important;
+  color: var(--foreground) !important;
 }
 
 body {
@@ -23,6 +73,105 @@ body {
   background: var(--background);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
   overflow-x: hidden;
+}
+
+:root[data-theme="light"] body {
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(190, 242, 100, 0.22), transparent 24rem),
+    radial-gradient(circle at 88% 92%, rgba(63, 98, 18, 0.08), transparent 30rem);
+}
+
+:root[data-theme="light"] .noise-overlay {
+  opacity: 0.045;
+  mix-blend-mode: multiply;
+}
+
+.hero-stage {
+  isolation: isolate;
+}
+
+:root[data-theme="dark"] .hero-stage {
+  background-image: radial-gradient(circle at 78% 38%, rgba(34, 197, 94, 0.1), transparent 22rem);
+}
+
+.hero-stage::before {
+  content: "R/C";
+  position: absolute;
+  top: 14%;
+  right: -3%;
+  z-index: 0;
+  color: var(--accent);
+  font-family: var(--font-sans), sans-serif;
+  font-size: clamp(11rem, 28vw, 30rem);
+  font-weight: 900;
+  line-height: 0.72;
+  letter-spacing: -0.15em;
+  opacity: 0.16;
+  transform: rotate(-8deg);
+  filter: drop-shadow(0 0 48px color-mix(in srgb, var(--accent) 28%, transparent));
+  pointer-events: none;
+}
+
+.hero-stage::after {
+  content: "CREATIVE ENGINEER / 2026";
+  position: absolute;
+  top: 10rem;
+  right: 1rem;
+  z-index: 1;
+  color: var(--primary);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  writing-mode: vertical-rl;
+  opacity: 0.72;
+  pointer-events: none;
+}
+
+:root[data-theme="light"] .hero-stage {
+  background-color: var(--background);
+  background-image:
+    linear-gradient(rgba(23, 32, 22, 0.065) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(23, 32, 22, 0.065) 1px, transparent 1px),
+    radial-gradient(circle at 78% 38%, rgba(190, 242, 100, 0.5), transparent 18rem);
+  background-size: 64px 64px, 64px 64px, auto;
+}
+
+:root[data-theme="light"] .hero-stage::before {
+  opacity: 0.42;
+  filter: none;
+}
+
+:root[data-theme="light"] .hero-stage::after {
+  color: var(--foreground);
+  opacity: 1;
+}
+
+:root[data-theme="light"] .hero-panel {
+  border-color: var(--foreground);
+  background: rgba(255, 253, 247, 0.92);
+  box-shadow: 10px 10px 0 var(--accent);
+}
+
+:root[data-theme="light"] .editorial-card {
+  border-color: rgba(23, 32, 22, 0.36);
+  box-shadow: 9px 9px 0 rgba(23, 32, 22, 0.1);
+}
+
+@media (max-width: 767px) {
+  .hero-stage::before {
+    top: 18%;
+    right: -18%;
+    font-size: 17rem;
+  }
+
+  :root[data-theme="light"] .hero-stage::before {
+    opacity: 0.26;
+  }
+
+  .hero-stage::after {
+    display: none;
+  }
 }
 
 html.recruiter-mode .noise-overlay {
@@ -47,12 +196,12 @@ html.recruiter-mode .noise-overlay {
 
 @utility text-glow {
   text-shadow:
-    0 0 20px rgba(34, 197, 94, 0.6),
-    0 0 40px rgba(34, 197, 94, 0.2);
+    0 0 20px color-mix(in srgb, var(--accent) 60%, transparent),
+    0 0 40px color-mix(in srgb, var(--accent) 22%, transparent);
 }
 
 @utility text-outline {
-  -webkit-text-stroke: 2px rgba(248, 250, 252, 0.5);
+  -webkit-text-stroke: 2px var(--outline);
   color: var(--background);
   paint-order: stroke fill;
 }
@@ -74,6 +223,10 @@ html.recruiter-mode .noise-overlay {
   );
   animation: mobile-grid-scan-drift 14s linear infinite;
   mix-blend-mode: screen;
+}
+
+:root[data-theme="light"] .mobile-grid-scan {
+  mix-blend-mode: multiply;
 }
 .mobile-grid-glow {
   background:

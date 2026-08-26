@@ -18,7 +18,7 @@ export function HeroTicker() {
 
   return (
     <div
-      className="relative w-full border-y-2 border-white/10 bg-[#0f172a] overflow-hidden py-3 md:py-4"
+      className="relative w-full overflow-hidden border-y-2 border-border bg-background py-3 md:py-4"
       aria-hidden="true"
     >
       <div className="ticker-track flex w-max">
@@ -28,7 +28,7 @@ export function HeroTicker() {
             className="flex items-center gap-8 pr-8 font-mono text-xs md:text-sm uppercase tracking-[0.25em] text-[var(--color-primary)] shrink-0"
           >
             <span>{item}</span>
-            <span className="text-white/30">/</span>
+            <span className="text-foreground/30">/</span>
           </span>
         ))}
       </div>

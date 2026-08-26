@@ -33,13 +33,13 @@ export function Skills() {
   }, { scope: containerRef });
 
   return (
-    <section ref={containerRef} id="skills" className="py-32 px-4 md:px-12 bg-[var(--color-primary)] text-[#0f172a] w-full overflow-hidden border-y-4 border-[#0f172a]">
+    <section ref={containerRef} id="skills" className="w-full overflow-hidden border-y-4 border-accent-foreground bg-accent px-4 py-32 text-accent-foreground md:px-12">
       <div className="max-w-[1400px] mx-auto">
-        <div className="mb-20 flex justify-between items-end border-b-4 border-[#0f172a] pb-8">
+        <div className="mb-20 flex items-end justify-between border-b-4 border-accent-foreground pb-8">
             <h2 className="text-6xl sm:text-7xl md:text-9xl font-black uppercase tracking-tighter leading-none">
               ABILITIES
             </h2>
-            <div className="hidden md:block font-mono text-xl font-bold uppercase bg-[#0f172a] text-[var(--color-primary)] px-4 py-2 border-2 border-[#0f172a]">
+            <div className="hidden border-2 border-accent-foreground bg-accent-foreground px-4 py-2 font-mono text-xl font-bold uppercase text-accent md:block">
               {"// Core Stack"}
             </div>
         </div>
@@ -48,7 +48,7 @@ export function Skills() {
           {portfolioData.skills.map((skill, index) => (
             <div 
               key={skill.name}
-              className="skill-item relative group flex flex-col md:flex-row items-center border-b-2 border-[#0f172a]/20 pb-8 hover:border-[#0f172a] transition-colors"
+              className="skill-item group relative flex flex-col items-center border-b-2 border-accent-foreground/20 pb-8 transition-colors hover:border-accent-foreground md:flex-row"
             >
               <div className="w-full md:w-1/3 flex items-center gap-6 mb-4 md:mb-0">
                 <span className="font-mono text-xl md:text-2xl font-bold opacity-50 group-hover:opacity-100 transition-opacity">0{index + 1}</span>
@@ -57,9 +57,9 @@ export function Skills() {
                 </h3>
               </div>
               
-              <div className="w-full md:w-2/3 h-12 md:h-16 border-4 border-[#0f172a] relative overflow-hidden bg-[#0f172a]/10">
+              <div className="relative h-12 w-full overflow-hidden border-4 border-accent-foreground bg-accent-foreground/10 md:h-16 md:w-2/3">
                 <div 
-                  className="skill-bar-fill h-full bg-[#0f172a] origin-left shadow-[inset_-4px_0_0_rgba(255,255,255,0.2)]" 
+                  className="skill-bar-fill h-full origin-left bg-accent-foreground shadow-[inset_-4px_0_0_rgba(255,255,255,0.2)]"
                   style={{ width: `${skill.level}%` }}
                 />
               </div>

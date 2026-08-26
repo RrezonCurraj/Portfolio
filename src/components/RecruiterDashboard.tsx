@@ -5,26 +5,26 @@ import { Download, Mail, ExternalLink, Github, Briefcase, Code, User, Graduation
 
 export function RecruiterDashboard() {
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 pt-24 md:pt-32 pb-20 px-4 md:px-12 font-sans selection:bg-green-500/30">
+    <div className="min-h-screen bg-background px-4 pt-24 pb-20 font-sans text-foreground selection:bg-primary/30 md:px-12 md:pt-32">
       <div className="max-w-5xl mx-auto">
         
         {/* Header Actions */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-12 pb-6 border-b border-zinc-800 gap-4">
+        <div className="mb-12 flex flex-col items-start justify-between gap-4 border-b border-border pb-6 sm:flex-row sm:items-center">
           <div>
-            <h1 className="text-4xl font-black text-white mb-2">{portfolioData.personal.name}</h1>
-            <p className="text-xl text-green-400 font-semibold">{portfolioData.personal.role}</p>
+            <h1 className="mb-2 text-4xl font-black text-foreground">{portfolioData.personal.name}</h1>
+            <p className="text-xl font-semibold text-primary">{portfolioData.personal.role}</p>
           </div>
           <div className="flex gap-3">
             <a 
               href={`mailto:${portfolioData.personal.email}`}
-              className="flex items-center gap-2 px-4 py-2 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 rounded-md font-medium text-sm transition-colors"
+              className="flex items-center gap-2 rounded-md bg-surface px-4 py-2 text-sm font-medium text-muted-strong transition-colors hover:bg-surface-muted"
             >
               <Mail className="w-4 h-4" /> Email
             </a>
             <a 
               href="/Rrezon_Curraj_CV.pdf"
               download="Rrezon_Curraj_CV.pdf"
-              className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md font-medium text-sm transition-colors shadow-sm"
+              className="flex items-center gap-2 rounded-md border border-control bg-accent px-4 py-2 text-sm font-medium text-accent-foreground shadow-sm transition-opacity hover:opacity-90"
             >
               <Download className="w-4 h-4" /> Download CV
             </a>
@@ -37,15 +37,15 @@ export function RecruiterDashboard() {
           <div className="lg:col-span-1 space-y-10">
             {/* Contact Details */}
             <section>
-              <h2 className="text-sm font-bold text-zinc-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+              <h2 className="mb-4 flex items-center gap-2 text-sm font-bold text-muted uppercase tracking-wider">
                 <User className="w-4 h-4" /> Contact
               </h2>
               <div className="space-y-3 text-sm">
-                <a href={`mailto:${portfolioData.personal.email}`} className="block hover:text-green-400">{portfolioData.personal.email}</a>
-                <a href={portfolioData.personal.linkedin} target="_blank" rel="noreferrer" className="flex items-center justify-between group hover:text-green-400">
+                <a href={`mailto:${portfolioData.personal.email}`} className="block hover:text-primary">{portfolioData.personal.email}</a>
+                <a href={portfolioData.personal.linkedin} target="_blank" rel="noreferrer" className="group flex items-center justify-between hover:text-primary">
                   LinkedIn Profile <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </a>
-                <a href={portfolioData.personal.github} target="_blank" rel="noreferrer" className="flex items-center justify-between group hover:text-green-400">
+                <a href={portfolioData.personal.github} target="_blank" rel="noreferrer" className="group flex items-center justify-between hover:text-primary">
                   GitHub Profile <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </a>
               </div>
@@ -53,22 +53,22 @@ export function RecruiterDashboard() {
 
             {/* Executive Summary */}
             <section>
-              <h2 className="text-sm font-bold text-zinc-400 uppercase tracking-wider mb-4">Executive Summary</h2>
-              <p className="text-sm text-zinc-400 leading-relaxed">
+              <h2 className="mb-4 text-sm font-bold text-muted uppercase tracking-wider">Executive Summary</h2>
+              <p className="text-sm leading-relaxed text-muted">
                 {portfolioData.personal.bio}
               </p>
             </section>
 
             {/* Core Competencies */}
             <section>
-              <h2 className="text-sm font-bold text-zinc-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+              <h2 className="mb-4 flex items-center gap-2 text-sm font-bold text-muted uppercase tracking-wider">
                 <Code className="w-4 h-4" /> Core Competencies
               </h2>
               <div className="flex flex-wrap gap-2">
                 {portfolioData.skills.map((skill) => (
                   <span 
                     key={skill.name} 
-                    className="px-2.5 py-1 bg-zinc-900 text-zinc-300 border border-zinc-800 rounded text-xs font-medium"
+                    className="rounded border border-border bg-surface px-2.5 py-1 text-xs font-medium text-muted-strong"
                   >
                     {skill.name}
                   </span>
@@ -82,22 +82,22 @@ export function RecruiterDashboard() {
             
             {/* Experience */}
             <section>
-              <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2 border-b border-zinc-800 pb-2">
-                <Briefcase className="w-5 h-5 text-green-400" /> Professional Experience
+              <h2 className="mb-6 flex items-center gap-2 border-b border-border pb-2 text-xl font-bold text-foreground">
+                <Briefcase className="w-5 h-5 text-primary" /> Professional Experience
               </h2>
               <div className="space-y-8">
                 {portfolioData.experience.map((job, idx) => (
-                  <div key={idx} className="relative pl-4 border-l-2 border-zinc-800">
-                    <div className="absolute w-3 h-3 bg-zinc-950 border-2 border-green-500 rounded-full -left-[7px] top-1.5" />
+                  <div key={idx} className="relative border-l-2 border-border pl-4">
+                    <div className="absolute -left-[7px] top-1.5 h-3 w-3 rounded-full border-2 border-primary bg-background" />
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-2">
-                      <h3 className="text-lg font-bold text-white">{job.role}</h3>
-                      <span className="text-sm font-semibold text-green-400">{job.period}</span>
+                      <h3 className="text-lg font-bold text-foreground">{job.role}</h3>
+                      <span className="text-sm font-semibold text-primary">{job.period}</span>
                     </div>
-                    <div className="text-md font-medium text-zinc-300 mb-3">{job.company}</div>
-                    <ul className="space-y-2 text-sm text-zinc-400 list-none">
+                    <div className="text-md mb-3 font-medium text-muted-strong">{job.company}</div>
+                    <ul className="list-none space-y-2 text-sm text-muted">
                       {job.description.split('\n').filter(Boolean).map((line, i) => (
                         <li key={i} className="flex gap-2">
-                          <span className="text-zinc-400">•</span>
+                          <span className="text-muted">•</span>
                           <span>{line.replace(/^[•-]\s*/, '')}</span>
                         </li>
                       ))}
@@ -109,23 +109,23 @@ export function RecruiterDashboard() {
 
             {/* Education */}
             <section>
-              <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2 border-b border-zinc-800 pb-2">
-                <GraduationCap className="w-5 h-5 text-green-400" /> Education & Training
+              <h2 className="mb-6 flex items-center gap-2 border-b border-border pb-2 text-xl font-bold text-foreground">
+                <GraduationCap className="w-5 h-5 text-primary" /> Education & Training
               </h2>
               <div className="space-y-8">
                 {portfolioData.education?.map((edu, idx) => (
-                  <div key={idx} className="relative pl-4 border-l-2 border-zinc-800">
-                    <div className="absolute w-3 h-3 bg-zinc-950 border-2 border-green-500 rounded-full -left-[7px] top-1.5" />
+                  <div key={idx} className="relative border-l-2 border-border pl-4">
+                    <div className="absolute -left-[7px] top-1.5 h-3 w-3 rounded-full border-2 border-primary bg-background" />
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline mb-2">
-                      <h3 className="text-lg font-bold text-white">{edu.degree}</h3>
-                      <span className="text-sm font-semibold text-green-400">{edu.period}</span>
+                      <h3 className="text-lg font-bold text-foreground">{edu.degree}</h3>
+                      <span className="text-sm font-semibold text-primary">{edu.period}</span>
                     </div>
-                    <div className="text-md font-medium text-zinc-300 mb-3">{edu.institution} <span className="text-zinc-400 text-sm font-normal">| {edu.location}</span></div>
+                    <div className="text-md mb-3 font-medium text-muted-strong">{edu.institution} <span className="text-sm font-normal text-muted">| {edu.location}</span></div>
                     {edu.description && (
-                      <ul className="space-y-2 text-sm text-zinc-400 list-none">
+                      <ul className="list-none space-y-2 text-sm text-muted">
                         {edu.description.split('\n').filter(Boolean).map((line, i) => (
                           <li key={i} className="flex gap-2">
-                            <span className="text-zinc-400">•</span>
+                            <span className="text-muted">•</span>
                             <span>{line.replace(/^[•-]\s*/, '')}</span>
                           </li>
                         ))}
@@ -138,29 +138,29 @@ export function RecruiterDashboard() {
 
             {/* Projects */}
             <section>
-              <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2 border-b border-zinc-800 pb-2">
-                <Layers className="w-5 h-5 text-green-400" /> Technical Projects
+              <h2 className="mb-6 flex items-center gap-2 border-b border-border pb-2 text-xl font-bold text-foreground">
+                <Layers className="w-5 h-5 text-primary" /> Technical Projects
               </h2>
               <div className="space-y-6">
                 {portfolioData.projects.map((project, idx) => (
-                  <div key={idx} className="bg-zinc-900/40 border border-zinc-800 rounded-lg p-5 hover:border-zinc-700 transition-colors">
+                  <div key={idx} className="rounded-lg border border-border bg-surface/40 p-5 transition-colors hover:border-border-strong">
                     <div className="flex flex-col sm:flex-row justify-between items-start mb-2 gap-2">
-                      <h3 className="text-lg font-bold text-white">{project.title}</h3>
+                      <h3 className="text-lg font-bold text-foreground">{project.title}</h3>
                       <div className="flex gap-3 text-sm">
-                        <a href={project.link} target="_blank" rel="noreferrer" className="text-green-400 hover:underline flex items-center gap-1">
+                        <a href={project.link} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-primary hover:underline">
                           Live <ExternalLink className="w-3 h-3" />
                         </a>
-                        <a href={project.github} target="_blank" rel="noreferrer" className="text-green-400 hover:underline flex items-center gap-1">
+                        <a href={project.github} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-primary hover:underline">
                           Source <Github className="w-3 h-3" />
                         </a>
                       </div>
                     </div>
-                    <p className="text-sm text-zinc-400 mb-4">
+                    <p className="mb-4 text-sm text-muted">
                       {project.description}
                     </p>
                     <div className="flex flex-wrap gap-2">
                       {project.tech.map((tech) => (
-                        <span key={tech} className="px-2 py-0.5 bg-zinc-900 border border-zinc-700 text-zinc-300 rounded text-xs font-medium">
+                        <span key={tech} className="rounded border border-border-strong bg-surface px-2 py-0.5 text-xs font-medium text-muted-strong">
                           {tech}
                         </span>
                       ))}

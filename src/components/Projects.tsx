@@ -71,10 +71,10 @@ export function Projects() {
   }, { scope: sectionRef });
 
   return (
-    <section ref={sectionRef} id="projects" className="py-24 bg-[#0f172a] relative z-10">
-      <div className="container mx-auto px-4 md:px-12 mb-16 flex justify-between items-end border-b-4 border-white/10 pb-6">
+    <section ref={sectionRef} id="projects" className="relative z-10 bg-background py-24">
+      <div className="container mx-auto mb-16 flex items-end justify-between border-b-4 border-border px-4 pb-6 md:px-12">
         <TextReveal activeColor="var(--color-primary)" className="text-5xl sm:text-7xl md:text-8xl font-black uppercase tracking-tighter">PROJECTS</TextReveal>
-        <div className="hidden md:block text-[var(--color-primary)] font-mono text-xl border-2 border-[var(--color-primary)] px-4 py-2 bg-[#1e293b]">
+        <div className="hidden border-2 border-primary bg-surface px-4 py-2 font-mono text-xl text-primary md:block">
           [ {portfolioData.projects.length} WORKS ]
         </div>
       </div>
@@ -85,15 +85,16 @@ export function Projects() {
             <article
               key={index}
               aria-labelledby={`project-title-${index}`}
+              data-featured={"featured" in project && project.featured ? "true" : undefined}
               style={{ top: `calc(var(--pin) + ${index * STAGGER}px)`, zIndex: index + 1 }}
               className={`project-card group sticky mb-[8vh] last:mb-0 ${
                 expanded.has(index) ? "" : "h-[84svh] max-h-[700px]"
-              } lg:h-auto lg:max-h-none bg-[#1e293b] border-2 border-white/10 overflow-hidden hover:border-[var(--color-primary)] transition-colors duration-300 flex flex-col lg:flex-row shadow-[0_24px_60px_-18px_rgba(0,0,0,0.85)]`}
+              } editorial-card flex flex-col overflow-hidden border-2 border-border bg-surface shadow-[0_24px_60px_-18px_var(--page-shadow)] transition-colors duration-300 hover:border-primary data-[featured=true]:ring-4 data-[featured=true]:ring-accent/35 lg:h-auto lg:max-h-none lg:flex-row`}
             >
               {/* Media */}
               <div className={`relative w-full flex-1 ${
                 expanded.has(index) ? "min-h-[44vw]" : "min-h-0"
-              } lg:flex-none lg:w-[46%] lg:min-h-[22rem] overflow-hidden border-b-2 lg:border-b-0 lg:border-r-2 border-white/10 bg-zinc-900`}>
+              } overflow-hidden border-b-2 border-border bg-surface-muted lg:min-h-[22rem] lg:w-[46%] lg:flex-none lg:border-r-2 lg:border-b-0`}>
                 <Image
                   src={project.image}
                   alt={`${project.title} Preview`}
@@ -102,17 +103,24 @@ export function Projects() {
                   className="object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700 filter grayscale group-hover:grayscale-0"
                 />
 
-                <div className="absolute top-0 right-0 px-4 py-3 bg-[#0f172a]/90 font-mono text-sm font-bold text-white/70 border-l-2 border-b-2 border-white/10 group-hover:bg-[var(--color-primary)] group-hover:text-[#0f172a] transition-colors z-10">
+                <div className="absolute top-0 right-0 z-10 border-b-2 border-l-2 border-border bg-background/90 px-4 py-3 font-mono text-sm font-bold text-foreground/70 transition-colors group-hover:bg-accent group-hover:text-accent-foreground">
                   0{index + 1}
                 </div>
 
-                <div className="absolute inset-0 bg-[#0f172a]/80 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity hidden lg:flex flex-col items-center justify-center gap-4 z-20">
+                {"featured" in project && project.featured && (
+                  <div className="absolute top-0 left-0 z-10 flex items-center gap-2 border-r-2 border-b-2 border-control bg-accent px-4 py-3 font-mono text-xs font-black uppercase tracking-[0.18em] text-accent-foreground">
+                    <span className="h-2 w-2 bg-accent-foreground" aria-hidden="true" />
+                    Featured
+                  </div>
+                )}
+
+                <div className="absolute inset-0 z-20 hidden flex-col items-center justify-center gap-4 bg-background/80 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 lg:flex">
                   <a
                     href={project.link}
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`Launch ${project.title} (opens in new tab)`}
-                    className="px-8 py-4 bg-[var(--color-primary)] text-[#0f172a] font-bold uppercase tracking-widest border-2 border-[var(--color-primary)] hover:bg-transparent hover:text-[var(--color-primary)] hover:-translate-y-1 hover:translate-x-1 hover:shadow-[-4px_4px_0_0_rgba(248,250,252,1)] transition-all duration-200 flex items-center gap-2 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white"
+                    className="flex items-center gap-2 border-2 border-control bg-accent px-8 py-4 font-bold uppercase tracking-widest text-accent-foreground transition-all duration-200 hover:-translate-y-1 hover:translate-x-1 hover:bg-transparent hover:text-primary hover:shadow-[-4px_4px_0_0_var(--color-foreground)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-foreground"
                   >
                     Launch <ExternalLink size={20} aria-hidden="true" />
                   </a>
@@ -121,7 +129,7 @@ export function Projects() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`View source code for ${project.title} on GitHub (opens in new tab)`}
-                    className="px-8 py-4 bg-[#1e293b] border-2 border-white/20 text-white font-bold uppercase tracking-widest hover:border-white hover:-translate-y-1 hover:translate-x-1 hover:shadow-[-4px_4px_0_0_rgba(248,250,252,1)] transition-all duration-200 flex items-center gap-2 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--color-primary)]"
+                    className="flex items-center gap-2 border-2 border-border-strong bg-surface px-8 py-4 font-bold uppercase tracking-widest text-foreground transition-all duration-200 hover:-translate-y-1 hover:translate-x-1 hover:border-foreground hover:shadow-[-4px_4px_0_0_var(--color-foreground)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary"
                   >
                     Code <Github size={20} aria-hidden="true" />
                   </a>
@@ -130,7 +138,7 @@ export function Projects() {
 
               {/* Content */}
               <div className="p-6 md:p-8 relative flex flex-col shrink-0 lg:flex-1 lg:min-h-0">
-                <div className="hidden sm:flex items-center gap-3 mb-4 font-mono text-xs uppercase tracking-widest text-white/40">
+                <div className="mb-4 hidden items-center gap-3 font-mono text-xs uppercase tracking-widest text-foreground/40 sm:flex">
                   <span className="h-2 w-2 bg-[var(--color-primary)]" aria-hidden="true" />
                   <span className="truncate">{project.title}</span>
                 </div>
@@ -140,7 +148,7 @@ export function Projects() {
                 </h3>
                 <p
                   id={`project-desc-${index}`}
-                  className={`text-zinc-400 mb-3 lg:mb-6 text-base font-mono leading-relaxed border-l-4 border-[var(--color-primary)] pl-4 lg:line-clamp-none ${
+                  className={`mb-3 border-l-4 border-primary pl-4 font-mono text-base leading-relaxed text-muted lg:mb-6 lg:line-clamp-none ${
                     expanded.has(index) ? "" : "line-clamp-3"
                   }`}
                 >
@@ -164,7 +172,7 @@ export function Projects() {
                     {project.metrics.map((m) => (
                       <li
                         key={m}
-                        className="font-mono text-xs uppercase tracking-wider text-zinc-300 flex items-start gap-2"
+                        className="flex items-start gap-2 font-mono text-xs uppercase tracking-wider text-muted-strong"
                       >
                         <span className="text-[var(--color-primary)] mt-0.5">▸</span>
                         <span>{m}</span>
@@ -177,7 +185,7 @@ export function Projects() {
                   <Link
                     href={`/projects/${project.slug}`}
                     aria-label={`Read case study for ${project.title}`}
-                    className="hidden lg:inline-flex items-center gap-2 self-start mb-6 px-4 py-2 border-2 border-[var(--color-primary)] text-[var(--color-primary)] font-mono text-xs uppercase tracking-widest hover:bg-[var(--color-primary)] hover:text-[#0f172a] transition-colors focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1e293b]"
+                    className="mb-6 hidden items-center gap-2 self-start border-2 border-primary px-4 py-2 font-mono text-xs uppercase tracking-widest text-primary transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface lg:inline-flex"
                   >
                     Read Case Study <ArrowRight size={14} aria-hidden="true" />
                   </Link>
@@ -187,21 +195,21 @@ export function Projects() {
                   {project.tech.map((tech) => (
                     <span
                       key={tech}
-                      className="px-3 py-1 bg-[#0f172a] text-xs font-mono uppercase tracking-wider border border-white/10 text-zinc-300 group-hover:border-[var(--color-primary)] transition-colors"
+                      className="border border-border bg-background px-3 py-1 font-mono text-xs uppercase tracking-wider text-muted-strong transition-colors group-hover:border-primary"
                     >
                       {tech}
                     </span>
                   ))}
                 </div>
 
-                <div className="lg:hidden mt-5 pt-5 border-t-2 border-white/10 flex flex-col gap-3">
+                <div className="mt-5 flex flex-col gap-3 border-t-2 border-border pt-5 lg:hidden">
                   <div className="flex gap-3">
                     <a
                       href={project.link}
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={`Launch ${project.title} (opens in new tab)`}
-                      className="flex-1 px-4 py-3 bg-[var(--color-primary)] text-[#0f172a] font-bold uppercase tracking-widest text-sm border-2 border-[var(--color-primary)] flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white"
+                      className="flex flex-1 items-center justify-center gap-2 border-2 border-control bg-accent px-4 py-3 text-sm font-bold uppercase tracking-widest text-accent-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-foreground"
                     >
                       Launch <ExternalLink size={16} aria-hidden="true" />
                     </a>
@@ -210,7 +218,7 @@ export function Projects() {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={`View source code for ${project.title} on GitHub (opens in new tab)`}
-                      className="flex-1 px-4 py-3 bg-[#0f172a] border-2 border-white/20 text-white font-bold uppercase tracking-widest text-sm flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--color-primary)]"
+                      className="flex flex-1 items-center justify-center gap-2 border-2 border-border-strong bg-background px-4 py-3 text-sm font-bold uppercase tracking-widest text-foreground focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary"
                     >
                       Code <Github size={16} aria-hidden="true" />
                     </a>

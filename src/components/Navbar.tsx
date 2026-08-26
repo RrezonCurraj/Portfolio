@@ -51,7 +51,7 @@ export function Navbar() {
       className="fixed top-0 left-0 w-full z-50 px-4 md:px-12 py-4 md:py-6 pointer-events-none"
     >
       <div className="max-w-[1400px] mx-auto flex justify-between items-start">
-        <div className="bg-[#1e293b] border-2 border-[var(--color-primary)] px-3 py-2 md:px-6 md:py-3 flex items-center gap-8 pointer-events-auto transform transition-transform hover:translate-y-1 hover:-translate-x-1 shadow-[4px_4px_0px_var(--color-primary)]">
+        <div className="pointer-events-auto flex items-center gap-8 border-2 border-control bg-surface px-3 py-2 shadow-[4px_4px_0px_var(--color-accent)] transition-transform hover:-translate-x-1 hover:translate-y-1 md:px-6 md:py-3">
           <Link
             href="/"
             aria-label="Rrezon Curraj home"
@@ -61,7 +61,7 @@ export function Navbar() {
                 window.scrollTo({ top: 0, behavior: "smooth" });
               }
             }}
-            className="font-black text-xl md:text-2xl tracking-tighter text-[#f8fafc] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]"
+            className="text-xl font-black tracking-tighter text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary md:text-2xl"
           >
             RREZON<span className="text-[var(--color-primary)]">_</span>
           </Link>
@@ -72,7 +72,7 @@ export function Navbar() {
                 <Link
                   key={item.name}
                   href={`#${item.id}`}
-                  className={`transition-colors relative group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] ${isActive ? "text-[var(--color-primary)]" : "text-zinc-400 hover:text-[var(--color-primary)]"}`}
+                  className={`group relative transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${isActive ? "text-primary" : "text-muted hover:text-primary"}`}
                 >
                   {item.name}
                   <span className={`absolute -bottom-1 left-0 w-full h-[2px] bg-[var(--color-primary)] transition-transform origin-left ${isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100 group-focus-visible:scale-x-100"}`} />
@@ -82,7 +82,7 @@ export function Navbar() {
             <button
               onClick={openCommandPalette}
               aria-label="Open command palette"
-              className="text-zinc-500 hover:text-[var(--color-primary)] transition-colors font-mono text-xs tracking-widest border border-zinc-700 px-2 py-1 hover:border-[var(--color-primary)]"
+              className="border border-border-strong px-2 py-1 font-mono text-xs tracking-widest text-muted-soft transition-colors hover:border-primary hover:text-primary"
             >
               ⌘K
             </button>
@@ -93,10 +93,10 @@ export function Navbar() {
           <button
             onClick={toggleMode}
             aria-pressed={isRecruiterMode}
-            className={`border-2 px-2 py-2 md:px-4 md:py-3 font-black font-mono uppercase tracking-widest text-[10px] md:text-sm transition-colors inline-block transform hover:translate-y-1 hover:-translate-x-1 shadow-[4px_4px_0px_currentColor] hover:shadow-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--color-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f172a] ${
+            className={`inline-block transform border-2 px-2 py-2 font-mono text-[10px] font-black uppercase tracking-widest shadow-[4px_4px_0px_currentColor] transition-colors hover:-translate-x-1 hover:translate-y-1 hover:shadow-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background md:px-4 md:py-3 md:text-sm ${
               isRecruiterMode
-                ? "bg-[#0f172a] text-[var(--color-primary)] border-[var(--color-primary)]"
-                : "bg-white text-[#0f172a] border-[#0f172a]"
+                ? "border-primary bg-background text-primary"
+                : "border-foreground bg-surface text-foreground"
             }`}
           >
             <span className="hidden md:inline">[ RECRUITER MODE: {isRecruiterMode ? "ON" : "OFF"} ]</span>
@@ -105,7 +105,7 @@ export function Navbar() {
           <Link
             href="#contact"
             aria-label="Go to contact section"
-            className="hidden md:inline-block bg-[var(--color-primary)] text-[#0f172a] border-2 border-[var(--color-primary)] px-6 py-3 font-black font-mono uppercase tracking-widest text-sm hover:bg-[#1e293b] hover:text-[var(--color-primary)] transition-colors transform hover:translate-y-1 hover:-translate-x-1 shadow-[4px_4px_0px_var(--color-primary)] hover:shadow-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f172a]"
+            className="hidden transform border-2 border-control bg-accent px-6 py-3 font-mono text-sm font-black uppercase tracking-widest text-accent-foreground shadow-[4px_4px_0px_var(--color-accent)] transition-colors hover:-translate-x-1 hover:translate-y-1 hover:bg-surface hover:text-primary hover:shadow-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background md:inline-block"
           >
             [ INITIALIZE ]
           </Link>
