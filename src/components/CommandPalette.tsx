@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { Search, ArrowRight, Download, Mail, Github, Linkedin } from "lucide-react";
+import { Search, ArrowRight, Download, Mail, Github, Linkedin, GitPullRequest } from "lucide-react";
 import { portfolioData } from "@/data/portfolio";
 
 let _openPalette: (() => void) | null = null;
@@ -43,6 +43,13 @@ const commands: Command[] = [
     description: "Jump to the experience section",
     icon: <ArrowRight className="w-4 h-4" />,
     action: () => { document.getElementById("experience")?.scrollIntoView({ behavior: "smooth" }); },
+  },
+  {
+    id: "contributions",
+    label: "Open Source Contributions",
+    description: "Jump to Codenotch contributions",
+    icon: <GitPullRequest className="w-4 h-4" />,
+    action: () => { document.getElementById("contributions")?.scrollIntoView({ behavior: "smooth" }); },
   },
   {
     id: "contact",

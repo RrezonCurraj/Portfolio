@@ -1,7 +1,7 @@
 "use client";
 
 import { portfolioData } from "@/data/portfolio";
-import { Download, Mail, ExternalLink, Github, Briefcase, Code, User, GraduationCap, Layers } from "lucide-react";
+import { Download, Mail, ExternalLink, Github, Briefcase, Code, User, GraduationCap, Layers, GitPullRequest } from "lucide-react";
 
 export function RecruiterDashboard() {
   return (
@@ -105,6 +105,49 @@ export function RecruiterDashboard() {
                   </div>
                 ))}
               </div>
+            </section>
+
+            {/* Open Source Contributions */}
+            <section>
+              <h2 className="mb-6 flex items-center gap-2 border-b border-border pb-2 text-xl font-bold text-foreground">
+                <GitPullRequest className="h-5 w-5 text-primary" /> Open Source Contributions
+              </h2>
+              {portfolioData.contributions.map((contribution) => (
+                <div key={contribution.project} className="rounded-lg border border-border bg-surface/40 p-5">
+                  <div className="mb-3 flex flex-col items-start justify-between gap-2 sm:flex-row">
+                    <div>
+                      <h3 className="text-lg font-bold text-foreground">{contribution.project}</h3>
+                      <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                        {contribution.summary[0]} · {contribution.summary[1]}
+                      </p>
+                    </div>
+                    <a
+                      href={contribution.repository}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center gap-1 text-sm text-primary hover:underline"
+                    >
+                      Repository <ExternalLink className="h-3 w-3" />
+                    </a>
+                  </div>
+                  <p className="mb-4 text-sm leading-relaxed text-muted">{contribution.description}</p>
+                  <ul className="space-y-3">
+                    {contribution.items.map((item) => (
+                      <li key={item.number} className="border-l-2 border-primary pl-3 text-sm">
+                        <a
+                          href={item.link}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="font-semibold text-foreground hover:text-primary"
+                        >
+                          #{item.number} {item.title}
+                        </a>
+                        <p className="mt-1 text-xs text-muted">{item.status} · {item.proof}</p>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
             </section>
 
             {/* Education */}

@@ -119,6 +119,49 @@ export const portfolioData = {
       ],
     },
   ],
+  contributions: [
+    {
+      project: "Codenotch",
+      repository: "https://github.com/vinzdg/codenotch",
+      description:
+        "An open-source macOS utility that keeps usage limits for AI coding tools visible at the edge of the screen. I contributed fixes across window geometry, local code signing, display selection, and regression coverage.",
+      tech: ["Swift", "AppKit", "SwiftUI", "XCTest", "Shell", "GitHub Actions"],
+      summary: [
+        "2 pull requests merged upstream",
+        "2 fixes shipped in v1.7.0",
+        "1 feature shipped in v1.6.0",
+      ],
+      items: [
+        {
+          number: 59,
+          title: "Keep the Settings control onscreen while dragging",
+          description:
+            "Fixed edge-clamping geometry so the only visible Settings handle cannot be dragged beyond the display bezel. Added regression coverage for every screen edge and secondary displays with non-zero origins.",
+          status: "Shipped in v1.7.0",
+          link: "https://github.com/vinzdg/codenotch/pull/59",
+          proof: "43 additions · 4 files · 754 tests passed",
+        },
+        {
+          number: 58,
+          title: "Make local signing fall back safely",
+          description:
+            "Traced contributor build failures to orphaned Apple Development certificates and changed signing detection to require a valid identity. Added a shell regression suite and wired it into CI.",
+          status: "Shipped in v1.7.0",
+          link: "https://github.com/vinzdg/codenotch/pull/58",
+          proof: "63 additions · 3 files · 753 tests passed",
+        },
+        {
+          number: 28,
+          title: "Allow the notch to stay on a chosen display",
+          description:
+            "Designed display pinning around persistent macOS display UUIDs, including active-display fallback and automatic return after reconnection. The maintainer reworked the patch to project conventions and shipped the behavior in Codenotch 1.6.0 with contributor credit.",
+          status: "Shipped in v1.6.0",
+          link: "https://github.com/vinzdg/codenotch/pull/28",
+          proof: "178 additions · 8 files · 557 tests passed",
+        },
+      ],
+    },
+  ],
   experience: [
     {
       company: "Freelance",

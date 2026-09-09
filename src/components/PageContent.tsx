@@ -8,6 +8,7 @@ import { RecruiterDashboard } from "@/components/RecruiterDashboard";
 const About = dynamic(() => import("@/components/About").then((mod) => mod.About));
 const Skills = dynamic(() => import("@/components/Skills").then((mod) => mod.Skills));
 const Projects = dynamic(() => import("@/components/Projects").then((mod) => mod.Projects));
+const Contributions = dynamic(() => import("@/components/Contributions").then((mod) => mod.Contributions));
 const Experience = dynamic(() => import("@/components/Experience").then((mod) => mod.Experience));
 const Contact = dynamic(() => import("@/components/Contact").then((mod) => mod.Contact));
 
@@ -25,6 +26,7 @@ export function PageContent() {
         <About />
         <Skills />
         <Projects />
+        <Contributions />
         <Experience />
       </div>
       
