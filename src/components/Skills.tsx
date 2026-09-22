@@ -15,19 +15,14 @@ export function Skills() {
 
   useGSAP(() => {
     if (prefersReducedMotion()) return;
-    gsap.utils.toArray<HTMLElement>(".skill-bar-fill").forEach((bar) => {
-      gsap.fromTo(bar, 
-        { scaleX: 0 },
-        { 
-          scaleX: 1,
-          duration: 0.4,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: bar,
-            start: "top 95%", 
-          }
-        }
-      );
+    gsap.utils.toArray<HTMLElement>(".skill-group").forEach((group) => {
+      gsap.from(group, {
+        y: 32,
+        opacity: 0,
+        duration: 0.5,
+        ease: "power2.out",
+        scrollTrigger: { trigger: group, start: "top 90%" },
+      });
     });
 
   }, { scope: containerRef });
@@ -40,30 +35,36 @@ export function Skills() {
               ABILITIES
             </h2>
             <div className="hidden border-2 border-accent-foreground bg-accent-foreground px-4 py-2 font-mono text-xl font-bold uppercase text-accent md:block">
-              {"// Core Stack"}
+              {"// Frontend First"}
             </div>
         </div>
         
-        <div className="skills-list flex flex-col gap-8 md:gap-12">
-          {portfolioData.skills.map((skill, index) => (
-            <div 
-              key={skill.name}
-              className="skill-item group relative flex flex-col items-center border-b-2 border-accent-foreground/20 pb-8 transition-colors hover:border-accent-foreground md:flex-row"
+        <div className="grid gap-6 lg:grid-cols-3">
+          {portfolioData.skillGroups.map((group, index) => (
+            <article
+              key={group.title}
+              className="skill-group flex min-h-full flex-col border-4 border-accent-foreground bg-accent p-6 shadow-[8px_8px_0_0_var(--color-accent-foreground)] md:p-8"
             >
-              <div className="w-full md:w-1/3 flex items-center gap-6 mb-4 md:mb-0">
-                <span className="font-mono text-xl md:text-2xl font-bold opacity-50 group-hover:opacity-100 transition-opacity">0{index + 1}</span>
-                <h3 className="text-4xl md:text-6xl font-black uppercase tracking-tighter group-hover:translate-x-4 transition-transform duration-300">
-                  {skill.name}
-                </h3>
+              <span className="mb-10 font-mono text-sm font-bold opacity-60">
+                0{index + 1} / 03
+              </span>
+              <h3 className="mb-4 text-3xl font-black uppercase tracking-tighter md:text-4xl">
+                {group.title}
+              </h3>
+              <p className="mb-8 font-mono text-sm leading-relaxed opacity-75">
+                {group.description}
+              </p>
+              <div className="mt-auto flex flex-wrap gap-2">
+                {group.skills.map((skill) => (
+                  <span
+                    key={skill}
+                    className="border-2 border-accent-foreground bg-accent-foreground px-3 py-2 font-mono text-xs font-bold uppercase tracking-wide text-accent"
+                  >
+                    {skill}
+                  </span>
+                ))}
               </div>
-              
-              <div className="relative h-12 w-full overflow-hidden border-4 border-accent-foreground bg-accent-foreground/10 md:h-16 md:w-2/3">
-                <div 
-                  className="skill-bar-fill h-full origin-left bg-accent-foreground shadow-[inset_-4px_0_0_rgba(255,255,255,0.2)]"
-                  style={{ width: `${skill.level}%` }}
-                />
-              </div>
-            </div>
+            </article>
           ))}
         </div>
       </div>

@@ -7,11 +7,14 @@ jest.mock('@/components/ThreeBackground', () => ({
   ThreeBackground: () => <div data-testid="three-bg" />
 }))
 
-it('renders the portfolio role', () => {
+it('positions Rrezon as a creative frontend specialist', () => {
   render(
     <ModeProvider>
       <Hero />
     </ModeProvider>
   )
-  expect(screen.getByText(/Frontend Developer/)).toBeInTheDocument()
+  expect(screen.getByText(/Creative Frontend Developer/)).toBeInTheDocument()
+  expect(
+    screen.getByText(/motion-rich, accessible web experiences/i)
+  ).toBeInTheDocument()
 })

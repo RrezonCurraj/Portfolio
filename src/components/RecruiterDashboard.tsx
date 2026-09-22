@@ -65,12 +65,12 @@ export function RecruiterDashboard() {
                 <Code className="w-4 h-4" /> Core Competencies
               </h2>
               <div className="flex flex-wrap gap-2">
-                {portfolioData.skills.map((skill) => (
+                {portfolioData.skillGroups.flatMap((group) => group.skills).map((skill) => (
                   <span 
-                    key={skill.name} 
+                    key={skill}
                     className="rounded border border-border bg-surface px-2.5 py-1 text-xs font-medium text-muted-strong"
                   >
-                    {skill.name}
+                    {skill}
                   </span>
                 ))}
               </div>

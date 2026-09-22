@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "Rrezon Curraj | Frontend Developer";
+export const alt = "Rrezon Curraj | Creative Frontend Developer";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -52,7 +52,7 @@ export default function OgImage() {
               background: "#1e293b",
             }}
           >
-            {"// Frontend Developer"}
+            {"// Creative Frontend Developer"}
           </div>
         </div>
 

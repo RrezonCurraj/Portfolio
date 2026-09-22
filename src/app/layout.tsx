@@ -23,9 +23,9 @@ const spaceGrotesk = Space_Grotesk({
 const BASE_URL = "https://rrezon.dev";
 
 export const metadata: Metadata = {
-  title: "Rrezon Curraj | Frontend Developer & UI Designer",
-  description: "Portfolio of Rrezon Curraj, a creative Frontend Developer specializing in React, Next.js, and modern UI design. I build digital experiences.",
-  keywords: ["Rrezon", "Rrezon Curraj", "Frontend Developer", "Next.js", "React", "Portfolio", "Web Developer", "UI Designer", "Freelance Developer"],
+  title: "Rrezon Curraj | Creative Frontend Developer",
+  description: "Creative Frontend Developer building motion-rich, accessible web experiences with React, Next.js, TypeScript, and modern interaction design.",
+  keywords: ["Rrezon", "Rrezon Curraj", "Creative Frontend Developer", "Frontend Developer", "Next.js", "React", "TypeScript", "GSAP", "Interactive Web Design"],
   authors: [{ name: "Rrezon Curraj" }],
   creator: "Rrezon Curraj",
   metadataBase: new URL(BASE_URL),
@@ -33,22 +33,22 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: BASE_URL,
-    title: "Rrezon Curraj | Frontend Developer & UI Designer",
-    description: "Portfolio of Rrezon Curraj, a creative Frontend Developer specializing in React, Next.js, and modern UI design.",
+    title: "Rrezon Curraj | Creative Frontend Developer",
+    description: "Motion-rich, accessible web experiences built with React, Next.js, and thoughtful interaction design.",
     siteName: "Rrezon Curraj Portfolio",
     images: [
       {
         url: `${BASE_URL}/opengraph-image`,
         width: 1200,
         height: 630,
-        alt: "Rrezon Curraj | Frontend Developer",
+        alt: "Rrezon Curraj | Creative Frontend Developer",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Rrezon Curraj | Frontend Developer",
-    description: "I build modern, responsive, and performant digital experiences.",
+    title: "Rrezon Curraj | Creative Frontend Developer",
+    description: "I build motion-rich, accessible web experiences with React and Next.js.",
     images: [`${BASE_URL}/opengraph-image`],
   },
 };
@@ -58,13 +58,13 @@ const personSchema = {
   "@type": "Person",
   name: "Rrezon Curraj",
   url: "https://rrezon.dev",
-  jobTitle: "Frontend Developer",
+  jobTitle: "Creative Frontend Developer",
   email: "rrezoncurraj10@gmail.com",
   sameAs: [
     "https://github.com/RrezonCurraj",
     "https://www.linkedin.com/in/rrezon/",
   ],
-  knowsAbout: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Node.js"],
+  knowsAbout: ["React", "Next.js", "TypeScript", "Tailwind CSS", "GSAP", "Three.js", "Accessible Web Design"],
 };
 
 export default function RootLayout({

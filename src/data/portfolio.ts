@@ -1,26 +1,29 @@
 export const portfolioData = {
   personal: {
     name: "Rrezon Curraj",
-    role: "Frontend Developer",
+    role: "Creative Frontend Developer",
     tagline: "I Build Digital Experiences.",
-    bio: "I am a passionate developer who specializes in building modern, responsive, and performant websites. I turn complex problems into simple, beautiful, and intuitive designs.",
+    bio: "I build motion-rich, accessible web experiences with React and Next.js, combining strong visual design with production-ready frontend engineering.",
     email: "rrezoncurraj10@gmail.com",
     github: "https://github.com/RrezonCurraj",
     linkedin: "https://www.linkedin.com/in/rrezon/",
   },
-  skills: [
-    { name: "Next.js", level: 78 },
-    { name: "React", level: 85 },
-    { name: "TypeScript", level: 65 },
-    { name: "Tailwind CSS", level: 92 },
-    { name: "Node.js", level: 60 },
-    { name: "Express.js", level: 68 },
-    { name: "PostgreSQL", level: 38 },
-    { name: "Framer Motion", level: 60 },
-    { name: "Swift", level: 32 },
-    { name: "REST API", level: 72 },
-    { name: "Adobe Photoshop", level: 90 },
-    { name: "Adobe Illustrator", level: 90 },
+  skillGroups: [
+    {
+      title: "Core Expertise",
+      description: "The tools I use to build responsive, production-ready interfaces.",
+      skills: ["React", "Next.js", "TypeScript", "Tailwind CSS"],
+    },
+    {
+      title: "Creative & Interaction",
+      description: "Motion and visual craft that make digital products feel distinctive.",
+      skills: ["GSAP", "Framer Motion", "Three.js", "Adobe Photoshop", "Adobe Illustrator"],
+    },
+    {
+      title: "Supporting Technologies",
+      description: "Backend and delivery tools I use when a product needs more than the interface.",
+      skills: ["Node.js", "Express.js", "REST APIs", "PostgreSQL", "Drizzle ORM"],
+    },
   ],
   projects: [
     {
