@@ -99,7 +99,7 @@ export function Projects() {
                   src={project.image}
                   alt={`${project.title} Preview`}
                   fill
-                  sizes="(max-width: 1024px) 100vw, 46vw"
+                  sizes="(max-width: 1023px) calc(100vw - 32px), (max-width: 1150px) 42vw, 470px"
                   className="object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700 filter grayscale group-hover:grayscale-0"
                 />
 

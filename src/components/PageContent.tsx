@@ -3,8 +3,8 @@
 import { useMode } from "@/components/Providers";
 import { Hero } from "@/components/Hero";
 import dynamic from "next/dynamic";
-import { RecruiterDashboard } from "@/components/RecruiterDashboard";
 
+const RecruiterDashboard = dynamic(() => import("@/components/RecruiterDashboard").then((mod) => mod.RecruiterDashboard));
 const About = dynamic(() => import("@/components/About").then((mod) => mod.About));
 const Skills = dynamic(() => import("@/components/Skills").then((mod) => mod.Skills));
 const Projects = dynamic(() => import("@/components/Projects").then((mod) => mod.Projects));

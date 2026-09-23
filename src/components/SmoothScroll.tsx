@@ -26,9 +26,10 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
 
     // 2. Use GSAP's ticker to drive Lenis animations
     // This ensures they run in the exact same animation frame
-    gsap.ticker.add((time) => {
+    const onTick = (time: number) => {
       lenis.raf(time * 1000);
-    });
+    };
+    gsap.ticker.add(onTick);
 
     // We do NOT disable lag smoothing, to prevent violent stutters if frames drop.
 
@@ -51,9 +52,7 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
 
     return () => {
       lenis.destroy();
-      gsap.ticker.remove((time) => {
-        lenis.raf(time * 1000);
-      });
+      gsap.ticker.remove(onTick);
       document.removeEventListener("click", handleAnchorClick);
     };
   }, []);

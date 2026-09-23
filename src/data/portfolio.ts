@@ -47,7 +47,7 @@ export const portfolioData = {
       tech: ["React", "TypeScript", "Tailwind CSS", "Claude 3.7", "Zustand"],
       link: "https://ai-resumerr.vercel.app",
       github: "https://github.com/RrezonCurraj/ai-resume",
-      image: "/projects/hireon.png",
+      image: "/projects/hireon.webp",
       metrics: [
         "Solo build, end-to-end",
         "Claude 3.7 Sonnet integration",
@@ -88,7 +88,7 @@ export const portfolioData = {
       tech: ["Next.js 16", "React 19", "TypeScript", "Tailwind CSS v4", "Drizzle ORM", "PostgreSQL"],
       link: "https://ntshbeli.com/",
       github: "https://github.com/RrezonCurraj/Beli",
-      image: "/projects/ntshbeli.png",
+      image: "/projects/ntshbeli.webp",
       metrics: [
         "70k+ product catalog",
         "Quote + WhatsApp lead flows",
@@ -102,7 +102,7 @@ export const portfolioData = {
       tech: ["React.js", "Tailwind CSS", "Vite", "Lucide React","Resend API",],
       link: "https://hypercastt.vercel.app/",
       github: "https://github.com/RrezonCurraj/HyperCast-Digital-Subscription-Platform/tree/portfolio",
-      image: "/projects/hypercast.png",
+      image: "/projects/hypercast.webp",
       metrics: [
         "Component-driven architecture",
         "Resend-powered contact flow",
@@ -115,7 +115,7 @@ export const portfolioData = {
       tech: ["React 19", "Tailwind CSS", "Framer Motion", 'Vite', 'React Router v7'],
       link: "https://www.maxi24gmbh.ch/",
       github: "https://github.com/RrezonCurraj/Maxi24-GmbH",
-      image: "/projects/maxi.png",
+      image: "/projects/maxi.webp",
       metrics: [
         "Live production client site",
         "React 19 + Framer Motion",

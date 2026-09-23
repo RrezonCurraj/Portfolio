@@ -88,7 +88,7 @@ export function Hero() {
   return (
     <>
       <section ref={containerRef} className="hero-stage relative flex min-h-screen flex-col justify-center overflow-hidden px-4 pt-24 md:px-12 md:pt-32">
-        {bg === "three" && <ThreeBackground />}
+        {bg === "three" && <ThreeBackground active={heroInView} />}
         {bg === "grid" && (
           <div style={tilt(20, 20)} className="absolute inset-0 z-0">
             <MobileGridFX />

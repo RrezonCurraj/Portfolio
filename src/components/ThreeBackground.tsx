@@ -37,12 +37,12 @@ function Particles({ color }: { color: string }) {
   );
 }
 
-export function ThreeBackground() {
+export function ThreeBackground({ active }: { active: boolean }) {
   const { theme } = useMode();
 
   return (
     <div className="absolute inset-0 z-0 pointer-events-none">
-      <Canvas camera={{ position: [0, 0, 1] }} dpr={[1, 1.5]}>
+      <Canvas camera={{ position: [0, 0, 1] }} dpr={[1, 1.5]} frameloop={active ? "always" : "never"}>
         <Particles color={theme === "light" ? "#bef264" : "#22c55e"} />
       </Canvas>
     </div>

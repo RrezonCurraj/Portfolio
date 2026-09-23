@@ -124,11 +124,11 @@ export function TextReveal({ children, className, delay = 0, activeColor, baseCo
        });
     };
     
-    // Initial cache and resize listener
+    // Cache positions once, then refresh them when the layout changes.
     updateCache();
     window.addEventListener("resize", updateCache);
 
-    // Remove GSAP requestAnimationFrame entirely for massive CPU boost
+    // Only schedule pointer updates while the user is interacting with this heading.
     const maxDistance = 120;
     const maxScale = 1.35;
     const minScale = 1;
@@ -179,9 +179,13 @@ export function TextReveal({ children, className, delay = 0, activeColor, baseCo
       });
     };
 
-    const handleMouseMove = (e: MouseEvent) => {
-      const focusX = e.clientX;
-      const focusY = e.clientY;
+    const activeIndices = new Set<number>();
+    let frame = 0;
+    let focusX = 0;
+    let focusY = 0;
+
+    const updateNearbyChars = () => {
+      frame = 0;
       const scrollY = window.scrollY;
       const scrollX = window.scrollX;
 
@@ -195,6 +199,10 @@ export function TextReveal({ children, className, delay = 0, activeColor, baseCo
         const charCenterY = (cached.y - scrollY) + cached.h / 2;
         
         const distance = Math.sqrt(Math.pow(focusX - charCenterX, 2) + Math.pow(focusY - charCenterY, 2));
+        const isNearby = distance < maxDistance;
+        if (!isNearby && !activeIndices.has(i)) return;
+        if (isNearby) activeIndices.add(i);
+        else activeIndices.delete(i);
 
         let scale = minScale;
         let color = originalColorsRef.current[i] || "inherit";
@@ -207,7 +215,7 @@ export function TextReveal({ children, className, delay = 0, activeColor, baseCo
         
         let fontWeight = startWeight;
 
-        if (distance < maxDistance) {
+        if (isNearby) {
           const effectStrength = Math.cos((distance / maxDistance) * (Math.PI / 2));
           scale = minScale + (maxScale - minScale) * effectStrength;
           
@@ -231,7 +239,7 @@ export function TextReveal({ children, className, delay = 0, activeColor, baseCo
           duration: 0.15, // Faster response time for movement
           overwrite: "auto",
           ease: "power2.out",
-          zIndex: distance < maxDistance ? 10 : 1
+          zIndex: isNearby ? 10 : 1
         });
 
         if (char.parentElement) {
@@ -246,7 +254,16 @@ export function TextReveal({ children, className, delay = 0, activeColor, baseCo
       });
     };
 
+    const handleMouseMove = (e: MouseEvent) => {
+      focusX = e.clientX;
+      focusY = e.clientY;
+      if (!frame) frame = requestAnimationFrame(updateNearbyChars);
+    };
+
     const handleMouseLeave = () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      activeIndices.clear();
       resetStyles();
     };
 
@@ -257,9 +274,8 @@ export function TextReveal({ children, className, delay = 0, activeColor, baseCo
       container.addEventListener("mouseleave", handleMouseLeave);
     }
     
-    window.addEventListener("resize", updateCache);
-
     return () => {
+      cancelAnimationFrame(frame);
       if (container) {
         container.removeEventListener("mouseenter", handleMouseEnter);
         container.removeEventListener("mousemove", handleMouseMove);
