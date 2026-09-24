@@ -22,19 +22,38 @@ export function Navbar() {
   const [activeSection, setActiveSection] = useState<string>("");
 
   useEffect(() => {
-    const observers: IntersectionObserver[] = [];
-    navItems.forEach(({ id }) => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      const observer = new IntersectionObserver(
-        ([entry]) => { if (entry.isIntersecting) setActiveSection(id); },
-        { rootMargin: "-40% 0px -55% 0px", threshold: 0 }
-      );
-      observer.observe(el);
-      observers.push(observer);
-    });
-    return () => observers.forEach((o) => o.disconnect());
-  }, []);
+    if (typeof IntersectionObserver === "undefined") return;
+    const observed = new Set<Element>();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.find((entry) => entry.isIntersecting);
+        if (visible) setActiveSection(visible.target.id);
+      },
+      { rootMargin: "-40% 0px -55% 0px", threshold: 0 }
+    );
+    const observeSections = () => {
+      for (const element of observed) {
+        if (!element.isConnected) {
+          observer.unobserve(element);
+          observed.delete(element);
+        }
+      }
+      navItems.forEach(({ id }) => {
+        const element = document.getElementById(id);
+        if (element && !observed.has(element)) {
+          observer.observe(element);
+          observed.add(element);
+        }
+      });
+    };
+    observeSections();
+    const mutations = new MutationObserver(observeSections);
+    mutations.observe(document.body, { childList: true, subtree: true });
+    return () => {
+      observer.disconnect();
+      mutations.disconnect();
+    };
+  }, [isRecruiterMode]);
 
   useGSAP(() => {
     if (prefersReducedMotion()) return;
@@ -59,7 +78,7 @@ export function Navbar() {
             onClick={(e) => {
               if (window.location.pathname === "/") {
                 e.preventDefault();
-                window.scrollTo({ top: 0, behavior: "smooth" });
+                window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? "instant" : "smooth" });
               }
             }}
             className="text-xl font-black tracking-tighter text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary md:text-2xl"
@@ -73,6 +92,7 @@ export function Navbar() {
                 <Link
                   key={item.name}
                   href={`#${item.id}`}
+                  aria-current={isActive ? "location" : undefined}
                   className={`group relative transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${isActive ? "text-primary" : "text-muted hover:text-primary"}`}
                 >
                   {item.name}

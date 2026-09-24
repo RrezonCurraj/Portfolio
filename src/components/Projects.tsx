@@ -73,7 +73,7 @@ export function Projects() {
   return (
     <section ref={sectionRef} id="projects" className="relative z-10 bg-background py-24">
       <div className="container mx-auto mb-16 flex items-end justify-between border-b-4 border-border px-4 pb-6 md:px-12">
-        <TextReveal activeColor="var(--color-primary)" className="text-5xl sm:text-7xl md:text-8xl font-black uppercase tracking-tighter">PROJECTS</TextReveal>
+        <TextReveal as="h2" activeColor="var(--color-primary)" className="text-5xl sm:text-7xl md:text-8xl font-black uppercase tracking-tighter">PROJECTS</TextReveal>
         <div className="hidden border-2 border-primary bg-surface px-4 py-2 font-mono text-xl text-primary md:block">
           [ {portfolioData.projects.length} WORKS ]
         </div>
@@ -83,9 +83,9 @@ export function Projects() {
         <div className="relative max-w-5xl mx-auto [--pin:72px] lg:[--pin:104px]">
           {portfolioData.projects.map((project, index) => (
             <article
-              key={index}
+              key={project.slug}
               aria-labelledby={`project-title-${index}`}
-              data-featured={"featured" in project && project.featured ? "true" : undefined}
+              data-featured={project.featured ? "true" : undefined}
               style={{ top: `calc(var(--pin) + ${index * STAGGER}px)`, zIndex: index + 1 }}
               className={`project-card group sticky mb-[8vh] last:mb-0 ${
                 expanded.has(index) ? "" : "h-[84svh] max-h-[700px]"
@@ -107,7 +107,7 @@ export function Projects() {
                   0{index + 1}
                 </div>
 
-                {"featured" in project && project.featured && (
+                {project.featured && (
                   <div className="absolute top-0 left-0 z-10 flex items-center gap-2 border-r-2 border-b-2 border-control bg-accent px-4 py-3 font-mono text-xs font-black uppercase tracking-[0.18em] text-accent-foreground">
                     <span className="h-2 w-2 bg-accent-foreground" aria-hidden="true" />
                     Featured
@@ -167,9 +167,9 @@ export function Projects() {
                   </button>
                 )}
 
-                {"metrics" in project && project.metrics && project.metrics.length > 0 && (
+                {Boolean(project.metrics?.length) && (
                   <ul className="mb-6 space-y-1.5 hidden sm:block">
-                    {project.metrics.map((m) => (
+                    {project.metrics?.map((m) => (
                       <li
                         key={m}
                         className="flex items-start gap-2 font-mono text-xs uppercase tracking-wider text-muted-strong"
@@ -181,7 +181,7 @@ export function Projects() {
                   </ul>
                 )}
 
-                {"caseStudy" in project && project.caseStudy && (
+                {project.caseStudy && (
                   <Link
                     href={`/projects/${project.slug}`}
                     aria-label={`Read case study for ${project.title}`}
@@ -223,7 +223,7 @@ export function Projects() {
                       Code <Github size={16} aria-hidden="true" />
                     </a>
                   </div>
-                  {"caseStudy" in project && project.caseStudy && (
+                  {project.caseStudy && (
                     <Link
                       href={`/projects/${project.slug}`}
                       aria-label={`Read case study for ${project.title}`}

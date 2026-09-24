@@ -21,7 +21,7 @@ export function PageContent() {
 
   return (
     <>
-      <div className="relative z-10 mb-[85vh] rounded-b-3xl border-b border-border bg-background shadow-[0_20px_50px_var(--page-shadow)]">
+      <div className="relative z-10 rounded-b-3xl border-b border-border bg-background shadow-[0_20px_50px_var(--page-shadow)]">
         <Hero />
         <About />
         <Skills />
@@ -29,12 +29,7 @@ export function PageContent() {
         <Contributions />
         <Experience />
       </div>
-      
-      <div id="contact" className="h-px w-full" />
-      
-      <div className="fixed bottom-0 left-0 right-0 h-[85vh] z-0">
-        <Contact />
-      </div>
+      <Contact />
     </>
   );
 }

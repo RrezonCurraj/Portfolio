@@ -12,15 +12,17 @@ gsap.registerPlugin(ScrollTrigger);
 
 interface TextRevealProps {
   children: string;
+  as?: "div" | "h1" | "h2";
+  id?: string;
   className?: string;
   delay?: number;
   activeColor?: string;
   baseColor?: string;
 }
 
-export function TextReveal({ children, className, delay = 0, activeColor, baseColor }: TextRevealProps) {
+export function TextReveal({ as: Tag = "div", id, children, className, delay = 0, activeColor, baseColor }: TextRevealProps) {
   const { theme } = useMode();
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLHeadingElement>(null);
   const charsRef = useRef<(HTMLSpanElement | null)[]>([]);
   const originalColorsRef = useRef<string[]>([]);
   const originalFontWeightsRef = useRef<string[]>([]);
@@ -88,11 +90,12 @@ export function TextReveal({ children, className, delay = 0, activeColor, baseCo
     gsap.killTweensOf(chars);
     chars.forEach((char) => char.style.removeProperty("color"));
 
-    if (isMobile) {
+    if (isMobile || prefersReducedMotion()) {
       // Remove heavy loop! Just set static nice styles for mobile
       gsap.set(chars, {
         opacity: 1,
         scale: 1,
+        filter: "none",
         color: baseColor || "inherit",
         fontWeight: "inherit"
       });
@@ -283,17 +286,18 @@ export function TextReveal({ children, className, delay = 0, activeColor, baseCo
       }
       window.removeEventListener("resize", updateCache);
       gsap.killTweensOf(chars);
+      gsap.killTweensOf(chars.map((char) => char.parentElement).filter(Boolean), "width");
     };
-  }, [activeColor, baseColor, theme]);
+  }, [activeColor, baseColor, theme, children]);
 
   return (
-    <div ref={containerRef} className={cn("overflow-hidden leading-tight p-4 -m-4 relative", className)}>
+    <Tag id={id} ref={containerRef} className={cn("overflow-hidden leading-tight p-4 -m-4 relative", className)}>
       <span className="sr-only">{children}</span>
       {children.split("").map((char, i) => (
         <span 
           key={i} 
           className="char-outer inline-block"
-          style={{ willChange: "transform, opacity, filter" }}
+          aria-hidden="true"
         >
           <span
             ref={(el) => { charsRef.current[i] = el; }}
@@ -304,6 +308,6 @@ export function TextReveal({ children, className, delay = 0, activeColor, baseCo
           </span>
         </span>
       ))}
-    </div>
+    </Tag>
   );
 }

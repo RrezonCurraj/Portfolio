@@ -1,20 +1,8 @@
-"use client";
-
-const TICKER_ITEMS = [
-  "Available for work",
-  "React",
-  "Next.js",
-  "TypeScript",
-  "Tailwind CSS",
-  "Framer Motion",
-  "Node.js",
-  "Based in GMT+1",
-  "Open to remote",
-];
+import { portfolioData } from "@/data/portfolio";
 
 export function HeroTicker() {
   // Duplicate the list so translate -50% loops seamlessly.
-  const loop = [...TICKER_ITEMS, ...TICKER_ITEMS];
+  const loop = [...portfolioData.ticker, ...portfolioData.ticker];
 
   return (
     <div

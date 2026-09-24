@@ -36,7 +36,7 @@ export function RecruiterDashboard() {
           {/* Left Column: Summary & Skills */}
           <div className="lg:col-span-1 space-y-10">
             {/* Contact Details */}
-            <section>
+            <section id="contact">
               <h2 className="mb-4 flex items-center gap-2 text-sm font-bold text-muted uppercase tracking-wider">
                 <User className="w-4 h-4" /> Contact
               </h2>
@@ -52,7 +52,7 @@ export function RecruiterDashboard() {
             </section>
 
             {/* Executive Summary */}
-            <section>
+            <section id="about">
               <h2 className="mb-4 text-sm font-bold text-muted uppercase tracking-wider">Executive Summary</h2>
               <p className="text-sm leading-relaxed text-muted">
                 {portfolioData.personal.bio}
@@ -60,7 +60,7 @@ export function RecruiterDashboard() {
             </section>
 
             {/* Core Competencies */}
-            <section>
+            <section id="skills">
               <h2 className="mb-4 flex items-center gap-2 text-sm font-bold text-muted uppercase tracking-wider">
                 <Code className="w-4 h-4" /> Core Competencies
               </h2>
@@ -81,7 +81,7 @@ export function RecruiterDashboard() {
           <div className="lg:col-span-2 space-y-12">
             
             {/* Experience */}
-            <section>
+            <section id="experience">
               <h2 className="mb-6 flex items-center gap-2 border-b border-border pb-2 text-xl font-bold text-foreground">
                 <Briefcase className="w-5 h-5 text-primary" /> Professional Experience
               </h2>
@@ -108,7 +108,7 @@ export function RecruiterDashboard() {
             </section>
 
             {/* Open Source Contributions */}
-            <section>
+            <section id="contributions">
               <h2 className="mb-6 flex items-center gap-2 border-b border-border pb-2 text-xl font-bold text-foreground">
                 <GitPullRequest className="h-5 w-5 text-primary" /> Open Source Contributions
               </h2>
@@ -180,7 +180,7 @@ export function RecruiterDashboard() {
             </section>
 
             {/* Projects */}
-            <section>
+            <section id="projects">
               <h2 className="mb-6 flex items-center gap-2 border-b border-border pb-2 text-xl font-bold text-foreground">
                 <Layers className="w-5 h-5 text-primary" /> Technical Projects
               </h2>

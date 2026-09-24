@@ -16,6 +16,13 @@ A Next.js portfolio with an interactive presentation, a compact recruiter view, 
 
 These are implementation choices, not measured performance or accessibility scores. The app includes Vercel Analytics and Speed Insights in the root layout; use those and a fresh browser audit to evaluate the deployed site.
 
+## Code organization
+
+- `src/data/portfolio.ts` defines the portfolio content and its TypeScript contracts. `Project` and `CaseStudy` describe optional project details explicitly so pages and components do not need type assertions.
+- `src/components` contains the section components and interaction providers; `src/components/ui` contains reusable visual primitives.
+- `src/lib/contact.ts` owns contact validation and field limits shared by the form and API. The route validates untrusted input before calling the email provider and returns generic delivery errors.
+- The contact section stays in document flow so its content remains reachable at smaller viewport sizes. Both portfolio and recruiter views expose the same navigation targets.
+
 ## Stack
 
 Next.js 16 App Router, React 19, TypeScript, Tailwind CSS 4, GSAP, React Three Fiber, and Lenis. The contact route uses Resend when `RESEND_API_KEY` is configured.
@@ -39,7 +46,7 @@ npm run build
 
 Jest and React Testing Library cover selected component behavior and utilities. A passing test suite does not establish browser performance or accessibility compliance.
 
-The [verification workflow](.github/workflows/verify.yml) runs these commands on pushes and pull requests. The component tests cover hero canvas pausing, reduced-motion scrolling, skills content, and utility behavior; they do not replace a browser audit.
+The [verification workflow](.github/workflows/verify.yml) runs these commands on pushes and pull requests. The tests cover contact validation and delivery errors, duplicate form submission, command-palette focus and asynchronous commands, fragment navigation, recruiter mode, heading animation cleanup, hero canvas pausing, and utility behavior. Email delivery is mocked in tests. These checks do not replace a browser audit.
 
 ## Case studies
 

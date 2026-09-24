@@ -43,3 +43,25 @@ it("keeps native scrolling when reduced motion is preferred", () => {
     window.matchMedia = originalMatchMedia;
   }
 });
+
+it('scrolls to encoded fragment IDs without interpreting them as CSS selectors', () => {
+  const scrollTo = jest.fn();
+  (Lenis as unknown as jest.Mock).mockImplementationOnce(() => ({ on: jest.fn(), raf: jest.fn(), destroy: jest.fn(), scrollTo }));
+  const { getByText } = render(<SmoothScroll><a href="#project%3Aone">Jump</a><section id="project:one">Target</section></SmoothScroll>);
+  getByText('Jump').dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+  expect(scrollTo).toHaveBeenCalledWith(getByText('Target'), expect.objectContaining({ onComplete: expect.any(Function) }));
+  expect(window.location.hash).toBe('#project%3Aone');
+  scrollTo.mock.calls[0][1].onComplete();
+  expect(getByText('Target')).toHaveFocus();
+});
+
+it('preserves modified clicks and links with missing fragment targets', () => {
+  render(<SmoothScroll><a href="#missing">Missing</a></SmoothScroll>);
+  const anchor = document.querySelector('a')!;
+  const modified = new MouseEvent('click', { bubbles: true, cancelable: true, ctrlKey: true });
+  anchor.dispatchEvent(modified);
+  expect(modified.defaultPrevented).toBe(false);
+  const missing = new MouseEvent('click', { bubbles: true, cancelable: true });
+  anchor.dispatchEvent(missing);
+  expect(missing.defaultPrevented).toBe(false);
+});

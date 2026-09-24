@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useSyncExternalStore, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, useCallback, useMemo, useSyncExternalStore, ReactNode } from "react";
 
 type Theme = "light" | "dark";
 
@@ -43,22 +43,17 @@ export function ModeProvider({ children }: { children: ReactNode }) {
   const [isRecruiterMode, setIsRecruiterMode] = useState(false);
   const theme = useSyncExternalStore<Theme>(subscribeToTheme, getTheme, () => "dark");
 
-  const toggleMode = () => {
-    setIsRecruiterMode((prev) => {
-      // Small visual feedback when toggling
-      if (!prev) {
-        document.documentElement.classList.add("recruiter-mode");
-      } else {
-        document.documentElement.classList.remove("recruiter-mode");
-      }
-      return !prev;
-    });
-  };
+  useEffect(() => {
+    document.documentElement.classList.toggle("recruiter-mode", isRecruiterMode);
+    return () => document.documentElement.classList.remove("recruiter-mode");
+  }, [isRecruiterMode]);
 
-  const toggleTheme = () => applyTheme(theme === "dark" ? "light" : "dark");
+  const toggleMode = useCallback(() => setIsRecruiterMode((previous) => !previous), []);
+  const toggleTheme = useCallback(() => applyTheme(getTheme() === "dark" ? "light" : "dark"), []);
+  const value = useMemo(() => ({ isRecruiterMode, toggleMode, theme, toggleTheme }), [isRecruiterMode, toggleMode, theme, toggleTheme]);
 
   return (
-    <ModeContext.Provider value={{ isRecruiterMode, toggleMode, theme, toggleTheme }}>
+    <ModeContext.Provider value={value}>
       {children}
     </ModeContext.Provider>
   );

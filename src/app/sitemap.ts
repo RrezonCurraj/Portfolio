@@ -4,9 +4,9 @@ import { portfolioData } from '@/data/portfolio';
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = 'https://rrezon.dev';
   const caseStudies = portfolioData.projects
-    .filter((p) => 'caseStudy' in p && p.caseStudy && 'slug' in p && p.slug)
+    .filter((p) => p.caseStudy)
     .map((p) => ({
-      url: `${base}/projects/${(p as { slug: string }).slug}`,
+      url: `${base}/projects/${p.slug}`,
       lastModified: new Date(),
       changeFrequency: 'monthly' as const,
       priority: 0.8,

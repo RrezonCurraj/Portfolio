@@ -16,6 +16,8 @@ export function Contributions() {
               Public code. Maintainer reviewed. Shipped upstream.
             </p>
             <TextReveal
+              as="h2"
+              id="contributions-heading"
               activeColor="var(--color-primary)"
               className="text-4xl font-black uppercase tracking-tighter sm:text-6xl lg:text-8xl"
             >
@@ -36,7 +38,6 @@ export function Contributions() {
                   Open-source contributor
                 </div>
                 <h3
-                  id="contributions-heading"
                   className="mb-5 text-4xl font-black uppercase tracking-tighter sm:text-5xl md:text-6xl"
                 >
                   {contribution.project}

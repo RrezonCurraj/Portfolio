@@ -34,18 +34,26 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
     // We do NOT disable lag smoothing, to prevent violent stutters if frames drop.
 
     const handleAnchorClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const anchor = target.closest("a");
-      if (!anchor) return;
-
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      if (!(e.target instanceof Element)) return;
+      const anchor = e.target.closest("a");
+      if (!anchor || anchor.hasAttribute("download") || (anchor.target && anchor.target !== "_self")) return;
       const href = anchor.getAttribute("href");
-      if (!href?.startsWith("#")) return;
-
+      if (!href?.startsWith("#") || href === "#") return;
+      let id: string;
+      try { id = decodeURIComponent(href.slice(1)); } catch { return; }
+      const element = document.getElementById(id);
+      if (!element) return;
       e.preventDefault();
-      const element = document.querySelector(href);
-      if (element) {
-        lenis.scrollTo(element as HTMLElement);
-      }
+      history.pushState(null, "", href);
+      lenis.scrollTo(element, {
+        onComplete: () => {
+          const addedTabIndex = !element.hasAttribute("tabindex");
+          if (addedTabIndex) element.setAttribute("tabindex", "-1");
+          element.focus({ preventScroll: true });
+          if (addedTabIndex) element.removeAttribute("tabindex");
+        },
+      });
     };
 
     document.addEventListener("click", handleAnchorClick);

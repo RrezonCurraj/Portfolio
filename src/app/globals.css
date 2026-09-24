@@ -248,7 +248,12 @@ html.recruiter-mode .noise-overlay {
   to   { transform: translate3d(-50%, 0, 0); }
 }
 
+section[id] {
+  scroll-margin-top: 7rem;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  html.scroll-smooth { scroll-behavior: auto; }
   .mobile-grid-scan,
   .ticker-track { animation: none; }
 }

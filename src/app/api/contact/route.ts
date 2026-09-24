@@ -1,31 +1,31 @@
 import { Resend } from "resend";
 import { NextResponse } from "next/server";
+import { validateContact } from "@/lib/contact";
+import { portfolioData } from "@/data/portfolio";
 
 export async function POST(req: Request) {
   if (!process.env.RESEND_API_KEY) {
     return NextResponse.json({ error: "Contact form is not configured yet." }, { status: 503 });
   }
 
+  let input: unknown;
   try {
-    const { name, email, message } = await req.json();
+    input = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body." }, { status: 400 });
+  }
+  const result = validateContact(input);
+  if (result.data === undefined) {
+    return NextResponse.json({ error: result.error }, { status: 400 });
+  }
+  const { name, email, message } = result.data;
 
-    if (!name || !email || !message) {
-      return NextResponse.json({ error: "All fields are required." }, { status: 400 });
-    }
-
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      return NextResponse.json({ error: "Invalid email address." }, { status: 400 });
-    }
-
-    if (message.length > 2000) {
-      return NextResponse.json({ error: "Message too long." }, { status: 400 });
-    }
-
+  try {
     const resend = new Resend(process.env.RESEND_API_KEY);
 
     const { error } = await resend.emails.send({
       from: "Portfolio Contact <onboarding@resend.dev>",
-      to: "rrezoncurraj10@gmail.com",
+      to: portfolioData.personal.email,
       replyTo: email,
       subject: `[Portfolio] New message from ${name}`,
       text: `Name: ${name}\nEmail: ${email}\n\n${message}`,
@@ -33,7 +33,7 @@ export async function POST(req: Request) {
 
     if (error) {
       console.error("Resend error:", error);
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json({ error: "Failed to send message. Please try again later." }, { status: 500 });
     }
 
     return NextResponse.json({ success: true });

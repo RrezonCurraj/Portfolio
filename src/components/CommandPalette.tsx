@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, useId } from "react";
 import { Search, ArrowRight, Download, Mail, Github, Linkedin, GitPullRequest } from "lucide-react";
+import { prefersReducedMotion } from "@/lib/motion";
 import { portfolioData } from "@/data/portfolio";
 
 let _openPalette: (() => void) | null = null;
@@ -12,7 +13,7 @@ type Command = {
   label: string;
   description?: string;
   icon: React.ReactNode;
-  action: () => void;
+  action: () => void | Promise<void>;
 };
 
 const commands: Command[] = [
@@ -21,42 +22,42 @@ const commands: Command[] = [
     label: "View Projects",
     description: "Jump to the projects section",
     icon: <ArrowRight className="w-4 h-4" />,
-    action: () => { document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" }); },
+    action: () => { document.getElementById("projects")?.scrollIntoView({ behavior: prefersReducedMotion() ? "instant" : "smooth" }); },
   },
   {
     id: "about",
     label: "About Me",
     description: "Jump to the about section",
     icon: <ArrowRight className="w-4 h-4" />,
-    action: () => { document.getElementById("about")?.scrollIntoView({ behavior: "smooth" }); },
+    action: () => { document.getElementById("about")?.scrollIntoView({ behavior: prefersReducedMotion() ? "instant" : "smooth" }); },
   },
   {
     id: "skills",
     label: "Skills",
     description: "Jump to the skills section",
     icon: <ArrowRight className="w-4 h-4" />,
-    action: () => { document.getElementById("skills")?.scrollIntoView({ behavior: "smooth" }); },
+    action: () => { document.getElementById("skills")?.scrollIntoView({ behavior: prefersReducedMotion() ? "instant" : "smooth" }); },
   },
   {
     id: "experience",
     label: "Experience",
     description: "Jump to the experience section",
     icon: <ArrowRight className="w-4 h-4" />,
-    action: () => { document.getElementById("experience")?.scrollIntoView({ behavior: "smooth" }); },
+    action: () => { document.getElementById("experience")?.scrollIntoView({ behavior: prefersReducedMotion() ? "instant" : "smooth" }); },
   },
   {
     id: "contributions",
     label: "Open Source Contributions",
     description: "Jump to Codenotch contributions",
     icon: <GitPullRequest className="w-4 h-4" />,
-    action: () => { document.getElementById("contributions")?.scrollIntoView({ behavior: "smooth" }); },
+    action: () => { document.getElementById("contributions")?.scrollIntoView({ behavior: prefersReducedMotion() ? "instant" : "smooth" }); },
   },
   {
     id: "contact",
     label: "Contact",
     description: "Jump to the contact section",
     icon: <Mail className="w-4 h-4" />,
-    action: () => { document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" }); },
+    action: () => { document.getElementById("contact")?.scrollIntoView({ behavior: prefersReducedMotion() ? "instant" : "smooth" }); },
   },
   {
     id: "download-cv",
@@ -75,7 +76,7 @@ const commands: Command[] = [
     label: "Copy Email",
     description: portfolioData.personal.email,
     icon: <Mail className="w-4 h-4" />,
-    action: () => { navigator.clipboard.writeText(portfolioData.personal.email); },
+    action: () => navigator.clipboard.writeText(portfolioData.personal.email),
   },
   {
     id: "github",
@@ -97,31 +98,52 @@ export function CommandPalette() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState(0);
+  const [error, setError] = useState("");
+  const listId = useId();
+  const commandRun = useRef(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
 
-  const filtered = query.trim()
+  const normalizedQuery = query.trim().toLowerCase();
+  const filtered = normalizedQuery
     ? commands.filter(
         (c) =>
-          c.label.toLowerCase().includes(query.toLowerCase()) ||
-          c.description?.toLowerCase().includes(query.toLowerCase())
+          c.label.toLowerCase().includes(normalizedQuery) ||
+          c.description?.toLowerCase().includes(normalizedQuery)
       )
     : commands;
 
   const close = useCallback(() => {
+    commandRun.current += 1;
     setOpen(false);
     setQuery("");
     setSelected(0);
   }, []);
 
   const openPalette = useCallback(() => {
+    commandRun.current += 1;
     setSelected(0);
+    setError("");
     setOpen(true);
   }, []);
 
   const run = useCallback((cmd: Command) => {
-    close();
-    setTimeout(() => cmd.action(), 50);
+    const currentRun = ++commandRun.current;
+    setError("");
+    try {
+      const result = cmd.action();
+      if (result) {
+        void result.then(() => {
+          if (commandRun.current === currentRun) close();
+        }).catch(() => {
+          if (commandRun.current === currentRun) setError("Unable to complete this command. Please try again.");
+        });
+      } else {
+        close();
+      }
+    } catch {
+      setError("Unable to complete this command. Please try again.");
+    }
   }, [close]);
 
   useEffect(() => {
@@ -139,13 +161,24 @@ export function CommandPalette() {
 
   useEffect(() => {
     _openPalette = openPalette;
-    return () => { _openPalette = null; };
+    return () => {
+      _openPalette = null;
+      commandRun.current += 1;
+    };
   }, [openPalette]);
 
   useEffect(() => {
-    if (open) {
-      setTimeout(() => inputRef.current?.focus(), 10);
-    }
+    if (!open) return;
+    const previousFocus = document.activeElement;
+    inputRef.current?.focus();
+    const keepFocus = (event: FocusEvent) => {
+      if (event.target !== inputRef.current) inputRef.current?.focus();
+    };
+    document.addEventListener("focusin", keepFocus);
+    return () => {
+      document.removeEventListener("focusin", keepFocus);
+      if (previousFocus instanceof HTMLElement && previousFocus.isConnected) previousFocus.focus({ preventScroll: true });
+    };
   }, [open]);
 
   useEffect(() => {
@@ -153,14 +186,18 @@ export function CommandPalette() {
   }, [selected]);
 
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    if (!open) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = previousOverflow; };
   }, [open]);
 
   const onKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "ArrowDown") {
+    if (e.key === "Tab") {
       e.preventDefault();
-      setSelected((s) => Math.min(s + 1, filtered.length - 1));
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setSelected((s) => Math.max(0, Math.min(s + 1, filtered.length - 1)));
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       setSelected((s) => Math.max(s - 1, 0));
@@ -174,6 +211,10 @@ export function CommandPalette() {
   return (
     <div
       className="fixed inset-0 z-[200] flex items-start justify-center pt-[20vh] px-4 bg-black/50 backdrop-blur-sm"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Command palette"
+      data-lenis-prevent
       onClick={close}
       onWheel={(e) => e.stopPropagation()}
     >
@@ -185,6 +226,11 @@ export function CommandPalette() {
           <Search className="w-4 h-4 text-[var(--color-primary)] shrink-0" />
           <input
             ref={inputRef}
+            role="combobox"
+            aria-expanded="true"
+            aria-autocomplete="list"
+            aria-controls={listId}
+            aria-activedescendant={filtered[selected] ? `${listId}-${filtered[selected].id}` : undefined}
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
@@ -198,7 +244,8 @@ export function CommandPalette() {
           <kbd className="hidden border border-border-strong px-1.5 py-0.5 font-mono text-[10px] text-muted-soft sm:inline">ESC</kbd>
         </div>
 
-        <ul className="max-h-72 overflow-y-auto py-2" role="listbox">
+        <p role="status" className="px-4 font-mono text-sm text-red-400">{error}</p>
+        <ul id={listId} aria-label="Commands" className="max-h-72 overflow-y-auto py-2" role="listbox">
           {filtered.length === 0 && (
             <li className="px-4 py-3 font-mono text-sm text-muted-soft">No commands found.</li>
           )}
@@ -209,6 +256,7 @@ export function CommandPalette() {
                 itemRefs.current[i] = el;
                 if (i === filtered.length - 1) itemRefs.current.length = filtered.length;
               }}
+              id={`${listId}-${cmd.id}`}
               role="option"
               aria-selected={i === selected}
               onMouseEnter={() => setSelected(i)}

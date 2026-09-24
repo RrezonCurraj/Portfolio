@@ -1,3 +1,4 @@
+import { portfolioData } from "@/data/portfolio";
 import Image from "next/image";
 import profileImg from "@/images/profile.png";
 import { TextReveal } from "@/components/ui/TextReveal";
@@ -12,7 +13,7 @@ export function About() {
       <div className="max-w-[1400px] mx-auto grid md:grid-cols-12 gap-12 items-center relative z-10">
         
         <div className="md:col-span-7 flex flex-col justify-center">
-          <div className="mb-12 flex flex-col">
+          <div role="heading" aria-level={2} aria-label="About" className="mb-12 flex flex-col">
             <TextReveal
               className="text-5xl font-black uppercase tracking-tighter text-foreground sm:text-7xl md:text-8xl"
               activeColor="var(--color-primary)"
@@ -28,18 +29,12 @@ export function About() {
             </TextReveal>
           </div>
           <div className="editorial-card max-w-2xl space-y-6 border-l-4 border-primary bg-surface p-8 py-2 pl-6 font-mono text-lg text-muted-strong shadow-[8px_8px_0_0_var(--color-accent)] md:text-2xl">
-            <p className="leading-relaxed">
-              &gt; Analyzing core directives... <br/>
-              <span className="text-foreground">With a passion for design and code, I bridge the gap between aesthetics and functionality.</span>
-            </p>
-            <p className="leading-relaxed">
-              &gt; Loading secondary protocols... <br/>
-              <span className="text-foreground">I start every project with a clear goal: to create something that not only looks good but works perfectly.</span>
-            </p>
-            <p className="leading-relaxed">
-              &gt; Executing idle routines... <br/>
-              <span className="text-foreground">When I&apos;m not coding, you can find me exploring new technologies, contributing to open source, or designing user interfaces that delight users.</span>
-            </p>
+            {portfolioData.about.map((item) => (
+              <p key={item.label} className="leading-relaxed">
+                &gt; {item.label} <br />
+                <span className="text-foreground">{item.text}</span>
+              </p>
+            ))}
           </div>
         </div>
 

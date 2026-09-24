@@ -102,7 +102,7 @@ export function Hero() {
             </span>
           </div>
 
-          <div className="mb-12 md:mb-16 space-y-0 leading-[1] md:leading-[0.9] relative flex flex-col" style={tilt(36, 24)}>
+          <div role="heading" aria-level={1} aria-label={portfolioData.personal.tagline} className="mb-12 md:mb-16 space-y-0 leading-[1] md:leading-[0.9] relative flex flex-col" style={tilt(36, 24)}>
             <div className="block z-0 relative left-0 md:left-4">
               <TextReveal
                 className="text-[clamp(2.5rem,10vw,7rem)] font-sans font-black tracking-tighter text-foreground uppercase max-md:whitespace-normal md:whitespace-nowrap"

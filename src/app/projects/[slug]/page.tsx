@@ -3,20 +3,16 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink, Github as GithubIcon } from "lucide-react";
-import { portfolioData } from "@/data/portfolio";
-
-type Project = (typeof portfolioData.projects)[number];
+import { portfolioData, type Project } from "@/data/portfolio";
 
 function getProject(slug: string): Project | undefined {
-  return portfolioData.projects.find((p) => "slug" in p && p.slug === slug);
+  return portfolioData.projects.find((p) => p.slug === slug);
 }
 
 export function generateStaticParams() {
   return portfolioData.projects
-    .filter((p): p is Project & { slug: string; caseStudy: NonNullable<Project["caseStudy" & keyof Project]> } =>
-      "caseStudy" in p && Boolean(p.caseStudy) && "slug" in p && Boolean(p.slug),
-    )
-    .map((p) => ({ slug: p.slug as string }));
+    .filter((project) => project.caseStudy)
+    .map((project) => ({ slug: project.slug }));
 }
 
 export async function generateMetadata(
@@ -24,7 +20,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { slug } = await params;
   const project = getProject(slug);
-  if (!project || !("caseStudy" in project) || !project.caseStudy) {
+  if (!project?.caseStudy) {
     return { title: "Project not found" };
   }
   return {
@@ -43,7 +39,7 @@ export default async function ProjectCaseStudyPage(
 ) {
   const { slug } = await params;
   const project = getProject(slug);
-  if (!project || !("caseStudy" in project) || !project.caseStudy) {
+  if (!project?.caseStudy) {
     notFound();
   }
   const cs = project.caseStudy;

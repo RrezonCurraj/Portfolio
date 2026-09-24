@@ -1,14 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { portfolioData } from "@/data/portfolio";
 import { Linkedin, Github, Send, CheckCircle, AlertCircle } from "lucide-react";
 import { TextReveal } from "@/components/ui/TextReveal";
+
+import { contactLimits, validateContact } from "@/lib/contact";
 
 type Status = "idle" | "sending" | "sent" | "error";
 type FormState = { status: Status; errorMsg?: string };
 
 export function Contact() {
+  const submitting = useRef(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -16,16 +19,23 @@ export function Contact() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitting.current) return;
+    const result = validateContact({ name, email, message });
+    if (result.error) {
+      setForm({ status: "error", errorMsg: result.error });
+      return;
+    }
+    submitting.current = true;
     setForm({ status: "sending" });
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, message }),
+        body: JSON.stringify(result.data),
       });
       const data = await res.json();
       if (!res.ok) {
-        setForm({ status: "error", errorMsg: data.error });
+        setForm({ status: "error", errorMsg: typeof data?.error === "string" ? data.error : "Failed to send. Try emailing me directly." });
         return;
       }
       setForm({ status: "sent" });
@@ -34,6 +44,8 @@ export function Contact() {
       setMessage("");
     } catch {
       setForm({ status: "error", errorMsg: "Network error. Try emailing directly." });
+    } finally {
+      submitting.current = false;
     }
   };
 
@@ -46,7 +58,7 @@ export function Contact() {
 
       <div className="w-full max-w-[1400px] mx-auto z-10">
         <div className="mb-8 md:mb-12 relative">
-          <TextReveal activeColor="var(--color-primary)" className="mx-auto text-5xl font-black leading-none tracking-tighter text-foreground uppercase drop-shadow-xl sm:text-8xl md:text-[12rem] md:whitespace-nowrap">
+          <TextReveal as="h2" activeColor="var(--color-primary)" className="mx-auto text-5xl font-black leading-none tracking-tighter text-foreground uppercase drop-shadow-xl sm:text-8xl md:text-[12rem] md:whitespace-nowrap">
             INITIATE
           </TextReveal>
           <div className="-mt-4 font-mono text-4xl tracking-tighter text-foreground opacity-50 italic sm:text-7xl md:-mt-16 md:text-[9rem]">
@@ -68,7 +80,7 @@ export function Contact() {
               </button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+            <form onSubmit={handleSubmit} className="space-y-4" aria-busy={form.status === "sending"}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1">
                   <label htmlFor="name" className="font-mono text-xs uppercase tracking-widest text-muted">
@@ -80,6 +92,7 @@ export function Contact() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
+                    maxLength={contactLimits.name}
                     autoComplete="name"
                     placeholder="Your name"
                     className="border-2 border-border bg-surface px-4 py-3 font-mono text-sm text-foreground transition-colors placeholder:text-muted-soft focus:border-primary focus:outline-none"
@@ -95,6 +108,7 @@ export function Contact() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    maxLength={contactLimits.email}
                     autoComplete="email"
                     placeholder="your@email.com"
                     className="border-2 border-border bg-surface px-4 py-3 font-mono text-sm text-foreground transition-colors placeholder:text-muted-soft focus:border-primary focus:outline-none"
@@ -110,6 +124,7 @@ export function Contact() {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   required
+                  maxLength={contactLimits.message}
                   rows={6}
                   placeholder="Tell me about your project..."
                   className="resize-none border-2 border-border bg-surface px-4 py-3 font-mono text-sm text-foreground transition-colors placeholder:text-muted-soft focus:border-primary focus:outline-none"

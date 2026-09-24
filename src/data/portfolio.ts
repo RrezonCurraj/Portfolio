@@ -1,4 +1,53 @@
-export const portfolioData = {
+export interface CaseStudy {
+  role: string;
+  problem: string;
+  approach: string;
+  decisions: { title: string; body: string }[];
+  stack: string;
+  outcome: string;
+  learnings: string;
+}
+
+export interface Project {
+  slug: string;
+  title: string;
+  description: string;
+  tech: string[];
+  link: string;
+  github: string;
+  image: string;
+  featured?: boolean;
+  metrics?: string[];
+  caseStudy?: CaseStudy;
+}
+
+interface PortfolioData {
+  personal: {
+    name: string;
+    role: string;
+    tagline: string;
+    bio: string;
+    email: string;
+    github: string;
+    linkedin: string;
+  };
+  about: { label: string; text: string }[];
+  ticker: string[];
+  skillGroups: { title: string; description: string; skills: string[] }[];
+  projects: Project[];
+  contributions: {
+    project: string;
+    repository: string;
+    description: string;
+    tech: string[];
+    summary: string[];
+    items: { number: number; title: string; description: string; status: string; link: string; proof: string }[];
+  }[];
+  experience: { company: string; role: string; period: string; description: string }[];
+  education: { degree: string; institution: string; location: string; period: string; description: string }[];
+}
+
+export const portfolioData: PortfolioData = {
   personal: {
     name: "Rrezon Curraj",
     role: "Creative Frontend Developer",
@@ -8,6 +57,12 @@ export const portfolioData = {
     github: "https://github.com/RrezonCurraj",
     linkedin: "https://www.linkedin.com/in/rrezon/",
   },
+  about: [
+    { label: "Analyzing core directives...", text: "With a passion for design and code, I bridge the gap between aesthetics and functionality." },
+    { label: "Loading secondary protocols...", text: "I start every project with a clear goal: to create something that not only looks good but works perfectly." },
+    { label: "Executing idle routines...", text: "When I'm not coding, you can find me exploring new technologies, contributing to open source, or designing user interfaces that delight users." },
+  ],
+  ticker: ["Available for work", "React", "Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "Node.js", "Based in GMT+1", "Open to remote"],
   skillGroups: [
     {
       title: "Core Expertise",
