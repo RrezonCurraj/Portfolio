@@ -39,10 +39,12 @@ npm run build
 
 Jest and React Testing Library cover selected component behavior and utilities. A passing test suite does not establish browser performance or accessibility compliance.
 
+The [verification workflow](.github/workflows/verify.yml) runs these commands on pushes and pull requests. The component tests cover hero canvas pausing, reduced-motion scrolling, skills content, and utility behavior; they do not replace a browser audit.
+
 ## Case studies
 
 The [Hireon case study](https://www.rrezon.dev/projects/hireon) describes its problem, trade-offs, implementation, and outcome. Case-study content is maintained alongside project data in `src/data/portfolio.ts`.
 
-## License
+## Performance and accessibility evidence
 
-[MIT](LICENSE)
+The 3D background is delayed, capped at 1.5 device pixel ratio, and paused outside the hero viewport. Reduced-motion handling is covered by the scrolling test and implemented for the hero and CSS ticker. These checks verify specific behavior; no Lighthouse score, Core Web Vitals result, or full accessibility audit is published in this repository.
