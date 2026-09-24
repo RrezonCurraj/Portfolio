@@ -39,6 +39,29 @@ export const portfolioData = {
         "Live bilingual client site",
         "3D WebGL gallery + motion system",
       ],
+      caseStudy: {
+        role: "Web design, frontend development, motion design, responsive implementation, and Spanish/English localization.",
+        problem:
+          "Fibo needed a website that expressed its brand identity and strategic process in both Spanish and English while making its publication work easy to explore.",
+        approach:
+          "The site uses Spanish-first localized routes, editorial sections, scroll-led storytelling, and a spatial portfolio gallery. The gallery has a static image-grid path for visitors who prefer reduced motion.",
+        decisions: [
+          {
+            title: "Spanish-first routing",
+            body: "next-intl keeps Spanish and English content in parallel message files. The default route leads to Spanish, while a locale control lets visitors switch to English.",
+          },
+          {
+            title: "Load the 3D gallery when needed",
+            body: "The WebGL gallery is a client-only dynamic import. A static grid preserves access to the publication links when reduced motion is preferred, avoiding a dependency on the 3D interaction for the content itself.",
+          },
+        ],
+        stack:
+          "Next.js App Router, TypeScript, Tailwind CSS, next-intl, GSAP, Framer Motion, and React Three Fiber.",
+        outcome:
+          "The bilingual website is live with localized content, responsive sections, a portfolio gallery, and contact and legal pages. No traffic or conversion figures are included here.",
+        learnings:
+          "The publication content remains available through a simpler presentation when the motion-heavy gallery is unsuitable.",
+      },
     },
     {
       slug: "hireon",
@@ -84,22 +107,49 @@ export const portfolioData = {
     {
       slug: "ntsh-beli",
       title: "Ntsh Beli - Electrical Distributor Platform",
-      description: "A production marketing and product-catalog platform for an authorized electrical distributor in Kosovo. The Albanian-localized experience combines product discovery, installation case studies, and conversion-focused quote and WhatsApp flows.",
+      description: "A production marketing and product-catalog platform for an authorized electrical distributor in Kosovo. The Albanian-localized experience combines product discovery, installation projects, and quote and WhatsApp contact flows.",
       tech: ["Next.js 16", "React 19", "TypeScript", "Tailwind CSS v4", "Drizzle ORM", "PostgreSQL"],
       link: "https://ntshbeli.com/",
       github: "https://github.com/RrezonCurraj/Beli",
       image: "/projects/ntshbeli.webp",
       metrics: [
-        "70k+ product catalog",
+        "Searchable product catalog",
         "Quote + WhatsApp lead flows",
         "Admin + Drizzle/Postgres data layer",
       ],
+      caseStudy: {
+        role: "Website and catalog engineering, including product discovery, project galleries, and quote-request flows.",
+        problem:
+          "Ntsh Beli needed to show its electrical-product range and completed installations while giving professional buyers a direct way to request a quote for a specific item.",
+        approach:
+          "The Albanian site connects category, series, search, and product-detail pages to a quote dialog that carries product context. Visitors can also contact the team through WhatsApp, and project pages show installation photography.",
+        decisions: [
+          {
+            title: "Separate product records from taxonomy",
+            body: "Product records are read from Neon Postgres through Drizzle, while the category and series taxonomy remains in typed site data. React cache deduplicates product loading within a render.",
+          },
+          {
+            title: "Keep quote failures visible",
+            body: "The API validates quote submissions with Zod and reports email-delivery failures as errors, so the form does not claim a successful request when sending fails.",
+          },
+          {
+            title: "Use project image folders",
+            body: "Project galleries discover images from their server-side folders, so adding installation photos does not require editing the gallery component.",
+          },
+        ],
+        stack:
+          "Next.js 16, React 19, TypeScript, Tailwind CSS 4, Drizzle ORM, Neon Postgres, Zod, and Resend.",
+        outcome:
+          "The live site exposes product search, project pages, and product-aware quote and WhatsApp paths. The 70k+ figure on the business site describes the supplier range; it is not a count of searchable listings on this site.",
+        learnings:
+          "A product-aware contact path can connect catalog browsing to a practical sales inquiry without presenting the supplier's full range as indexed inventory.",
+      },
     },
     {
       slug: "hypercast",
       title: "HyperCast - Digital Subscription Platform",
-      description: " Designed and developed a responsive frontend for a premium streaming service using a modern component-based architecture.",
-      tech: ["React.js", "Tailwind CSS", "Vite", "Lucide React","Resend API",],
+      description: "A responsive digital-subscription storefront with pricing, a PayPal checkout interface, and serverless contact and email endpoints.",
+      tech: ["React 18", "Tailwind CSS 4", "Vite", "PayPal", "Resend"],
       link: "https://hypercastt.vercel.app/",
       github: "https://github.com/RrezonCurraj/HyperCast-Digital-Subscription-Platform/tree/portfolio",
       image: "/projects/hypercast.webp",
@@ -107,6 +157,29 @@ export const portfolioData = {
         "Component-driven architecture",
         "Resend-powered contact flow",
       ],
+      caseStudy: {
+        role: "Storefront frontend and serverless email/contact endpoint implementation.",
+        problem:
+          "The storefront needed to explain subscription plans, collect a customer email, present checkout, and route support messages through a single responsive interface.",
+        approach:
+          "A React storefront presents plans and an order modal. The modal renders PayPal buttons, while Vercel functions handle order emails and support submissions. The support form uses reCAPTCHA before sending.",
+        decisions: [
+          {
+            title: "Keep checkout steps in one modal",
+            body: "The order interface moves from email entry to payment and a completion view, keeping plan context visible through the flow.",
+          },
+          {
+            title: "Use serverless email routes",
+            body: "Resend calls run in API functions rather than the browser. The support route verifies a reCAPTCHA token before sending its message.",
+          },
+        ],
+        stack:
+          "React 18, Vite, Tailwind CSS 4, React Router, PayPal Buttons, reCAPTCHA, and Vercel functions using Resend.",
+        outcome:
+          "The source includes pricing, checkout UI, and contact and email flows. A successful live payment or automatic fulfillment was not independently verified for this case study.",
+        learnings:
+          "Payment capture shown in the client is separate from server-side transaction verification; the case study does not present email delivery as proof of a verified purchase.",
+      },
     },
     {
       slug: "maxi24",
@@ -120,6 +193,29 @@ export const portfolioData = {
         "Live production client site",
         "React 19 + Framer Motion",
       ],
+      caseStudy: {
+        role: "Corporate website design and frontend development for Maxi24 GmbH.",
+        problem:
+          "The construction company needed a site that presents its services and lets prospective customers inspect completed work beyond a single homepage image.",
+        approach:
+          "The site combines service sections with project cards and dedicated project-detail routes. Each detail page pairs a description with a photo gallery and lightbox.",
+        decisions: [
+          {
+            title: "Keep project details in one data source",
+            body: "Titles, locations, descriptions, and gallery images are defined in a project data file and rendered by the same detail-page component.",
+          },
+          {
+            title: "Support lightbox navigation",
+            body: "The open gallery supports Escape and arrow-key navigation as well as visible previous, next, and close controls. The image thumbnails themselves still need keyboard-trigger review.",
+          },
+        ],
+        stack:
+          "React 19, Vite, Tailwind CSS, React Router 7, and Framer Motion.",
+        outcome:
+          "The corporate site is live with service information and project-detail galleries. No lead or performance figures are included here.",
+        learnings:
+          "A shared project-detail component makes it practical to expand the portfolio through structured content and image sets.",
+      },
     },
   ],
   contributions: [

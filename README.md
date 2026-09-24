@@ -43,7 +43,7 @@ The [verification workflow](.github/workflows/verify.yml) runs these commands on
 
 ## Case studies
 
-The [Hireon case study](https://www.rrezon.dev/projects/hireon) describes its problem, trade-offs, implementation, and outcome. Case-study content is maintained alongside project data in `src/data/portfolio.ts`.
+The portfolio has project pages for [Fibo](https://www.rrezon.dev/projects/fibo), [Hireon](https://www.rrezon.dev/projects/hireon), [Ntsh Beli](https://www.rrezon.dev/projects/ntsh-beli), [HyperCast](https://www.rrezon.dev/projects/hypercast), and [Maxi24](https://www.rrezon.dev/projects/maxi24). Each links to its project source. The four additional studies describe implemented flows and observable live pages; they do not claim unverified traffic, conversions, accessibility scores, or payment outcomes. Their content is maintained in `src/data/portfolio.ts`.
 
 ## Performance and accessibility evidence
 
