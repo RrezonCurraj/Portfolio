@@ -28,6 +28,7 @@ interface PortfolioData {
     tagline: string;
     bio: string;
     email: string;
+    contactFormRecipient: string;
     github: string;
     linkedin: string;
   };
@@ -53,7 +54,8 @@ export const portfolioData: PortfolioData = {
     role: "Creative Frontend Developer",
     tagline: "I Build Digital Experiences.",
     bio: "I build motion-rich, accessible web experiences with React and Next.js, combining strong visual design with production-ready frontend engineering.",
-    email: "rrezoncurraj10@gmail.com",
+    email: "info@rrezon.dev",
+    contactFormRecipient: "rrezoncurraj10@gmail.com",
     github: "https://github.com/RrezonCurraj",
     linkedin: "https://www.linkedin.com/in/rrezon/",
   },

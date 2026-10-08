@@ -6,6 +6,7 @@ import { ModeProvider } from "@/components/Providers";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { portfolioData } from "@/data/portfolio";
 import "./globals.css";
 
 const archivo = Archivo({
@@ -59,7 +60,7 @@ const personSchema = {
   name: "Rrezon Curraj",
   url: "https://rrezon.dev",
   jobTitle: "Creative Frontend Developer",
-  email: "rrezoncurraj10@gmail.com",
+  email: portfolioData.personal.email,
   sameAs: [
     "https://github.com/RrezonCurraj",
     "https://www.linkedin.com/in/rrezon/",

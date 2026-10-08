@@ -25,7 +25,7 @@ export async function POST(req: Request) {
 
     const { error } = await resend.emails.send({
       from: "Portfolio Contact <onboarding@resend.dev>",
-      to: portfolioData.personal.email,
+      to: portfolioData.personal.contactFormRecipient,
       replyTo: email,
       subject: `[Portfolio] New message from ${name}`,
       text: `Name: ${name}\nEmail: ${email}\n\n${message}`,
