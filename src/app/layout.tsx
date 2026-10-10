@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Archivo, Space_Grotesk } from "next/font/google";
 import { SmoothScroll } from "@/components/SmoothScroll";
-import { NoiseOverlay } from "@/components/ui/NoiseOverlay";
 import { ModeProvider } from "@/components/Providers";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { portfolioData } from "@/data/portfolio";
@@ -74,11 +72,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+    <html lang="en" data-theme="light" className="scroll-smooth" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem("portfolio-theme");if(t!=="light"&&t!=="dark"){t=window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark"}var r=document.documentElement;r.dataset.theme=t;r.classList.toggle("dark",t==="dark");r.style.colorScheme=t}catch(e){}})();`,
+            __html: `(function(){try{var t=localStorage.getItem("portfolio-theme");if(t!=="light"&&t!=="dark"){t="light"}var r=document.documentElement;r.dataset.theme=t;r.classList.toggle("dark",t==="dark");r.style.colorScheme=t}catch(e){}})();`,
           }}
         />
         <script
@@ -91,10 +89,8 @@ export default function RootLayout({
       >
         <ModeProvider>
           <SmoothScroll>
-            <NoiseOverlay />
             {children}
           </SmoothScroll>
-          <ThemeToggle />
         </ModeProvider>
         <Analytics />
         <SpeedInsights />

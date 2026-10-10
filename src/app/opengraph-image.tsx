@@ -1,121 +1,102 @@
 import { ImageResponse } from "next/og";
+import { portfolioCopy, portfolioData } from "@/data/portfolio";
 
 export const runtime = "edge";
-export const alt = "Rrezon Curraj | Creative Frontend Developer";
+export const alt = `${portfolioData.personal.name} | ${portfolioData.personal.role}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default function OgImage() {
   return new ImageResponse(
-    (
+    <div
+      style={{
+        background: "#f3f1e9",
+        color: "#24261f",
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        padding: "45px 100px 40px 55px",
+        fontFamily: "sans-serif",
+      }}
+    >
       <div
         style={{
-          background: "#0f172a",
-          width: "100%",
-          height: "100%",
+          display: "flex",
+          justifyContent: "space-between",
+          fontSize: 18,
+        }}
+      >
+        <span>{portfolioData.personal.name}</span>
+        <span style={{ color: "#656b5d", fontSize: 15 }}>
+          {portfolioCopy.hero.discipline}
+        </span>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          fontSize: 105,
+          letterSpacing: "-6px",
+          lineHeight: 0.95,
+          fontWeight: 500,
+        }}
+      >
+        {portfolioCopy.hero.lines.map((line, index) => (
+          <div key={line} style={{ display: "flex" }}>
+            {line}
+            {index === portfolioCopy.hero.lines.length - 1 && (
+              <span style={{ color: "#53682d" }}>.</span>
+            )}
+          </div>
+        ))}
+      </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          borderTop: "1px solid #d8dacf",
+          paddingTop: 22,
+          color: "#656b5d",
+          fontSize: 15,
+        }}
+      >
+        <span>{portfolioData.personal.email}</span>
+        <span>{portfolioCopy.hero.availability}</span>
+      </div>
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          right: 0,
+          bottom: 0,
+          width: 55,
+          borderLeft: "1px solid #d8dacf",
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          padding: "60px",
-          fontFamily: "sans-serif",
-          position: "relative",
+          alignItems: "flex-end",
+          padding: "20px 0",
         }}
       >
-        {/* Grid lines */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            backgroundImage:
-              "linear-gradient(rgba(34,197,94,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(34,197,94,0.06) 1px, transparent 1px)",
-            backgroundSize: "60px 60px",
-          }}
-        />
-
-        {/* Top label */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-          }}
-        >
+        {[0, 25, 50, 75, 100].map((value) => (
           <div
+            key={value}
             style={{
-              border: "2px solid #22c55e",
-              color: "#22c55e",
-              fontFamily: "monospace",
-              fontSize: "14px",
-              letterSpacing: "0.2em",
-              textTransform: "uppercase",
-              padding: "8px 16px",
-              background: "#1e293b",
+              display: "flex",
+              alignItems: "center",
+              gap: 7,
+              color: "#656b5d",
+              fontSize: 9,
             }}
           >
-            {"// Creative Frontend Developer"}
+            <span>{value}</span>
+            <span style={{ height: 1, width: 12, background: "#bdc1b3" }} />
           </div>
-        </div>
-
-        {/* Main content */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-          <div
-            style={{
-              fontSize: "120px",
-              fontWeight: 900,
-              color: "#f8fafc",
-              letterSpacing: "-4px",
-              lineHeight: 1,
-              textTransform: "uppercase",
-            }}
-          >
-            RREZON
-          </div>
-          <div
-            style={{
-              fontSize: "120px",
-              fontWeight: 900,
-              color: "#22c55e",
-              letterSpacing: "-4px",
-              lineHeight: 1,
-              textTransform: "uppercase",
-            }}
-          >
-            CURRAJ
-          </div>
-        </div>
-
-        {/* Bottom row */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-end",
-          }}
-        >
-          <div
-            style={{
-              fontFamily: "monospace",
-              fontSize: "16px",
-              color: "rgba(248,250,252,0.5)",
-              letterSpacing: "0.15em",
-              textTransform: "uppercase",
-            }}
-          >
-            React · Next.js · TypeScript · Tailwind
-          </div>
-          <div
-            style={{
-              fontFamily: "monospace",
-              fontSize: "16px",
-              color: "#22c55e",
-              letterSpacing: "0.1em",
-            }}
-          >
-            rrezon.dev
-          </div>
-        </div>
+        ))}
       </div>
-    ),
+    </div>,
     { ...size },
   );
 }

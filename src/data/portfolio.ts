@@ -16,6 +16,10 @@ export interface Project {
   link: string;
   github: string;
   image: string;
+  displayTitle?: string;
+  category?: string;
+  summary?: string;
+  imageStyle?: "brand" | "website";
   featured?: boolean;
   metrics?: string[];
   caseStudy?: CaseStudy;
@@ -42,10 +46,28 @@ interface PortfolioData {
     description: string;
     tech: string[];
     summary: string[];
-    items: { number: number; title: string; description: string; status: string; link: string; proof: string }[];
+    items: {
+      number: number;
+      title: string;
+      description: string;
+      status: string;
+      link: string;
+      proof: string;
+    }[];
   }[];
-  experience: { company: string; role: string; period: string; description: string }[];
-  education: { degree: string; institution: string; location: string; period: string; description: string }[];
+  experience: {
+    company: string;
+    role: string;
+    period: string;
+    description: string;
+  }[];
+  education: {
+    degree: string;
+    institution: string;
+    location: string;
+    period: string;
+    description: string;
+  }[];
 }
 
 export const portfolioData: PortfolioData = {
@@ -60,38 +82,85 @@ export const portfolioData: PortfolioData = {
     linkedin: "https://www.linkedin.com/in/rrezon/",
   },
   about: [
-    { label: "Analyzing core directives...", text: "With a passion for design and code, I bridge the gap between aesthetics and functionality." },
-    { label: "Loading secondary protocols...", text: "I start every project with a clear goal: to create something that not only looks good but works perfectly." },
-    { label: "Executing idle routines...", text: "When I'm not coding, you can find me exploring new technologies, contributing to open source, or designing user interfaces that delight users." },
+    {
+      label: "Analyzing core directives...",
+      text: "With a passion for design and code, I bridge the gap between aesthetics and functionality.",
+    },
+    {
+      label: "Loading secondary protocols...",
+      text: "I start every project with a clear goal: to create something that not only looks good but works perfectly.",
+    },
+    {
+      label: "Executing idle routines...",
+      text: "When I'm not coding, you can find me exploring new technologies, contributing to open source, or designing user interfaces that delight users.",
+    },
   ],
-  ticker: ["Available for work", "React", "Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "Node.js", "Based in GMT+1", "Open to remote"],
+  ticker: [
+    "Available for work",
+    "React",
+    "Next.js",
+    "TypeScript",
+    "Tailwind CSS",
+    "Framer Motion",
+    "Node.js",
+    "Based in GMT+1",
+    "Open to remote",
+  ],
   skillGroups: [
     {
       title: "Core Expertise",
-      description: "The tools I use to build responsive, production-ready interfaces.",
+      description:
+        "The tools I use to build responsive, production-ready interfaces.",
       skills: ["React", "Next.js", "TypeScript", "Tailwind CSS"],
     },
     {
       title: "Creative & Interaction",
-      description: "Motion and visual craft that make digital products feel distinctive.",
-      skills: ["GSAP", "Framer Motion", "Three.js", "Adobe Photoshop", "Adobe Illustrator"],
+      description:
+        "Motion and visual craft that make digital products feel distinctive.",
+      skills: [
+        "GSAP",
+        "Framer Motion",
+        "Three.js",
+        "Adobe Photoshop",
+        "Adobe Illustrator",
+      ],
     },
     {
       title: "Supporting Technologies",
-      description: "Backend and delivery tools I use when a product needs more than the interface.",
-      skills: ["Node.js", "Express.js", "REST APIs", "PostgreSQL", "Drizzle ORM"],
+      description:
+        "Backend and delivery tools I use when a product needs more than the interface.",
+      skills: [
+        "Node.js",
+        "Express.js",
+        "REST APIs",
+        "PostgreSQL",
+        "Drizzle ORM",
+      ],
     },
   ],
   projects: [
     {
       slug: "fibo",
+      displayTitle: "Fibo",
+      category: "Brand studio · Design & development",
+      summary:
+        "A bilingual digital home for a strategic brand studio, with editorial typography and a spatial portfolio.",
+      imageStyle: "website",
       featured: true,
       title: "Fibo - Strategic Brand Studio",
-      description: "A bilingual, motion-led website for a strategic brand studio in Mexico. The experience combines editorial typography, interactive storytelling, and a spatial 3D portfolio while staying responsive and accessible.",
-      tech: ["Next.js 15", "TypeScript", "Tailwind CSS", "next-intl", "GSAP", "Three.js"],
+      description:
+        "A bilingual, motion-led website for a strategic brand studio in Mexico. The experience combines editorial typography, interactive storytelling, and a spatial 3D portfolio while staying responsive and accessible.",
+      tech: [
+        "Next.js 15",
+        "TypeScript",
+        "Tailwind CSS",
+        "next-intl",
+        "GSAP",
+        "Three.js",
+      ],
       link: "https://somosfibo.com/es",
       github: "https://github.com/RrezonCurraj/-fibo-website",
-      image: "/projects/fibo.webp",
+      image: "/projects/fibo-feature.webp",
       metrics: [
         "Live bilingual client site",
         "3D WebGL gallery + motion system",
@@ -122,8 +191,13 @@ export const portfolioData: PortfolioData = {
     },
     {
       slug: "hireon",
+      displayTitle: "Hireon",
+      category: "Web application · Development",
+      summary:
+        "A resume analysis tool that turns a PDF into clear, actionable feedback for job seekers.",
       title: "Hireon - AI Resume Analyzer",
-      description: "Hireon is a modern web application that democratizes access to professional resume feedback using cutting-edge AI technology. Job seekers can upload their PDF resumes and receive instant, comprehensive analysis powered by Claude 3.7 Sonnet.",
+      description:
+        "Hireon is a modern web application that democratizes access to professional resume feedback using cutting-edge AI technology. Job seekers can upload their PDF resumes and receive instant, comprehensive analysis powered by Claude 3.7 Sonnet.",
       tech: ["React", "TypeScript", "Tailwind CSS", "Claude 3.7", "Zustand"],
       link: "https://ai-resumerr.vercel.app",
       github: "https://github.com/RrezonCurraj/ai-resume",
@@ -163,9 +237,21 @@ export const portfolioData: PortfolioData = {
     },
     {
       slug: "ntsh-beli",
+      displayTitle: "Ntsh Beli",
+      category: "Product platform · Design & development",
+      summary:
+        "A product catalog and business website connecting electrical-product discovery with practical quote requests.",
       title: "Ntsh Beli - Electrical Distributor Platform",
-      description: "A production marketing and product-catalog platform for an authorized electrical distributor in Kosovo. The Albanian-localized experience combines product discovery, installation projects, and quote and WhatsApp contact flows.",
-      tech: ["Next.js 16", "React 19", "TypeScript", "Tailwind CSS v4", "Drizzle ORM", "PostgreSQL"],
+      description:
+        "A production marketing and product-catalog platform for an authorized electrical distributor in Kosovo. The Albanian-localized experience combines product discovery, installation projects, and quote and WhatsApp contact flows.",
+      tech: [
+        "Next.js 16",
+        "React 19",
+        "TypeScript",
+        "Tailwind CSS v4",
+        "Drizzle ORM",
+        "PostgreSQL",
+      ],
       link: "https://ntshbeli.com/",
       github: "https://github.com/RrezonCurraj/Beli",
       image: "/projects/ntshbeli.webp",
@@ -204,16 +290,19 @@ export const portfolioData: PortfolioData = {
     },
     {
       slug: "hypercast",
+      displayTitle: "HyperCast",
+      category: "Digital storefront · Development",
+      summary:
+        "A subscription storefront with clear pricing, a checkout interface, and serverless contact flows.",
       title: "HyperCast - Digital Subscription Platform",
-      description: "A responsive digital-subscription storefront with pricing, a PayPal checkout interface, and serverless contact and email endpoints.",
+      description:
+        "A responsive digital-subscription storefront with pricing, a PayPal checkout interface, and serverless contact and email endpoints.",
       tech: ["React 18", "Tailwind CSS 4", "Vite", "PayPal", "Resend"],
       link: "https://hypercastt.vercel.app/",
-      github: "https://github.com/RrezonCurraj/HyperCast-Digital-Subscription-Platform/tree/portfolio",
+      github:
+        "https://github.com/RrezonCurraj/HyperCast-Digital-Subscription-Platform/tree/portfolio",
       image: "/projects/hypercast.webp",
-      metrics: [
-        "Component-driven architecture",
-        "Resend-powered contact flow",
-      ],
+      metrics: ["Component-driven architecture", "Resend-powered contact flow"],
       caseStudy: {
         role: "Storefront frontend and serverless email/contact endpoint implementation.",
         problem:
@@ -240,16 +329,24 @@ export const portfolioData: PortfolioData = {
     },
     {
       slug: "maxi24",
+      displayTitle: "Maxi24",
+      category: "Business website · Development",
+      summary:
+        "A responsive corporate website that makes the company’s services and completed projects easy to explore.",
       title: "Maxi24 Corporate Website",
-      description: "A responsive corporate portfolio for a Swiss construction company. Showcases craftsmanship through an interactive gallery and service overviews with a polished, mobile-first design.",
-      tech: ["React 19", "Tailwind CSS", "Framer Motion", 'Vite', 'React Router v7'],
+      description:
+        "A responsive corporate portfolio for a Swiss construction company. Showcases craftsmanship through an interactive gallery and service overviews with a polished, mobile-first design.",
+      tech: [
+        "React 19",
+        "Tailwind CSS",
+        "Framer Motion",
+        "Vite",
+        "React Router v7",
+      ],
       link: "https://www.maxi24gmbh.ch/",
       github: "https://github.com/RrezonCurraj/Maxi24-GmbH",
       image: "/projects/maxi.webp",
-      metrics: [
-        "Live production client site",
-        "React 19 + Framer Motion",
-      ],
+      metrics: ["Live production client site", "React 19 + Framer Motion"],
       caseStudy: {
         role: "Corporate website design and frontend development for Maxi24 GmbH.",
         problem:
@@ -348,32 +445,148 @@ export const portfolioData: PortfolioData = {
   ],
   education: [
     {
-      degree: 'Bachelor of Science (BSc) in Computer Science with Specialization in Software Design',
+      degree:
+        "Bachelor of Science (BSc) in Computer Science with Specialization in Software Design",
       institution: 'University of Prizren "Ukshin Hoti"',
-      location: 'Prizren, Kosovo',
-      period: '2019 - 2025',
-      description: '• Bachelor Thesis: "Cloud Computing Usage Costs and Optimization"\n• Officially recognized by the ZAB as equivalent to a German Bachelor’s degree.',
+      location: "Prizren, Kosovo",
+      period: "2019 - 2025",
+      description:
+        '• Bachelor Thesis: "Cloud Computing Usage Costs and Optimization"\n• Officially recognized by the ZAB as equivalent to a German Bachelor’s degree.',
     },
     {
-      degree: 'Microsoft Azure Cloud',
-      institution: 'Cacttus Education',
-      location: 'Prizren, Kosovo',
-      period: '11.2023 - 04.2024',
-      description: '',
+      degree: "Microsoft Azure Cloud",
+      institution: "Cacttus Education",
+      location: "Prizren, Kosovo",
+      period: "11.2023 - 04.2024",
+      description: "",
     },
     {
-      degree: 'iOS Developer',
-      institution: 'Rit Kosovo / Cactus Education',
-      location: 'Prishtina, Kosovo',
-      period: '05.2022 - 11.2022',
-      description: '',
+      degree: "iOS Developer",
+      institution: "Rit Kosovo / Cactus Education",
+      location: "Prishtina, Kosovo",
+      period: "05.2022 - 11.2022",
+      description: "",
     },
     {
-      degree: 'Graphic Designer',
-      institution: 'UnitedPixels',
-      location: 'Prishtina, Kosovo',
-      period: '11.2020 - 02.2021',
-      description: '',
-    }
+      degree: "Graphic Designer",
+      institution: "UnitedPixels",
+      location: "Prishtina, Kosovo",
+      period: "11.2020 - 02.2021",
+      description: "",
+    },
   ],
 };
+
+export const portfolioCopy = {
+  navigation: [
+    { id: "home", label: "Intro" },
+    { id: "projects", label: "Work" },
+    { id: "about", label: "About" },
+    { id: "experience", label: "Experience" },
+    { id: "contributions", label: "Open source" },
+    { id: "contact", label: "Contact" },
+  ],
+  header: {
+    contact: "Let’s talk",
+    openMenu: "Open menu",
+    closeMenu: "Close menu",
+    sections: "Sections",
+    mobileSections: "Mobile sections",
+    progress: "Page scroll progress",
+    scroll: "Scroll to explore",
+    commands: "Open command palette",
+    home: "Back to home",
+    resume: "Résumé view",
+    portfolio: "Back to portfolio",
+    lightTheme: "Switch to light mode",
+    darkTheme: "Switch to dark mode",
+  },
+  hero: {
+    availability: "Available for work",
+    lines: ["Creative", "frontend", "developer"],
+    work: "Selected work",
+    cv: "Download CV",
+    discipline: "Design & development",
+    scroll: "Scroll to explore",
+  },
+  projects: {
+    number: "01",
+    title: "Selected work",
+    intro:
+      "A few things I’ve designed and built. Each with its own story, and a careful eye for the details.",
+    featured: "Featured project",
+    caseStudy: "Case study",
+    live: "Live site",
+    source: "Source",
+  },
+  about: {
+    number: "02",
+    title: "A little about me",
+    heading: "Good design.\nSolid engineering.",
+    cv: "More about my background",
+    photoAlt: "Portrait of Rrezon Curraj",
+    caption: "Rrezon Curraj / Design & code",
+  },
+  skills: { title: "My toolkit", intro: "The tools behind the work." },
+  experience: {
+    number: "03",
+    title: "Along the way",
+    intro: "Experience in design, development, and bringing ideas to life.",
+    education: "Education & training",
+  },
+  contributions: {
+    number: "04",
+    title: "Built together",
+    intro: "Contributing to the tools and communities I care about.",
+    repository: "Repository",
+    details: "Explore contributions",
+    pullRequest: "View pull request",
+  },
+  contact: {
+    number: "05",
+    title: "Get in touch",
+    lines: ["Let’s build", "something good"],
+    intro:
+      "A project, an opportunity, or just a hello. I’d love to hear what you have in mind.",
+    name: "Name",
+    email: "Email",
+    message: "Message",
+    namePlaceholder: "Your name",
+    emailPlaceholder: "you@example.com",
+    messagePlaceholder: "Tell me a little about your project…",
+    send: "Send message",
+    sending: "Sending…",
+    success: "Message received.",
+    successNote: "Thanks for reaching out. I’ll get back to you soon.",
+    another: "Send another message",
+    direct: "Prefer email?",
+    github: "GitHub",
+    linkedin: "LinkedIn",
+    backToTop: "Back to top",
+    deliveryError: "Failed to send. Try emailing me directly.",
+    networkError: "Network error. Try emailing directly.",
+  },
+  caseStudy: {
+    label: "Project notes",
+    back: "Back to work",
+    live: "Visit website",
+    source: "View source",
+    contact: "Work with me",
+    sections: [
+      "The problem",
+      "My role",
+      "The approach",
+      "Technical decisions",
+      "The stack",
+      "The outcome",
+      "What I learned",
+    ],
+  },
+  notFound: {
+    code: "404",
+    title: "Page not found",
+    description:
+      "The page you’re looking for isn’t here. Let’s get you back to the work.",
+    back: "Back to home",
+  },
+} as const;

@@ -5,13 +5,13 @@ import { Download, Mail, ExternalLink, Github, Briefcase, Code, User, Graduation
 
 export function RecruiterDashboard() {
   return (
-    <div className="min-h-screen bg-background px-4 pt-24 pb-20 font-sans text-foreground selection:bg-primary/30 md:px-12 md:pt-32">
+    <div id="home" className="min-h-screen bg-background px-4 pt-24 pb-20 font-sans text-foreground selection:bg-primary/30 md:px-12 md:pt-32">
       <div className="max-w-5xl mx-auto">
         
         {/* Header Actions */}
         <div className="mb-12 flex flex-col items-start justify-between gap-4 border-b border-border pb-6 sm:flex-row sm:items-center">
           <div>
-            <h1 className="mb-2 text-4xl font-black text-foreground">{portfolioData.personal.name}</h1>
+            <h1 tabIndex={-1} className="mb-2 text-4xl font-black text-foreground">{portfolioData.personal.name}</h1>
             <p className="text-xl font-semibold text-primary">{portfolioData.personal.role}</p>
           </div>
           <div className="flex gap-3">

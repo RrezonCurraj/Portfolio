@@ -23,7 +23,7 @@ it('prevents duplicate requests and renders confirmation after delivery', async 
   expect(global.fetch).toHaveBeenCalledWith('/api/contact', expect.objectContaining({ body: '{"name":"Ada","email":"ada@example.com","message":"Hello"}' }));
   expect(screen.getByRole('button', { name: /Sending/i })).toBeDisabled();
   await act(async () => { complete({ ok: true, json: async () => ({ success: true }) } as Response); });
-  expect(screen.getByText('Signal received.')).toBeInTheDocument();
+  expect(screen.getByRole('status')).toHaveTextContent('Message received.');
 });
 
 it('rejects whitespace-only input before making a request', () => {

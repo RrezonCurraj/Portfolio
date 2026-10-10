@@ -1,68 +1,39 @@
-import { portfolioData } from "@/data/portfolio";
 import Image from "next/image";
-import profileImg from "@/images/profile.png";
-import { TextReveal } from "@/components/ui/TextReveal";
+import { ArrowUpRight } from "lucide-react";
+import { portfolioCopy, portfolioData } from "@/data/portfolio";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import profileImage from "@/images/profile.png";
 
 export function About() {
+  const copy = portfolioCopy.about;
   return (
-    <section id="about" className="relative overflow-hidden border-t-4 border-border bg-background px-4 py-32 text-foreground md:px-12">
-      <div 
-        className="absolute top-0 right-0 w-[800px] h-[800px] rounded-full pointer-events-none opacity-20" 
-        style={{ background: "radial-gradient(circle, var(--color-accent) 0%, transparent 60%)" }}
-      />
-      <div className="max-w-[1400px] mx-auto grid md:grid-cols-12 gap-12 items-center relative z-10">
-        
-        <div className="md:col-span-7 flex flex-col justify-center">
-          <div role="heading" aria-level={2} aria-label="About" className="mb-12 flex flex-col">
-            <TextReveal
-              className="text-5xl font-black uppercase tracking-tighter text-foreground sm:text-7xl md:text-8xl"
-              activeColor="var(--color-primary)"
-            >
-              SYSTEM
-            </TextReveal>
-            <TextReveal
-              className="text-5xl sm:text-7xl md:text-8xl font-black uppercase tracking-tighter text-[var(--color-primary)] text-glow drop-shadow-lg"
-              activeColor="var(--foreground)"
-              delay={0.1}
-            >
-              STATUS
-            </TextReveal>
-          </div>
-          <div className="editorial-card max-w-2xl space-y-6 border-l-4 border-primary bg-surface p-8 py-2 pl-6 font-mono text-lg text-muted-strong shadow-[8px_8px_0_0_var(--color-accent)] md:text-2xl">
-            {portfolioData.about.map((item) => (
-              <p key={item.label} className="leading-relaxed">
-                &gt; {item.label} <br />
-                <span className="text-foreground">{item.text}</span>
-              </p>
-            ))}
-          </div>
+    <section
+      id="about"
+      className="section-shell content-section divided-section"
+    >
+      <SectionHeading number={copy.number} title={copy.title} />
+      <div className="about-grid">
+        <div className="about-copy">
+          <h3 className="about-title">{copy.heading}</h3>
+          {portfolioData.about.map((item) => (
+            <p key={item.label}>{item.text}</p>
+          ))}
+          <a href="/Rrezon_Curraj_CV.pdf" download className="text-link">
+            {copy.cv}
+            <ArrowUpRight size={16} aria-hidden="true" />
+          </a>
         </div>
-
-        <div className="md:col-span-5 relative group mt-12 md:mt-0">
-          <div className="relative z-10 aspect-[3/4] overflow-hidden border-4 border-border-strong bg-surface shadow-[-12px_12px_0_0_var(--color-accent)] transition-all duration-300 hover:-translate-y-2 hover:translate-x-2 hover:border-primary">
-            <Image 
-              src={profileImg} 
-              alt="Rrezon Profile" 
+        <figure className="profile-photo">
+          <div className="profile-image">
+            <Image
+              src={profileImage}
+              alt={copy.photoAlt}
               fill
-              className="object-cover object-center filter grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700"
-              sizes="(max-width: 768px) 100vw, 50vw"
+              sizes="(max-width: 767px) 280px, (max-width: 1050px) 220px, 300px"
             />
-            <div className="absolute inset-0 bg-background/30 mix-blend-overlay"></div>
-            <div className="absolute bottom-6 left-6 right-6">
-               <div className="inline-block border-2 border-accent-foreground bg-accent px-4 py-2 font-mono text-sm font-bold uppercase text-accent-foreground shadow-[4px_4px_0_0_var(--color-accent-foreground)]">
-                 ID: RREZON_01
-               </div>
-            </div>
           </div>
-          
-          {/* Decorative Elements */}
-          <div className="absolute -left-12 top-1/2 -translate-y-1/2 flex flex-col gap-3 opacity-60">
-             {[...Array(8)].map((_, i) => (
-                <div key={i} className="h-3 w-3 bg-accent"></div>
-             ))}
-          </div>
-        </div>
-        
+          <figcaption>{copy.caption}</figcaption>
+        </figure>
       </div>
     </section>
   );

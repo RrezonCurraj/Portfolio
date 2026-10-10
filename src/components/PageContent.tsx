@@ -2,34 +2,42 @@
 
 import { useMode } from "@/components/Providers";
 import { Hero } from "@/components/Hero";
-import dynamic from "next/dynamic";
-
-const RecruiterDashboard = dynamic(() => import("@/components/RecruiterDashboard").then((mod) => mod.RecruiterDashboard));
-const About = dynamic(() => import("@/components/About").then((mod) => mod.About));
-const Skills = dynamic(() => import("@/components/Skills").then((mod) => mod.Skills));
-const Projects = dynamic(() => import("@/components/Projects").then((mod) => mod.Projects));
-const Contributions = dynamic(() => import("@/components/Contributions").then((mod) => mod.Contributions));
-const Experience = dynamic(() => import("@/components/Experience").then((mod) => mod.Experience));
-const Contact = dynamic(() => import("@/components/Contact").then((mod) => mod.Contact));
+import { Projects } from "@/components/Projects";
+import { About } from "@/components/About";
+import { Skills } from "@/components/Skills";
+import { Experience } from "@/components/Experience";
+import { Contributions } from "@/components/Contributions";
+import { Contact } from "@/components/Contact";
+import { RecruiterDashboard } from "@/components/RecruiterDashboard";
+import { useEffect, useRef } from "react";
 
 export function PageContent() {
   const { isRecruiterMode } = useMode();
-
-  if (isRecruiterMode) {
-    return <RecruiterDashboard />;
-  }
-
+  const content = useRef<HTMLDivElement>(null);
+  const previousMode = useRef(isRecruiterMode);
+  useEffect(() => {
+    if (previousMode.current === isRecruiterMode) return;
+    previousMode.current = isRecruiterMode;
+    window.scrollTo({ top: 0, behavior: "instant" });
+    content.current
+      ?.querySelector<HTMLElement>("h1")
+      ?.focus({ preventScroll: true });
+  }, [isRecruiterMode]);
   return (
-    <>
-      <div className="relative z-10 rounded-b-3xl border-b border-border bg-background shadow-[0_20px_50px_var(--page-shadow)]">
-        <Hero />
-        <About />
-        <Skills />
-        <Projects />
-        <Contributions />
-        <Experience />
-      </div>
-      <Contact />
-    </>
+    <div ref={content}>
+      {isRecruiterMode ? (
+        <RecruiterDashboard />
+      ) : (
+        <>
+          <Hero />
+          <Projects />
+          <About />
+          <Skills />
+          <Experience />
+          <Contributions />
+          <Contact />
+        </>
+      )}
+    </div>
   );
 }

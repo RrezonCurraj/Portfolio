@@ -1,137 +1,200 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { ArrowLeft, ArrowUpRight, Menu, Search, X } from "lucide-react";
+import { portfolioCopy, portfolioData } from "@/data/portfolio";
 import { useMode } from "@/components/Providers";
-import { prefersReducedMotion } from "@/lib/motion";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { RailNavigation } from "@/components/RailNavigation";
+import { ScrollRuler } from "@/components/ScrollRuler";
 import { openCommandPalette } from "@/components/CommandPalette";
-
-const navItems = [
-  { name: "About", id: "about" },
-  { name: "Skills", id: "skills" },
-  { name: "Projects", id: "projects" },
-  { name: "Contributions", id: "contributions" },
-  { name: "Experience", id: "experience" },
-];
+import { prefersReducedMotion } from "@/lib/motion";
+import { cn } from "@/lib/utils";
 
 export function Navbar() {
-  const navRef = useRef<HTMLElement>(null);
-  const { isRecruiterMode, toggleMode } = useMode();
-  const [activeSection, setActiveSection] = useState<string>("");
+  const { isRecruiterMode, toggleMode, theme } = useMode();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [scroll, setScroll] = useState({ progress: 0, active: "home" });
+  const menuButton = useRef<HTMLButtonElement>(null);
+  const copy = portfolioCopy.header;
 
   useEffect(() => {
-    if (typeof IntersectionObserver === "undefined") return;
-    const observed = new Set<Element>();
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.find((entry) => entry.isIntersecting);
-        if (visible) setActiveSection(visible.target.id);
-      },
-      { rootMargin: "-40% 0px -55% 0px", threshold: 0 }
-    );
-    const observeSections = () => {
-      for (const element of observed) {
-        if (!element.isConnected) {
-          observer.unobserve(element);
-          observed.delete(element);
-        }
-      }
-      navItems.forEach(({ id }) => {
-        const element = document.getElementById(id);
-        if (element && !observed.has(element)) {
-          observer.observe(element);
-          observed.add(element);
-        }
-      });
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const height = Math.max(
+        document.documentElement.scrollHeight,
+        document.body.scrollHeight,
+      );
+      const distance = Math.max(0, height - window.innerHeight);
+      const progress = distance
+        ? Math.min(100, Math.max(0, (window.scrollY / distance) * 100))
+        : 0;
+      const sections = portfolioCopy.navigation
+        .flatMap(({ id }) => {
+          const element = document.getElementById(id);
+          return element
+            ? [
+                {
+                  id,
+                  top: element.getBoundingClientRect().top + window.scrollY,
+                },
+              ]
+            : [];
+        })
+        .sort((a, b) => a.top - b.top);
+      const cursor = Math.max(0, window.scrollY) + window.innerHeight * 0.22;
+      const current =
+        progress === 100
+          ? sections.at(-1)
+          : (sections.filter((section) => section.top <= cursor).at(-1) ??
+            sections[0]);
+      const active = current?.id ?? "home";
+      setScroll((previous) =>
+        previous.progress === progress && previous.active === active
+          ? previous
+          : { progress, active },
+      );
     };
-    observeSections();
-    const mutations = new MutationObserver(observeSections);
-    mutations.observe(document.body, { childList: true, subtree: true });
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    schedule();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    const observer =
+      typeof ResizeObserver === "undefined"
+        ? null
+        : new ResizeObserver(schedule);
+    observer?.observe(document.body);
     return () => {
-      observer.disconnect();
-      mutations.disconnect();
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      observer?.disconnect();
     };
   }, [isRecruiterMode]);
 
-  useGSAP(() => {
-    if (prefersReducedMotion()) return;
-    gsap.from(navRef.current, {
-      y: -100,
-      duration: 0.3,
-      ease: "power2.out",
-    });
-  }, { scope: navRef });
+  useEffect(() => {
+    if (!menuOpen) return;
+    const close = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+        menuButton.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", close);
+    return () => window.removeEventListener("keydown", close);
+  }, [menuOpen]);
+
+  const sectionLinks = (mobile = false) =>
+    portfolioCopy.navigation.map((item) => (
+      <a
+        key={item.id}
+        href={`#${item.id}`}
+        className={cn("section-link", scroll.active === item.id && "is-active")}
+        aria-current={scroll.active === item.id ? "location" : undefined}
+        onClick={() => {
+          if (mobile) setMenuOpen(false);
+        }}
+      >
+        {item.label}
+      </a>
+    ));
 
   return (
-    <nav
-      ref={navRef}
-      aria-label="Primary"
-      className="fixed top-0 left-0 w-full z-50 px-4 md:px-12 py-4 md:py-6 pointer-events-none"
-    >
-      <div className="max-w-[1400px] mx-auto flex justify-between items-start">
-        <div className="pointer-events-auto flex items-center gap-8 border-2 border-control bg-surface px-3 py-2 shadow-[4px_4px_0px_var(--color-accent)] transition-transform hover:-translate-x-1 hover:translate-y-1 md:px-6 md:py-3">
-          <Link
-            href="/"
-            aria-label="Rrezon Curraj home"
-            onClick={(e) => {
-              if (window.location.pathname === "/") {
-                e.preventDefault();
-                window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? "instant" : "smooth" });
-              }
-            }}
-            className="text-xl font-black tracking-tighter text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary md:text-2xl"
-          >
-            RREZON<span className="text-[var(--color-primary)]">_</span>
-          </Link>
-          <div className="hidden lg:flex items-center gap-8 font-mono text-sm uppercase tracking-widest font-bold">
-            {navItems.map((item) => {
-              const isActive = activeSection === item.id;
-              return (
-                <Link
-                  key={item.name}
-                  href={`#${item.id}`}
-                  aria-current={isActive ? "location" : undefined}
-                  className={`group relative transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${isActive ? "text-primary" : "text-muted hover:text-primary"}`}
-                >
-                  {item.name}
-                  <span className={`absolute -bottom-1 left-0 w-full h-[2px] bg-[var(--color-primary)] transition-transform origin-left ${isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100 group-focus-visible:scale-x-100"}`} />
-                </Link>
-              );
-            })}
+    <>
+      <header className="site-header">
+        <Link
+          href="/"
+          className="wordmark"
+          aria-label={`${portfolioData.personal.name} home`}
+          onClick={(event) => {
+            if (window.location.pathname !== "/") return;
+            event.preventDefault();
+            if (isRecruiterMode) toggleMode();
+            window.scrollTo({
+              top: 0,
+              behavior: prefersReducedMotion() ? "instant" : "smooth",
+            });
+            setMenuOpen(false);
+          }}
+        >
+          {portfolioData.personal.name.split(" ")[0].toLowerCase()}
+          <span aria-hidden="true">®</span>
+        </Link>
+        <span className="header-role">{portfolioData.personal.role}</span>
+        <div className="header-actions">
+          {isRecruiterMode && (
             <button
-              onClick={openCommandPalette}
-              aria-label="Open command palette"
-              className="border border-border-strong px-2 py-1 font-mono text-xs tracking-widest text-muted-soft transition-colors hover:border-primary hover:text-primary"
+              type="button"
+              className="text-link resume-return"
+              aria-label={copy.portfolio}
+              onClick={toggleMode}
             >
-              ⌘K
+              <ArrowLeft size={16} aria-hidden="true" />
+              <span>{copy.portfolio}</span>
             </button>
-          </div>
-        </div>
-
-        <div className="pointer-events-auto flex items-center gap-2 md:gap-4">
+          )}
           <button
-            onClick={toggleMode}
-            aria-pressed={isRecruiterMode}
-            className={`inline-block transform border-2 px-2 py-2 font-mono text-[10px] font-black uppercase tracking-widest shadow-[4px_4px_0px_currentColor] transition-colors hover:-translate-x-1 hover:translate-y-1 hover:shadow-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background md:px-4 md:py-3 md:text-sm ${
-              isRecruiterMode
-                ? "border-primary bg-background text-primary"
-                : "border-foreground bg-surface text-foreground"
-            }`}
+            type="button"
+            onClick={openCommandPalette}
+            aria-label={copy.commands}
+            className="icon-button command-trigger"
           >
-            <span className="hidden md:inline">[ RECRUITER MODE: {isRecruiterMode ? "ON" : "OFF"} ]</span>
-            <span className="md:hidden">[ RECRUITER: {isRecruiterMode ? "ON" : "OFF"} ]</span>
+            <Search size={17} aria-hidden="true" />
           </button>
-          <Link
-            href="#contact"
-            aria-label="Go to contact section"
-            className="hidden transform border-2 border-control bg-accent px-6 py-3 font-mono text-sm font-black uppercase tracking-widest text-accent-foreground shadow-[4px_4px_0px_var(--color-accent)] transition-colors hover:-translate-x-1 hover:translate-y-1 hover:bg-surface hover:text-primary hover:shadow-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background md:inline-block"
+          <ThemeToggle />
+          {!isRecruiterMode && (
+            <a
+              href="#contact"
+              className="header-contact"
+              aria-label={copy.contact}
+            >
+              {copy.contact}
+              <ArrowUpRight size={17} aria-hidden="true" />
+            </a>
+          )}
+          <button
+            ref={menuButton}
+            type="button"
+            className="icon-button menu-trigger"
+            aria-label={menuOpen ? copy.closeMenu : copy.openMenu}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-navigation"
+            onClick={() => setMenuOpen((open) => !open)}
           >
-            [ INITIALIZE ]
-          </Link>
+            {menuOpen ? (
+              <X size={20} aria-hidden="true" />
+            ) : (
+              <Menu size={20} aria-hidden="true" />
+            )}
+          </button>
         </div>
-      </div>
-    </nav>
+        {menuOpen && (
+          <nav
+            id="mobile-navigation"
+            className="mobile-navigation"
+            aria-label={copy.mobileSections}
+          >
+            {sectionLinks(true)}
+          </nav>
+        )}
+      </header>
+      <aside className="scroll-rail">
+        <RailNavigation
+          items={portfolioCopy.navigation}
+          activeId={scroll.active}
+          enabled={!isRecruiterMode}
+          theme={theme}
+          label={copy.sections}
+        />
+        <ScrollRuler progress={scroll.progress} label={copy.progress} />
+        <span className="rail-progress" aria-hidden="true">
+          {String(Math.round(scroll.progress)).padStart(2, "0")}%
+        </span>
+      </aside>
+    </>
   );
 }

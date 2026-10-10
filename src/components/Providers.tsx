@@ -22,8 +22,8 @@ function subscribeToTheme(listener: () => void) {
 }
 
 function getTheme(): Theme {
-  if (typeof document === "undefined") return "dark";
-  return document.documentElement.dataset.theme === "light" ? "light" : "dark";
+  if (typeof document === "undefined") return "light";
+  return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
 }
 
 function applyTheme(theme: Theme) {
@@ -41,7 +41,7 @@ function applyTheme(theme: Theme) {
 
 export function ModeProvider({ children }: { children: ReactNode }) {
   const [isRecruiterMode, setIsRecruiterMode] = useState(false);
-  const theme = useSyncExternalStore<Theme>(subscribeToTheme, getTheme, () => "dark");
+  const theme = useSyncExternalStore<Theme>(subscribeToTheme, getTheme, () => "light");
 
   useEffect(() => {
     document.documentElement.classList.toggle("recruiter-mode", isRecruiterMode);
