@@ -500,6 +500,13 @@ export const portfolioCopy = {
       { id: "contributions", label: "Open source" },
     ],
     menu: "Menu",
+    work: "View work",
+    project: "View project",
+    contactPrompt: "Have a project? Let’s talk",
+    about: "About",
+    skills: "Toolkit",
+    experience: "Experience",
+    contributions: "Open source",
   },
   header: {
     contact: "Let’s talk",

@@ -5,7 +5,7 @@ export function Skills() {
   return (
     <section id="skills" className="section-shell skills-section">
       <div className="subsection-heading">
-        <h2>{copy.title}</h2>
+        <h2><span className="desktop-copy">{copy.title}</span><span className="compact-copy">{portfolioCopy.mobile.skills}</span></h2>
         <p>{copy.intro}</p>
       </div>
       {portfolioData.skillGroups.map((group) => (

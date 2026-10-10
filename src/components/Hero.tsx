@@ -58,13 +58,14 @@ export function Hero() {
         <p>{portfolioData.personal.bio}</p>
         <div className="hero-links">
           <a href="#projects" className="text-link">
-            {copy.work}
+            <span className="desktop-copy">{copy.work}</span>
+            <span className="compact-copy">{portfolioCopy.mobile.work}</span>
             <ArrowDownRight size={23} aria-hidden="true" />
           </a>
           <a
             href="/Rrezon_Curraj_CV.pdf"
             download
-            className="text-link muted-link"
+            className="text-link muted-link hero-cv"
           >
             {copy.cv}
             <ArrowUpRight size={16} aria-hidden="true" />

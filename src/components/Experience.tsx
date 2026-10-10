@@ -11,7 +11,7 @@ export function Experience() {
     >
       <SectionHeading
         number={copy.number}
-        title={copy.title}
+        title={copy.title} compactTitle={portfolioCopy.mobile.experience}
         description={copy.intro}
       />
       {portfolioData.experience.map((job, index) => (

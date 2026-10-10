@@ -11,7 +11,7 @@ export function Contributions() {
     >
       <SectionHeading
         number={copy.number}
-        title={copy.title}
+        title={copy.title} compactTitle={portfolioCopy.mobile.contributions}
         description={copy.intro}
       />
       {portfolioData.contributions.map((contribution) => (

@@ -11,7 +11,7 @@ export function About() {
       id="about"
       className="section-shell content-section divided-section"
     >
-      <SectionHeading number={copy.number} title={copy.title} />
+      <SectionHeading number={copy.number} title={copy.title} compactTitle={portfolioCopy.mobile.about} />
       <div className="about-grid">
         <div className="about-copy">
           <h3 className="about-title">{copy.heading}</h3>
@@ -29,7 +29,7 @@ export function About() {
               src={profileImage}
               alt={copy.photoAlt}
               fill
-              sizes="(max-width: 767px) 280px, (max-width: 1050px) 220px, 300px"
+              sizes="(max-width: 767px) 140px, (max-width: 1050px) 220px, 300px"
             />
           </div>
           <figcaption>{copy.caption}</figcaption>
