@@ -486,12 +486,28 @@ export const portfolioCopy = {
     { id: "contributions", label: "Open source" },
     { id: "contact", label: "Contact" },
   ],
+  mobile: {
+    navigation: [
+      { id: "projects", label: "Work", members: ["home", "projects"] },
+      { id: "about", label: "About", members: ["about", "skills", "experience", "education", "contributions"] },
+      { id: "contact", label: "Contact", members: ["contact"] },
+    ],
+    background: [
+      { id: "about", label: "About" },
+      { id: "skills", label: "Toolkit" },
+      { id: "experience", label: "Experience" },
+      { id: "education", label: "Education & training" },
+      { id: "contributions", label: "Open source" },
+    ],
+    menu: "Menu",
+  },
   header: {
     contact: "Let’s talk",
     openMenu: "Open menu",
     closeMenu: "Close menu",
     sections: "Sections",
     mobileSections: "Mobile sections",
+    additionalNavigation: "Additional navigation",
     progress: "Page scroll progress",
     scroll: "Scroll to explore",
     commands: "Open command palette",

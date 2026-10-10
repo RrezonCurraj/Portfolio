@@ -7,6 +7,8 @@ import { portfolioCopy, portfolioData } from "@/data/portfolio";
 import { useMode } from "@/components/Providers";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { RailNavigation } from "@/components/RailNavigation";
+import { MobileNavigation } from "@/components/MobileNavigation";
+import { useCompactLayout } from "@/lib/useCompactLayout";
 import { ScrollRuler } from "@/components/ScrollRuler";
 import { openCommandPalette } from "@/components/CommandPalette";
 import { prefersReducedMotion } from "@/lib/motion";
@@ -18,6 +20,20 @@ export function Navbar() {
   const [scroll, setScroll] = useState({ progress: 0, active: "home" });
   const menuButton = useRef<HTMLButtonElement>(null);
   const copy = portfolioCopy.header;
+  const compact = useCompactLayout();
+  const header = useRef<HTMLElement>(null);
+  const activeGroup = portfolioCopy.mobile.navigation.find(item => item.members.includes(scroll.active))?.id ?? "projects";
+
+  useEffect(() => {
+    const element = header.current;
+    if (!element) return;
+    const shell = element.closest<HTMLElement>(".portfolio-shell") ?? document.documentElement;
+    const measure = () => shell.style.setProperty("--sticky-header-height", `${element.getBoundingClientRect().height}px`);
+    measure();
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(measure);
+    observer?.observe(element);
+    return () => { observer?.disconnect(); shell.style.removeProperty("--sticky-header-height"); };
+  }, [compact, isRecruiterMode]);
 
   useEffect(() => {
     let frame = 0;
@@ -31,8 +47,11 @@ export function Navbar() {
       const progress = distance
         ? Math.min(100, Math.max(0, (window.scrollY / distance) * 100))
         : 0;
-      const sections = portfolioCopy.navigation
-        .flatMap(({ id }) => {
+      const ids = compact && !isRecruiterMode
+        ? portfolioCopy.mobile.navigation.flatMap(item => item.members)
+        : portfolioCopy.navigation.map(item => item.id);
+      const sections = ids
+        .flatMap((id) => {
           const element = document.getElementById(id);
           return element
             ? [
@@ -44,7 +63,9 @@ export function Navbar() {
             : [];
         })
         .sort((a, b) => a.top - b.top);
-      const cursor = Math.max(0, window.scrollY) + window.innerHeight * 0.22;
+      const cursor = Math.max(0, window.scrollY) + (compact
+        ? (header.current?.getBoundingClientRect().height ?? 100) + 13
+        : window.innerHeight * 0.22);
       const current =
         progress === 100
           ? sections.at(-1)
@@ -74,7 +95,7 @@ export function Navbar() {
       window.removeEventListener("resize", schedule);
       observer?.disconnect();
     };
-  }, [isRecruiterMode]);
+  }, [isRecruiterMode, compact]);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -88,15 +109,15 @@ export function Navbar() {
     return () => window.removeEventListener("keydown", close);
   }, [menuOpen]);
 
-  const sectionLinks = (mobile = false) =>
-    portfolioCopy.navigation.map((item) => (
+  const sectionLinks = () =>
+    (compact ? portfolioCopy.mobile.background : portfolioCopy.navigation).map((item) => (
       <a
         key={item.id}
         href={`#${item.id}`}
         className={cn("section-link", scroll.active === item.id && "is-active")}
         aria-current={scroll.active === item.id ? "location" : undefined}
         onClick={() => {
-          if (mobile) setMenuOpen(false);
+          setMenuOpen(false);
         }}
       >
         {item.label}
@@ -105,7 +126,10 @@ export function Navbar() {
 
   return (
     <>
-      <header className="site-header">
+      <header ref={header} className="site-header" onClick={(event) => {
+        if ((event.target as HTMLElement).closest("a")) setMenuOpen(false);
+      }}>
+        <div className="header-main">
         <Link
           href="/"
           className="wordmark"
@@ -131,7 +155,7 @@ export function Navbar() {
               type="button"
               className="text-link resume-return"
               aria-label={copy.portfolio}
-              onClick={toggleMode}
+              onClick={() => { setMenuOpen(false); toggleMode(); }}
             >
               <ArrowLeft size={16} aria-hidden="true" />
               <span>{copy.portfolio}</span>
@@ -145,8 +169,8 @@ export function Navbar() {
           >
             <Search size={17} aria-hidden="true" />
           </button>
-          <ThemeToggle />
-          {!isRecruiterMode && (
+          {!compact && <ThemeToggle />}
+          {!isRecruiterMode && !compact && (
             <a
               href="#contact"
               className="header-contact"
@@ -165,6 +189,7 @@ export function Navbar() {
             aria-controls="mobile-navigation"
             onClick={() => setMenuOpen((open) => !open)}
           >
+            <span className="menu-label">{portfolioCopy.mobile.menu}</span>
             {menuOpen ? (
               <X size={20} aria-hidden="true" />
             ) : (
@@ -172,17 +197,24 @@ export function Navbar() {
             )}
           </button>
         </div>
+        </div>
+        {compact && !isRecruiterMode && <MobileNavigation items={portfolioCopy.mobile.navigation} activeId={activeGroup} />}
         {menuOpen && (
           <nav
             id="mobile-navigation"
             className="mobile-navigation"
-            aria-label={copy.mobileSections}
+            aria-label={copy.additionalNavigation}
           >
-            {sectionLinks(true)}
+            {!isRecruiterMode && sectionLinks()}
+            <div className="mobile-menu-actions">
+              <a href="/Rrezon_Curraj_CV.pdf" download className="text-link">{portfolioCopy.hero.cv}<ArrowUpRight size={16} aria-hidden="true" /></a>
+              {compact && <ThemeToggle />}
+              {!isRecruiterMode && <button type="button" className="text-link" onClick={() => { setMenuOpen(false); toggleMode(); }}>{copy.resume}<ArrowUpRight size={16} aria-hidden="true" /></button>}
+            </div>
           </nav>
         )}
       </header>
-      <aside className="scroll-rail">
+      {!compact && <aside className="scroll-rail">
         <RailNavigation
           items={portfolioCopy.navigation}
           activeId={scroll.active}
@@ -194,7 +226,7 @@ export function Navbar() {
         <span className="rail-progress" aria-hidden="true">
           {String(Math.round(scroll.progress)).padStart(2, "0")}%
         </span>
-      </aside>
+      </aside>}
     </>
   );
 }

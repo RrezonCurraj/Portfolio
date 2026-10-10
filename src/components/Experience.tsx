@@ -43,7 +43,7 @@ export function Experience() {
         </details>
       ))}
       {portfolioData.education.length > 0 && (
-        <>
+        <div id="education">
           <h3 className="education-heading">{copy.education}</h3>
           <div className="education-grid">
             {portfolioData.education.map((education) => (
@@ -67,7 +67,7 @@ export function Experience() {
               </div>
             ))}
           </div>
-        </>
+        </div>
       )}
     </section>
   );

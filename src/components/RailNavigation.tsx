@@ -4,6 +4,7 @@ import { useMemo, useRef, type CSSProperties } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import { COMPACT_LAYOUT_QUERY } from "@/lib/useCompactLayout";
 import { cn } from "@/lib/utils";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -64,6 +65,7 @@ export function RailNavigation({
         media.add(
           {
             desktop: "(min-width: 768px)",
+            compact: COMPACT_LAYOUT_QUERY,
             space: "(min-height: 400px)",
             reduced: "(prefers-reduced-motion: reduce)",
           },
@@ -71,6 +73,7 @@ export function RailNavigation({
             if (
               !match.conditions?.desktop ||
               !match.conditions.space ||
+              match.conditions.compact ||
               match.conditions.reduced
             )
               return;

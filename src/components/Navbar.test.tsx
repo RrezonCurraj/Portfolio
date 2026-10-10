@@ -104,15 +104,15 @@ it("handles a document that fits within the viewport", () => {
   expect(screen.getByRole("slider")).toHaveAttribute("aria-valuenow", "0");
 });
 
-it("closes the mobile menu after selecting a section", () => {
+it("closes the secondary menu after selecting a section", () => {
   renderNavigation();
   fireEvent.click(screen.getByRole("button", { name: "Open menu" }));
-  const menu = screen.getByRole("navigation", { name: "Mobile sections" });
+  const menu = screen.getByRole("navigation", { name: "Additional navigation" });
   const work = within(menu).getByRole("link", { name: "Work" });
   expect(work).toHaveAttribute("href", "#projects");
   fireEvent.click(work);
   expect(
-    screen.queryByRole("navigation", { name: "Mobile sections" }),
+    screen.queryByRole("navigation", { name: "Additional navigation" }),
   ).not.toBeInTheDocument();
   expect(screen.getByRole("button", { name: "Open menu" })).toHaveAttribute(
     "aria-expanded",
@@ -330,4 +330,65 @@ it("keeps incoming letters outside the current word until they clear it in a sho
   } finally {
     window.matchMedia = original;
   }
+});
+
+
+describe("compact navigation", () => {
+  const original = window.matchMedia;
+  beforeEach(() => {
+    window.matchMedia = jest.fn().mockImplementation((query: string) => ({
+      matches: query.includes("max-width: 767px"), media: query,
+      addListener: jest.fn(), removeListener: jest.fn(),
+      addEventListener: jest.fn(), removeEventListener: jest.fn(),
+    }));
+  });
+  afterEach(() => { window.matchMedia = original; });
+
+  it("groups intro and background destinations into the persistent three links", () => {
+    const { container } = renderNavigation();
+    const navigation = screen.getByRole("navigation", { name: "Mobile sections" });
+    expect(within(navigation).getAllByRole("link")).toHaveLength(3);
+    const positions = [[0, "Work"], [900, "Work"], [1800, "About"], [2000, "Contact"]] as const;
+    for (const [position, name] of positions) {
+      Object.defineProperty(window, "scrollY", { configurable: true, value: position });
+      fireEvent.scroll(window);
+      act(() => { jest.runOnlyPendingTimers(); });
+      expect(within(navigation).getByRole("link", { name })).toHaveAttribute("aria-current", "location");
+    }
+    expect(container.querySelector(".scroll-rail")).not.toBeInTheDocument();
+    expect(ScrollTrigger.getById("rail-typography")).toBeUndefined();
+  });
+
+  it("keeps every background subsection in About", () => {
+    const { container } = renderNavigation();
+    for (const [index, id] of ["skills", "experience", "education", "contributions"].entries()) {
+      const section = document.createElement("section");
+      section.id = id;
+      section.getBoundingClientRect = () => ({ top: 1700 + index * 30 - window.scrollY }) as DOMRect;
+      container.append(section);
+    }
+    for (const position of [1700, 1730, 1760, 1790]) {
+      Object.defineProperty(window, "scrollY", { configurable: true, value: position });
+      fireEvent.scroll(window);
+      act(() => { jest.runOnlyPendingTimers(); });
+      expect(within(screen.getByRole("navigation", { name: "Mobile sections" })).getByRole("link", { name: "About" })).toHaveAttribute("aria-current", "location");
+    }
+  });
+
+  it("offers secondary actions and returns focus on Escape", () => {
+    renderNavigation();
+    const trigger = screen.getByRole("button", { name: "Open menu" });
+    fireEvent.click(trigger);
+    const menu = screen.getByRole("navigation", { name: "Additional navigation" });
+    expect(within(menu).getByRole("link", { name: "Education & training" })).toHaveAttribute("href", "#education");
+    expect(within(menu).getByRole("link", { name: "Download CV" })).toHaveAttribute("download");
+    fireEvent.keyDown(window, { key: "Escape" });
+    expect(menu).not.toBeInTheDocument();
+    expect(trigger).toHaveFocus();
+    fireEvent.click(trigger);
+    fireEvent.click(screen.getByRole("button", { name: "Résumé view" }));
+    expect(screen.queryByRole("navigation", { name: "Mobile sections" })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Back to portfolio" })).toBeInTheDocument();
+    expect(screen.queryByRole("navigation", { name: "Additional navigation" })).not.toBeInTheDocument();
+  });
 });
