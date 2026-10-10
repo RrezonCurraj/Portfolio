@@ -1,7 +1,7 @@
 # Mobile portfolio structure
 
 Date: 2026-10-10
-Status: Design for review
+Status: Approved
 
 ## Purpose and selected direction
 
