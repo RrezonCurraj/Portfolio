@@ -1,5 +1,6 @@
 import { ChevronDown } from "lucide-react";
 import { portfolioCopy, portfolioData } from "@/data/portfolio";
+import { ResponsiveDisclosure } from "@/components/ui/ResponsiveDisclosure";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
 export function Experience() {
@@ -44,7 +45,7 @@ export function Experience() {
       ))}
       {portfolioData.education.length > 0 && (
         <div id="education">
-          <h3 className="education-heading">{copy.education}</h3>
+          <ResponsiveDisclosure anchorId="education" title={copy.education} headingLevel={3} className="education-disclosure" desktopHeading={<h3 className="education-heading">{copy.education}</h3>}>
           <div className="education-grid">
             {portfolioData.education.map((education) => (
               <div
@@ -67,6 +68,7 @@ export function Experience() {
               </div>
             ))}
           </div>
+          </ResponsiveDisclosure>
         </div>
       )}
     </section>

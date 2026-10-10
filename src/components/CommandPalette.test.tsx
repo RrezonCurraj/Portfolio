@@ -46,3 +46,18 @@ it.each(['resolve', 'reject'] as const)('ignores stale clipboard completion afte
   expect(screen.getByRole('dialog')).toBeInTheDocument();
   expect(screen.getByRole('status')).toBeEmptyDOMElement();
 });
+
+
+it('reveals background details through the shared section navigation', async () => {
+  jest.useFakeTimers();
+  history.replaceState(null, '', '/');
+  try {
+    const { container } = render(<><CommandPalette /><section id="contributions"><details data-mobile-anchor="contributions"><summary>Background</summary><p>Contribution</p></details></section></>);
+    act(() => openCommandPalette());
+    fireEvent.click(screen.getByRole('option', { name: /Open Source Contributions/i }));
+    await act(async () => { await jest.runAllTimersAsync(); });
+    expect(container.querySelector('details')!.open).toBe(true);
+    expect(window.location.hash).toBe('#contributions');
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  } finally { jest.useRealTimers(); history.replaceState(null, '', '/'); }
+});

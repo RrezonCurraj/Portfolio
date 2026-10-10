@@ -1,5 +1,6 @@
 import { ArrowUpRight, ChevronDown } from "lucide-react";
 import { portfolioCopy, portfolioData } from "@/data/portfolio";
+import { ResponsiveDisclosure } from "@/components/ui/ResponsiveDisclosure";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
 export function Contributions() {
@@ -9,11 +10,13 @@ export function Contributions() {
       id="contributions"
       className="section-shell content-section divided-section"
     >
-      <SectionHeading
+      <ResponsiveDisclosure anchorId="contributions" title={portfolioCopy.mobile.contributions} desktopHeading={
+        <SectionHeading
         number={copy.number}
         title={copy.title} compactTitle={portfolioCopy.mobile.contributions}
         description={copy.intro}
       />
+      }>
       {portfolioData.contributions.map((contribution) => (
         <article key={contribution.project} className="contribution">
           <div>
@@ -74,6 +77,7 @@ export function Contributions() {
           </div>
         </article>
       ))}
+      </ResponsiveDisclosure>
     </section>
   );
 }

@@ -22,7 +22,7 @@ export function Navbar() {
   const copy = portfolioCopy.header;
   const compact = useCompactLayout();
   const header = useRef<HTMLElement>(null);
-  const activeGroup = portfolioCopy.mobile.navigation.find(item => item.members.includes(scroll.active))?.id ?? "projects";
+  const activeGroup = portfolioCopy.mobile.navigation.find(item => item.members.some(member => member === scroll.active))?.id ?? "projects";
 
   useEffect(() => {
     const element = header.current;

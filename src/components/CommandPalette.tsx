@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback, useId } from "react";
 import { Search, ArrowRight, Download, Mail, Github, Linkedin, GitPullRequest } from "lucide-react";
-import { prefersReducedMotion } from "@/lib/motion";
+import { navigateToSection } from "@/lib/scroll";
 import { portfolioData } from "@/data/portfolio";
 
 let _openPalette: (() => void) | null = null;
@@ -12,6 +12,7 @@ type Command = {
   id: string;
   label: string;
   description?: string;
+  sectionId?: string;
   icon: React.ReactNode;
   action: () => void | Promise<void>;
 };
@@ -22,42 +23,48 @@ const commands: Command[] = [
     label: "View Projects",
     description: "Jump to the projects section",
     icon: <ArrowRight className="w-4 h-4" />,
-    action: () => { document.getElementById("projects")?.scrollIntoView({ behavior: prefersReducedMotion() ? "instant" : "smooth" }); },
+    sectionId: "projects",
+    action: async () => { await navigateToSection("projects"); },
   },
   {
     id: "about",
     label: "About Me",
     description: "Jump to the about section",
     icon: <ArrowRight className="w-4 h-4" />,
-    action: () => { document.getElementById("about")?.scrollIntoView({ behavior: prefersReducedMotion() ? "instant" : "smooth" }); },
+    sectionId: "about",
+    action: async () => { await navigateToSection("about"); },
   },
   {
     id: "skills",
     label: "Skills",
     description: "Jump to the skills section",
     icon: <ArrowRight className="w-4 h-4" />,
-    action: () => { document.getElementById("skills")?.scrollIntoView({ behavior: prefersReducedMotion() ? "instant" : "smooth" }); },
+    sectionId: "skills",
+    action: async () => { await navigateToSection("skills"); },
   },
   {
     id: "experience",
     label: "Experience",
     description: "Jump to the experience section",
     icon: <ArrowRight className="w-4 h-4" />,
-    action: () => { document.getElementById("experience")?.scrollIntoView({ behavior: prefersReducedMotion() ? "instant" : "smooth" }); },
+    sectionId: "experience",
+    action: async () => { await navigateToSection("experience"); },
   },
   {
     id: "contributions",
     label: "Open Source Contributions",
     description: "Jump to Codenotch contributions",
     icon: <GitPullRequest className="w-4 h-4" />,
-    action: () => { document.getElementById("contributions")?.scrollIntoView({ behavior: prefersReducedMotion() ? "instant" : "smooth" }); },
+    sectionId: "contributions",
+    action: async () => { await navigateToSection("contributions"); },
   },
   {
     id: "contact",
     label: "Contact",
     description: "Jump to the contact section",
     icon: <Mail className="w-4 h-4" />,
-    action: () => { document.getElementById("contact")?.scrollIntoView({ behavior: prefersReducedMotion() ? "instant" : "smooth" }); },
+    sectionId: "contact",
+    action: async () => { await navigateToSection("contact"); },
   },
   {
     id: "download-cv",
@@ -128,6 +135,14 @@ export function CommandPalette() {
   }, []);
 
   const run = useCallback((cmd: Command) => {
+    if (cmd.sectionId) {
+      close();
+      const currentRun = commandRun.current;
+      requestAnimationFrame(() => {
+        if (commandRun.current === currentRun) void cmd.action();
+      });
+      return;
+    }
     const currentRun = ++commandRun.current;
     setError("");
     try {

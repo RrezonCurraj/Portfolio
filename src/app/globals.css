@@ -272,6 +272,10 @@ section[id] { scroll-margin-top: 110px; }
 .case-decision:last-child { margin-bottom: 0; }
 .case-decision h3 { font-size: 16px; font-weight: 500; color: var(--foreground); margin-bottom: 8px; }
 
+.disclosure-summary { display: none; }
+.responsive-disclosure>summary { list-style: none; }
+.responsive-disclosure>summary::-webkit-details-marker { display: none; }
+.responsive-disclosure:not([open])>.disclosure-summary { display: flex; }
 @media (max-width: 1050px) {
   :root { --page-gutter: 36px; }
   .header-role { display: none; }
@@ -367,6 +371,13 @@ section[id] { scroll-margin-top: 110px; }
   .experience-row h3 { font-size: 20px; }
   .experience-description { margin-left: 0; }
   .experience-description li { font-size: 13px; }
+  .responsive-disclosure>.disclosure-summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 60px; cursor: pointer; }
+  .disclosure-summary h2, .disclosure-summary h3 { margin: 0; font-size: 24px; font-weight: 500; letter-spacing: -.04em; }
+  .disclosure-desktop-heading { display: none; }
+  .responsive-disclosure[open]>.disclosure-content { padding-top: 20px; }
+  .education-disclosure { margin-top: 30px; border-block: 1px solid var(--border); }
+  .education-disclosure .disclosure-summary h3 { font-size: 20px; }
+  .education-disclosure .education-grid { margin-top: 0; padding-bottom: 22px; }
   .education-grid { grid-template-columns: 1fr; gap: 22px; }
   .contribution { grid-template-columns: 1fr; gap: 20px; }
   .contribution h3 { margin-bottom: 5px; }

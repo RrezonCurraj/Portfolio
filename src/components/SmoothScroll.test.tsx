@@ -1,8 +1,14 @@
-import { render } from "@testing-library/react";
+import { act, render } from "@testing-library/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SmoothScroll } from "./SmoothScroll";
 import Lenis from "lenis";
+import { usePathname } from "next/navigation";
+
+jest.mock("next/navigation", () => ({ usePathname: jest.fn(() => "/") }));
+
+beforeEach(() => { jest.mocked(usePathname).mockReturnValue("/"); history.replaceState(null, "", "/"); });
+afterEach(() => { history.replaceState(null, "", "/"); });
 
 jest.mock("lenis", () =>
   jest.fn().mockImplementation(() => ({
@@ -121,7 +127,7 @@ it("scrolls to encoded fragment IDs without interpreting them as CSS selectors",
   expect(getByText("Target")).toHaveFocus();
 });
 
-it("preserves modified clicks and links with missing fragment targets", () => {
+it("preserves modified clicks and links with missing fragment targets", async () => {
   render(
     <SmoothScroll>
       <a href="#missing">Missing</a>
@@ -138,6 +144,7 @@ it("preserves modified clicks and links with missing fragment targets", () => {
   const missing = new MouseEvent("click", { bubbles: true, cancelable: true });
   anchor.dispatchEvent(missing);
   expect(missing.defaultPrevented).toBe(false);
+  await new Promise(resolve => setTimeout(resolve, 0));
 });
 
 it("honors the section scroll margin when scrolling beneath a sticky header", () => {
@@ -203,4 +210,60 @@ it("cancels smooth momentum before handling an immediate ruler scroll", () => {
   window.dispatchEvent(afterUnmount);
   expect(afterUnmount.defaultPrevented).toBe(false);
   expect(scrollTo).toHaveBeenCalledTimes(1);
+});
+
+
+it("reveals initial and history hashes with reduced motion without moving focus", async () => {
+  jest.useFakeTimers();
+  const original = window.matchMedia;
+  window.matchMedia = jest.fn().mockImplementation(query => ({ matches: query === "(prefers-reduced-motion: reduce)" }));
+  history.replaceState(null, "", "/#education");
+  try {
+    const { container } = render(<SmoothScroll><button>Keep focus</button><section id="education"><details data-mobile-anchor="education"><summary>Education</summary>Courses</details></section><section id="contact">Contact</section></SmoothScroll>);
+    const button = container.querySelector("button")!;
+    button.focus();
+    await act(async () => { await jest.runOnlyPendingTimersAsync(); await jest.runOnlyPendingTimersAsync(); await jest.runOnlyPendingTimersAsync(); });
+    expect(container.querySelector("details")!.open).toBe(true);
+    expect(button).toHaveFocus();
+    jest.mocked(window.scrollTo).mockClear();
+    history.replaceState(null, "", "/#contact");
+    window.dispatchEvent(new PopStateEvent("popstate"));
+    window.dispatchEvent(new HashChangeEvent("hashchange"));
+    await act(async () => { await jest.runOnlyPendingTimersAsync(); });
+    expect(window.scrollTo).toHaveBeenCalledTimes(1);
+    expect(window.scrollTo).toHaveBeenCalledWith(expect.objectContaining({ behavior: "instant" }));
+    expect(button).toHaveFocus();
+  } finally { window.matchMedia = original; jest.useRealTimers(); }
+});
+
+
+it("corrects a case-study return hash when the persistent layout changes routes", async () => {
+  jest.useFakeTimers();
+  const scrollTo = jest.fn();
+  (Lenis as unknown as jest.Mock).mockImplementationOnce(() => ({ on: jest.fn(), raf: jest.fn(), destroy: jest.fn(), scrollTo }));
+  jest.mocked(usePathname).mockReturnValue("/projects/fibo");
+  history.replaceState(null, "", "/projects/fibo");
+  try {
+    const { rerender, getByText } = render(<SmoothScroll><p>Case study</p></SmoothScroll>);
+    await act(async () => { await jest.runOnlyPendingTimersAsync(); });
+    history.replaceState(null, "", "/#projects");
+    jest.mocked(usePathname).mockReturnValue("/");
+    rerender(<SmoothScroll><section id="projects" style={{ scrollMarginTop: "113px" }}>Work section</section></SmoothScroll>);
+    await act(async () => { await jest.runOnlyPendingTimersAsync(); });
+    expect(scrollTo).toHaveBeenCalledWith(getByText("Work section"), expect.objectContaining({ offset: -113, immediate: true }));
+  } finally { jest.useRealTimers(); }
+});
+
+it.each([
+  '<a href="#work" download>Download</a>',
+  '<a href="#work" target="_blank">Other tab</a>',
+  '<a href="https://example.com/#work">External</a>',
+  '<a href="#%ZZ">Malformed</a>',
+])("preserves excluded native anchor actions: %s", markup => {
+  const { container } = render(<SmoothScroll><section id="work">Work</section><div dangerouslySetInnerHTML={{ __html: markup }} /></SmoothScroll>);
+  let intercepted = true;
+  const protectTestNavigation = (event: Event) => { intercepted = event.defaultPrevented; event.preventDefault(); };
+  document.addEventListener("click", protectTestNavigation, { once: true });
+  container.querySelector("a")!.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+  expect(intercepted).toBe(false);
 });

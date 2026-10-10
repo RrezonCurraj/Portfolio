@@ -1,123 +1,99 @@
 "use client";
 
-import { ReactNode, useEffect } from "react";
+import { type ReactNode, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { prefersReducedMotion } from "@/lib/motion";
-import { IMMEDIATE_SCROLL_EVENT } from "@/lib/scroll";
+import { cancelSectionNavigation, navigateToSection, IMMEDIATE_SCROLL_EVENT, SECTION_SCROLL_EVENT, type SectionScrollRequest } from "@/lib/scroll";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export function SmoothScroll({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
   useEffect(() => {
     let mounted = true;
     let frame = 0;
     const scheduleRefresh = () => {
       if (!mounted || frame) return;
-      frame = requestAnimationFrame(() => {
-        frame = 0;
-        ScrollTrigger.refresh(true);
-      });
+      frame = requestAnimationFrame(() => { frame = 0; ScrollTrigger.refresh(true); });
     };
-    const observer =
-      typeof ResizeObserver === "undefined"
-        ? null
-        : new ResizeObserver(scheduleRefresh);
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(scheduleRefresh);
     observer?.observe(document.body);
     document.fonts?.ready.then(scheduleRefresh);
-    return () => {
-      mounted = false;
-      cancelAnimationFrame(frame);
-      observer?.disconnect();
-    };
+    return () => { mounted = false; cancelAnimationFrame(frame); observer?.disconnect(); };
   }, []);
 
   useEffect(() => {
-    if (prefersReducedMotion()) return;
-
-    const lenis = new Lenis({
+    const lenis = prefersReducedMotion() ? null : new Lenis({
       duration: 0.8,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: "vertical",
-      gestureOrientation: "vertical",
-      smoothWheel: true,
-      touchMultiplier: 1,
+      easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: "vertical", gestureOrientation: "vertical", smoothWheel: true, touchMultiplier: 1,
     });
+    lenis?.on("scroll", ScrollTrigger.update);
+    const onTick = (time: number) => lenis?.raf(time * 1000);
+    if (lenis) gsap.ticker.add(onTick);
 
-    // 1. Synchronize Lenis scrolling with GSAP's ScrollTrigger
-    lenis.on("scroll", ScrollTrigger.update);
-
-    // 2. Use GSAP's ticker to drive Lenis animations
-    // This ensures they run in the exact same animation frame
-    const onTick = (time: number) => {
-      lenis.raf(time * 1000);
+    const handleSectionScroll = (event: Event) => {
+      if (!lenis) return;
+      const request = (event as CustomEvent<SectionScrollRequest>).detail;
+      event.preventDefault();
+      lenis.scrollTo(request.target, { offset: request.offset, immediate: request.immediate, force: true, onComplete: request.onComplete });
     };
-    gsap.ticker.add(onTick);
-
-    // We do NOT disable lag smoothing, to prevent violent stutters if frames drop.
-
-    const handleAnchorClick = (e: MouseEvent) => {
-      if (
-        e.defaultPrevented ||
-        e.button !== 0 ||
-        e.metaKey ||
-        e.ctrlKey ||
-        e.shiftKey ||
-        e.altKey
-      )
-        return;
-      if (!(e.target instanceof Element)) return;
-      const anchor = e.target.closest("a");
-      if (
-        !anchor ||
-        anchor.hasAttribute("download") ||
-        (anchor.target && anchor.target !== "_self")
-      )
-        return;
-      const href = anchor.getAttribute("href");
-      if (!href?.startsWith("#") || href === "#") return;
-      let id: string;
-      try {
-        id = decodeURIComponent(href.slice(1));
-      } catch {
-        return;
-      }
-      const element = document.getElementById(id);
-      if (!element) return;
-      e.preventDefault();
-      history.pushState(null, "", href);
-      lenis.scrollTo(element, {
-        offset: -(parseFloat(getComputedStyle(element).scrollMarginTop) || 0),
-        onComplete: () => {
-          const addedTabIndex = !element.hasAttribute("tabindex");
-          if (addedTabIndex) element.setAttribute("tabindex", "-1");
-          element.focus({ preventScroll: true });
-          if (addedTabIndex) element.removeAttribute("tabindex");
-        },
-      });
-    };
-
-    document.addEventListener("click", handleAnchorClick);
-
     const handleImmediateScroll = (event: Event) => {
       const top = (event as CustomEvent<number>).detail;
-      if (typeof top !== "number" || !Number.isFinite(top)) return;
+      if (!lenis || typeof top !== "number" || !Number.isFinite(top)) return;
       event.preventDefault();
       const wasStopped = lenis.isStopped;
       lenis.stop();
       lenis.scrollTo(top, { immediate: true, force: true });
       if (!wasStopped) lenis.start();
     };
+    const handleAnchorClick = (event: MouseEvent) => {
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || !(event.target instanceof Element)) return;
+      const anchor = event.target.closest("a");
+      if (!anchor || anchor.hasAttribute("download") || (anchor.target && anchor.target !== "_self")) return;
+      const href = anchor.getAttribute("href");
+      if (!href?.startsWith("#") || href === "#") return;
+      let id: string;
+      try { id = decodeURIComponent(href.slice(1)); } catch { return; }
+      if (!document.getElementById(id)) return;
+      event.preventDefault();
+      void navigateToSection(href);
+    };
+    document.addEventListener("click", handleAnchorClick);
+    window.addEventListener(SECTION_SCROLL_EVENT, handleSectionScroll);
     window.addEventListener(IMMEDIATE_SCROLL_EVENT, handleImmediateScroll);
-
     return () => {
-      lenis.destroy();
-      gsap.ticker.remove(onTick);
+      lenis?.destroy();
+      if (lenis) gsap.ticker.remove(onTick);
       document.removeEventListener("click", handleAnchorClick);
+      window.removeEventListener(SECTION_SCROLL_EVENT, handleSectionScroll);
       window.removeEventListener(IMMEDIATE_SCROLL_EVENT, handleImmediateScroll);
+      cancelSectionNavigation();
     };
   }, []);
+
+  useEffect(() => {
+    let frame = 0;
+    const restore = () => {
+      if (frame) cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        if (location.hash) void navigateToSection(location.hash, { history: "none", focus: false, behavior: "instant" });
+      });
+    };
+    restore();
+    window.addEventListener("hashchange", restore);
+    window.addEventListener("popstate", restore);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("hashchange", restore);
+      window.removeEventListener("popstate", restore);
+      cancelSectionNavigation();
+    };
+  }, [pathname]);
 
   return <>{children}</>;
 }
