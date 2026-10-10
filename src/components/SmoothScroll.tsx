@@ -39,12 +39,14 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
       if (!lenis) return;
       const request = (event as CustomEvent<SectionScrollRequest>).detail;
       event.preventDefault();
+      lenis.resize();
       lenis.scrollTo(request.target, { offset: request.offset, immediate: request.immediate, force: true, onComplete: request.onComplete });
     };
     const handleImmediateScroll = (event: Event) => {
       const top = (event as CustomEvent<number>).detail;
       if (!lenis || typeof top !== "number" || !Number.isFinite(top)) return;
       event.preventDefault();
+      lenis.resize();
       const wasStopped = lenis.isStopped;
       lenis.stop();
       lenis.scrollTo(top, { immediate: true, force: true });
@@ -78,9 +80,13 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
   useEffect(() => {
     let frame = 0;
     const restore = () => {
+      cancelSectionNavigation();
       if (frame) cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
         frame = 0;
+        window.dispatchEvent(new CustomEvent<number>(IMMEDIATE_SCROLL_EVENT, {
+          cancelable: true, detail: window.scrollY,
+        }));
         if (location.hash) void navigateToSection(location.hash, { history: "none", focus: false, behavior: "instant" });
       });
     };

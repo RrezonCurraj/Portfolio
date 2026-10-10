@@ -28,9 +28,13 @@ export function ResponsiveDisclosure({ anchorId, title, desktopHeading, headingL
     const ownsHash = !!target && (target.id === anchorId || details.contains(target));
     const focus = document.activeElement;
     const summary = details.querySelector("summary");
-    const containsFocus = focus !== summary && details.contains(focus);
+    const headingContainer = details.querySelector(".disclosure-desktop-heading");
+    const focusOnDesktopHeading = !!focus && !!headingContainer?.contains(focus);
+    const containsFocus = focus !== summary && !focusOnDesktopHeading && details.contains(focus);
     details.open = !compact || compactOpen.current || ownsHash || containsFocus;
-    if (!compact && focus === summary) {
+    if (compact && focusOnDesktopHeading) {
+      summary?.focus({ preventScroll: true });
+    } else if (!compact && focus === summary) {
       const heading = details.querySelector<HTMLElement>(".disclosure-desktop-heading :is(h2,h3)");
       if (heading) {
         heading.setAttribute("tabindex", "-1");

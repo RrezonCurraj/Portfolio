@@ -50,3 +50,15 @@ it("reveals the current hash's disclosure on first mount", () => {
   const { container } = fixture();
   expect(container.querySelector("details")!.open).toBe(true);
 });
+
+it("returns heading focus to the visible compact summary without changing its expansion choice", () => {
+  const { container } = fixture();
+  const details = container.querySelector("details")!;
+  const summary = details.querySelector("summary")!;
+  summary.focus();
+  rotate(false);
+  expect(container.querySelector(".disclosure-desktop-heading h3")).toHaveFocus();
+  rotate(true);
+  expect(summary).toHaveFocus();
+  expect(details.open).toBe(false);
+});

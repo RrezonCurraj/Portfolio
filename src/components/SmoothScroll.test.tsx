@@ -15,6 +15,8 @@ jest.mock("lenis", () =>
     on: jest.fn(),
     raf: jest.fn(),
     destroy: jest.fn(),
+    resize: jest.fn(),
+    stop: jest.fn(), start: jest.fn(), scrollTo: jest.fn(),
   })),
 );
 
@@ -107,6 +109,8 @@ it("scrolls to encoded fragment IDs without interpreting them as CSS selectors",
     on: jest.fn(),
     raf: jest.fn(),
     destroy: jest.fn(),
+    resize: jest.fn(),
+    stop: jest.fn(), start: jest.fn(),
     scrollTo,
   }));
   const { getByText } = render(
@@ -153,6 +157,8 @@ it("honors the section scroll margin when scrolling beneath a sticky header", ()
     on: jest.fn(),
     raf: jest.fn(),
     destroy: jest.fn(),
+    resize: jest.fn(),
+    stop: jest.fn(), start: jest.fn(),
     scrollTo,
   }));
   const { getByText } = render(
@@ -180,6 +186,7 @@ it("cancels smooth momentum before handling an immediate ruler scroll", () => {
     on: jest.fn(),
     raf: jest.fn(),
     destroy: jest.fn(),
+    resize: jest.fn(),
     isStopped: false,
     stop,
     start,
@@ -240,7 +247,7 @@ it("reveals initial and history hashes with reduced motion without moving focus"
 it("corrects a case-study return hash when the persistent layout changes routes", async () => {
   jest.useFakeTimers();
   const scrollTo = jest.fn();
-  (Lenis as unknown as jest.Mock).mockImplementationOnce(() => ({ on: jest.fn(), raf: jest.fn(), destroy: jest.fn(), scrollTo }));
+  (Lenis as unknown as jest.Mock).mockImplementationOnce(() => ({ on: jest.fn(), raf: jest.fn(), destroy: jest.fn(), resize: jest.fn(), stop: jest.fn(), start: jest.fn(), scrollTo }));
   jest.mocked(usePathname).mockReturnValue("/projects/fibo");
   history.replaceState(null, "", "/projects/fibo");
   try {
@@ -266,4 +273,78 @@ it.each([
   document.addEventListener("click", protectTestNavigation, { once: true });
   container.querySelector("a")!.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
   expect(intercepted).toBe(false);
+});
+
+function realEngineEnvironment(initialHeight: number) {
+  const ActualLenis = jest.requireActual<typeof import("lenis")>("lenis").default;
+  const originals = {
+    observer: window.ResizeObserver,
+    scrollTo: window.scrollTo,
+    height: Object.getOwnPropertyDescriptor(window, "innerHeight"),
+    scrollY: Object.getOwnPropertyDescriptor(window, "scrollY"),
+    scrollHeight: Object.getOwnPropertyDescriptor(document.documentElement, "scrollHeight"),
+  };
+  let height = initialHeight;
+  window.ResizeObserver = class { observe() {} unobserve() {} disconnect() {} } as unknown as typeof ResizeObserver;
+  Object.defineProperty(window, "innerHeight", { configurable: true, value: 844 });
+  Object.defineProperty(window, "scrollY", { configurable: true, writable: true, value: 0 });
+  Object.defineProperty(document.documentElement, "scrollHeight", { configurable: true, get: () => height });
+  window.scrollTo = jest.fn().mockImplementation((options: ScrollToOptions) => { window.scrollY = options.top ?? 0; });
+  (Lenis as unknown as jest.Mock).mockImplementationOnce(options => new ActualLenis(options));
+  return {
+    setHeight(value: number) { height = value; },
+    restore() {
+      window.ResizeObserver = originals.observer;
+      window.scrollTo = originals.scrollTo;
+      for (const [object, key, descriptor] of [
+        [window, "innerHeight", originals.height], [window, "scrollY", originals.scrollY],
+        [document.documentElement, "scrollHeight", originals.scrollHeight],
+      ] as const) {
+        if (descriptor) Object.defineProperty(object, key, descriptor);
+        else Reflect.deleteProperty(object, key);
+      }
+    },
+  };
+}
+
+it("reaches Contact after a case-study return before Lenis's debounced dimensions refresh", async () => {
+  jest.useFakeTimers();
+  const environment = realEngineEnvironment(2400);
+  jest.mocked(usePathname).mockReturnValue("/projects/fibo");
+  let unmount: (() => void) | undefined;
+  try {
+    const result = render(<SmoothScroll><p>Case study</p></SmoothScroll>);
+    unmount = result.unmount;
+    await act(async () => { await jest.runOnlyPendingTimersAsync(); });
+    environment.setHeight(10000);
+    history.replaceState(null, "", "/#contact");
+    jest.mocked(usePathname).mockReturnValue("/");
+    result.rerender(<SmoothScroll><section id="contact" style={{ scrollMarginTop: "113px" }}>Contact target</section></SmoothScroll>);
+    result.getByText("Contact target").getBoundingClientRect = () => ({ top: 8500 - window.scrollY }) as DOMRect;
+    await act(async () => { await jest.advanceTimersByTimeAsync(32); });
+    expect(window.scrollY).toBe(8387);
+  } finally { unmount?.(); environment.restore(); jest.useRealTimers(); }
+});
+
+it("stops active scrolling and stale focus completion when Back restores a hashless URL", async () => {
+  jest.useFakeTimers();
+  const environment = realEngineEnvironment(10000);
+  let unmount: (() => void) | undefined;
+  try {
+    const result = render(<SmoothScroll><a href="#contact">Jump to Contact</a><section id="contact">Contact target</section></SmoothScroll>);
+    unmount = result.unmount;
+    result.getByText("Contact target").getBoundingClientRect = () => ({ top: 8500 - window.scrollY }) as DOMRect;
+    await act(async () => { await jest.advanceTimersByTimeAsync(32); });
+    result.getByText("Jump to Contact").dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+    const tick = jest.mocked(gsap.ticker.add).mock.calls.at(-1)![0] as (time: number) => void;
+    act(() => { tick(0); tick(0.2); });
+    expect(window.scrollY).toBeGreaterThan(0);
+    history.replaceState(null, "", "/");
+    window.scrollY = 0;
+    window.dispatchEvent(new PopStateEvent("popstate"));
+    await act(async () => { await jest.advanceTimersByTimeAsync(32); });
+    act(() => { tick(0.4); tick(1.2); });
+    expect(window.scrollY).toBe(0);
+    expect(result.getByText("Contact target")).not.toHaveFocus();
+  } finally { unmount?.(); environment.restore(); jest.useRealTimers(); }
 });
