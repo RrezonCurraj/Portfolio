@@ -1,0 +1,23 @@
+.heading {
+  position: relative;
+}
+
+.lineMask {
+  overflow: clip;
+  overflow-clip-margin: .15em;
+}
+
+.lineInner {
+  display: block;
+  transform-origin: left center;
+}
+
+.rule {
+  position: absolute;
+  inset: auto 0 -16px;
+  height: 1px;
+  background: var(--primary);
+  transform-origin: left center;
+  opacity: .7;
+  pointer-events: none;
+}

@@ -162,8 +162,13 @@ section[id] { scroll-margin-top: 110px; }
 .project-card.featured { grid-column: 1 / -1; }
 .project-visual { position: relative; display: block; aspect-ratio: 16 / 10; overflow: hidden; background: var(--surface-muted); }
 .project-card.featured .project-visual { aspect-ratio: 2.2; }
-.project-visual img { object-fit: cover; object-position: top; transition: transform 500ms ease; }
-.project-visual:hover img { transform: scale(1.025); }
+.project-visual img { object-fit: cover; object-position: top; }
+.project-image-motion, .project-image-hover { position: absolute; inset: 0; display: block; }
+.project-image-hover { transition: transform 500ms ease; }
+.project-visual:focus-visible .project-image-motion { transform: none !important; }
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .project-visual:hover .project-image-hover { transform: scale(1.025); }
+}
 .project-visual.brand-visual { background: #e3eadd; }
 .project-visual.brand-visual img { object-fit: contain; object-position: center; padding: 6% 22%; }
 .project-index { position: absolute; top: 18px; left: 18px; z-index: 1; color: #323b29; background: #f3f1e9; padding: 5px 8px; font-family: var(--font-mono), sans-serif; font-size: 10px; }

@@ -1,0 +1,23 @@
+.heading {
+  position: relative;
+}
+
+.titleMask {
+  overflow: clip;
+  overflow-clip-margin: .15em;
+}
+
+.titleInner {
+  display: block;
+  transform-origin: left center;
+}
+
+.rule {
+  position: absolute;
+  inset: auto 0 -15px;
+  height: 1px;
+  background: var(--primary);
+  transform-origin: left center;
+  opacity: .7;
+  pointer-events: none;
+}

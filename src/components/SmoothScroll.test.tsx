@@ -87,6 +87,8 @@ it("keeps native scrolling when reduced motion is preferred", () => {
   const originalMatchMedia = window.matchMedia;
   window.matchMedia = jest.fn().mockImplementation((query: string) => ({
     matches: query === "(prefers-reduced-motion: reduce)",
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
   }));
 
   try {
@@ -223,7 +225,7 @@ it("cancels smooth momentum before handling an immediate ruler scroll", () => {
 it("reveals initial and history hashes with reduced motion without moving focus", async () => {
   jest.useFakeTimers();
   const original = window.matchMedia;
-  window.matchMedia = jest.fn().mockImplementation(query => ({ matches: query === "(prefers-reduced-motion: reduce)" }));
+  window.matchMedia = jest.fn().mockImplementation(query => ({ matches: query === "(prefers-reduced-motion: reduce)", addEventListener: jest.fn(), removeEventListener: jest.fn() }));
   history.replaceState(null, "", "/#education");
   try {
     const { container } = render(<SmoothScroll><button>Keep focus</button><section id="education"><details data-mobile-anchor="education"><summary>Education</summary>Courses</details></section><section id="contact">Contact</section></SmoothScroll>);
@@ -275,7 +277,7 @@ it.each([
   expect(intercepted).toBe(false);
 });
 
-function realEngineEnvironment(initialHeight: number) {
+function realEngineEnvironment(initialHeight: number, engineCount = 1) {
   const ActualLenis = jest.requireActual<typeof import("lenis")>("lenis").default;
   const originals = {
     observer: window.ResizeObserver,
@@ -290,7 +292,9 @@ function realEngineEnvironment(initialHeight: number) {
   Object.defineProperty(window, "scrollY", { configurable: true, writable: true, value: 0 });
   Object.defineProperty(document.documentElement, "scrollHeight", { configurable: true, get: () => height });
   window.scrollTo = jest.fn().mockImplementation((options: ScrollToOptions) => { window.scrollY = options.top ?? 0; });
-  (Lenis as unknown as jest.Mock).mockImplementationOnce(options => new ActualLenis(options));
+  for (let index = 0; index < engineCount; index += 1) {
+    (Lenis as unknown as jest.Mock).mockImplementationOnce(options => new ActualLenis(options));
+  }
   return {
     setHeight(value: number) { height = value; },
     restore() {
@@ -306,6 +310,134 @@ function realEngineEnvironment(initialHeight: number) {
     },
   };
 }
+
+it("switches live motion preferences without moving the page or losing anchor focus", async () => {
+  jest.useFakeTimers();
+  jest.clearAllMocks();
+  const environment = realEngineEnvironment(10000, 2);
+  const originalMatchMedia = window.matchMedia;
+  const preference = new EventTarget();
+  let reduced = false;
+  const media = Object.assign(preference, {
+    media: "(prefers-reduced-motion: reduce)",
+    onchange: null,
+  });
+  Object.defineProperty(media, "matches", { get: () => reduced });
+  window.matchMedia = jest.fn().mockImplementation(query =>
+    query === media.media ? media : originalMatchMedia(query),
+  );
+  const changePreference = (value: boolean) => {
+    reduced = value;
+    act(() => { media.dispatchEvent(new Event("change")); });
+  };
+  window.scrollY = 420;
+  let unmount: (() => void) | undefined;
+  try {
+    const result = render(
+      <SmoothScroll>
+        <button>Keep focus</button>
+        <a href="#work">View work</a>
+        <section id="work" style={{ scrollMarginTop: "110px" }}>Work target</section>
+        <a href="#contact">Contact me</a>
+        <section id="contact">Contact target</section>
+      </SmoothScroll>,
+    );
+    unmount = result.unmount;
+    result.getByText("Work target").getBoundingClientRect = () => ({ top: 2400 - window.scrollY }) as DOMRect;
+    result.getByText("Contact target").getBoundingClientRect = () => ({ top: 8500 - window.scrollY }) as DOMRect;
+    result.getByText("Keep focus").focus();
+    await act(async () => { await jest.advanceTimersByTimeAsync(32); });
+    expect(window.scrollY).toBe(420);
+
+    result.getByText("View work").dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+    const tick = jest.mocked(gsap.ticker.add).mock.calls[0][0] as (time: number) => void;
+    act(() => { tick(0.1); tick(0.3); });
+    expect(window.scrollY).toBeGreaterThan(420);
+    expect(window.scrollY).toBeLessThan(2290);
+    const interruptedPosition = window.scrollY;
+
+    changePreference(true);
+    expect(document.documentElement).not.toHaveClass("lenis");
+    expect(gsap.ticker.remove).toHaveBeenCalledWith(tick);
+    act(() => { tick(1.5); });
+    expect(window.scrollY).toBe(interruptedPosition);
+    expect(result.getByText("Keep focus")).toHaveFocus();
+
+    result.getByText("View work").dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+    expect(window.scrollTo).toHaveBeenLastCalledWith({ top: 2290, behavior: "instant" });
+    expect(window.scrollY).toBe(2290);
+    expect(window.location.hash).toBe("#work");
+    expect(result.getByText("Work target")).toHaveFocus();
+
+    changePreference(false);
+    changePreference(false);
+    expect(document.documentElement).toHaveClass("lenis");
+    expect(Lenis).toHaveBeenCalledTimes(2);
+    expect(gsap.ticker.add).toHaveBeenCalledTimes(2);
+    expect(window.scrollY).toBe(2290);
+    result.getByText("Contact me").dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+    const resumedTick = jest.mocked(gsap.ticker.add).mock.calls[1][0] as (time: number) => void;
+    act(() => { resumedTick(1.6); resumedTick(2.5); });
+    expect(window.scrollY).toBe(8500);
+    expect(window.location.hash).toBe("#contact");
+    expect(result.getByText("Contact target")).toHaveFocus();
+
+    unmount();
+    unmount = undefined;
+    changePreference(true);
+    changePreference(false);
+    expect(document.documentElement).not.toHaveClass("lenis");
+    expect(Lenis).toHaveBeenCalledTimes(2);
+    expect(gsap.ticker.remove).toHaveBeenCalledTimes(2);
+  } finally {
+    unmount?.();
+    window.matchMedia = originalMatchMedia;
+    environment.restore();
+    jest.useRealTimers();
+  }
+});
+
+it("keeps native-scroll timers from restoring smooth-scroll classes after disable or unmount", async () => {
+  jest.useFakeTimers();
+  const environment = realEngineEnvironment(10000, 2);
+  const originalMatchMedia = window.matchMedia;
+  let reduced = false;
+  const preference = new EventTarget();
+  Object.defineProperty(preference, "matches", { get: () => reduced });
+  window.matchMedia = jest.fn().mockImplementation(query =>
+    query === "(prefers-reduced-motion: reduce)" ? preference : originalMatchMedia(query),
+  );
+  const changePreference = (value: boolean) => {
+    reduced = value;
+    act(() => { preference.dispatchEvent(new Event("change")); });
+  };
+  let unmount: (() => void) | undefined;
+  try {
+    const result = render(<SmoothScroll><div>Page</div></SmoothScroll>);
+    unmount = result.unmount;
+    await act(async () => { await jest.advanceTimersByTimeAsync(32); });
+    window.scrollY = 120;
+    window.dispatchEvent(new Event("scroll"));
+    changePreference(true);
+    await act(async () => { await jest.advanceTimersByTimeAsync(450); });
+    expect(document.documentElement).not.toHaveClass("lenis");
+    expect(window.scrollY).toBe(120);
+
+    changePreference(false);
+    window.scrollY = 320;
+    window.dispatchEvent(new Event("scroll"));
+    unmount();
+    unmount = undefined;
+    await act(async () => { await jest.advanceTimersByTimeAsync(450); });
+    expect(document.documentElement).not.toHaveClass("lenis");
+    expect(window.scrollY).toBe(320);
+  } finally {
+    unmount?.();
+    window.matchMedia = originalMatchMedia;
+    environment.restore();
+    jest.useRealTimers();
+  }
+});
 
 it("reaches Contact after a case-study return before Lenis's debounced dimensions refresh", async () => {
   jest.useFakeTimers();

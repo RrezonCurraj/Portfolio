@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { prefersReducedMotion } from "@/lib/motion";
 import { cancelSectionNavigation, navigateToSection, IMMEDIATE_SCROLL_EVENT, SECTION_SCROLL_EVENT, type SectionScrollRequest } from "@/lib/scroll";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -26,14 +25,29 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    const lenis = prefersReducedMotion() ? null : new Lenis({
-      duration: 0.8,
-      easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: "vertical", gestureOrientation: "vertical", smoothWheel: true, touchMultiplier: 1,
-    });
-    lenis?.on("scroll", ScrollTrigger.update);
+    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let lenis: Lenis | null = null;
     const onTick = (time: number) => lenis?.raf(time * 1000);
-    if (lenis) gsap.ticker.add(onTick);
+    const updateMotionPreference = () => {
+      if (preference.matches) {
+        if (!lenis) return;
+        cancelSectionNavigation();
+        gsap.ticker.remove(onTick);
+        lenis.stop();
+        lenis.destroy();
+        lenis = null;
+      } else if (!lenis) {
+        lenis = new Lenis({
+          duration: 0.8,
+          easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          orientation: "vertical", gestureOrientation: "vertical", smoothWheel: true, touchMultiplier: 1,
+        });
+        lenis.on("scroll", ScrollTrigger.update);
+        gsap.ticker.add(onTick);
+      }
+    };
+    updateMotionPreference();
+    preference.addEventListener("change", updateMotionPreference);
 
     const handleSectionScroll = (event: Event) => {
       if (!lenis) return;
@@ -68,6 +82,8 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
     window.addEventListener(SECTION_SCROLL_EVENT, handleSectionScroll);
     window.addEventListener(IMMEDIATE_SCROLL_EVENT, handleImmediateScroll);
     return () => {
+      preference.removeEventListener("change", updateMotionPreference);
+      lenis?.stop();
       lenis?.destroy();
       if (lenis) gsap.ticker.remove(onTick);
       document.removeEventListener("click", handleAnchorClick);

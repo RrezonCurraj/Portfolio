@@ -4,11 +4,19 @@ import { useRef, useState } from "react";
 import { portfolioCopy, portfolioData } from "@/data/portfolio";
 import { ArrowUpRight, ArrowUp, Send, CheckCircle } from "lucide-react";
 import { useMode } from "@/components/Providers";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { COMPACT_LAYOUT_QUERY } from "@/lib/useCompactLayout";
+import { cn } from "@/lib/utils";
+import styles from "./Contact.module.css";
 
 import { contactLimits, validateContact } from "@/lib/contact";
 
 type Status = "idle" | "sending" | "sent" | "error";
 type FormState = { status: Status; errorMsg?: string };
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 export function Contact() {
   const copy = portfolioCopy.contact;
@@ -18,6 +26,37 @@ export function Contact() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [form, setForm] = useState<FormState>({ status: "idle" });
+  const closingHeading = useRef<HTMLHeadingElement>(null);
+
+  useGSAP(() => {
+    const heading = closingHeading.current;
+    if (!heading) return;
+    const media = gsap.matchMedia();
+    media.add({
+      all: "all",
+      compact: COMPACT_LAYOUT_QUERY,
+      reduce: "(prefers-reduced-motion: reduce)",
+    }, context => {
+      if (context.conditions?.reduce) return;
+      const timeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: heading,
+          start: "top 90%",
+          end: "clamp(top 44%)",
+          scrub: true,
+          invalidateOnRefresh: true,
+        },
+        defaults: { ease: "none" },
+      });
+      timeline
+        .fromTo(heading.querySelectorAll(`.${styles.lineInner}`),
+          { yPercent: 105, skewY: context.conditions?.compact ? 1 : 1.5 },
+          { yPercent: 0, skewY: 0, stagger: 0.1 }, 0)
+        .fromTo(heading.querySelector(`.${styles.rule}`),
+          { scaleX: 0 }, { scaleX: 1 }, 0);
+    });
+    return () => media.revert();
+  }, { scope: closingHeading });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,15 +106,18 @@ export function Contact() {
       <div className="eyebrow">
         {copy.number} / {copy.title}
       </div>
-      <h2 id="contact-heading" className="contact-heading">
+      <h2 id="contact-heading" ref={closingHeading} className={cn("contact-heading", styles.heading)} aria-label={`${copy.lines.join(" ")}.`}>
         {copy.lines.map((line, index) => (
-          <span key={line}>
+          <span key={line} className={styles.lineMask} aria-hidden="true">
+            <span className={styles.lineInner}>
             {line}
             {index === copy.lines.length - 1 && (
               <span className="accent-period">.</span>
             )}
+            </span>
           </span>
         ))}
+        <span className={styles.rule} aria-hidden="true" />
       </h2>
       <div className="contact-grid">
         <div>

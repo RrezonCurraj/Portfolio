@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { portfolioCopy, portfolioData } from "@/data/portfolio";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { ProjectVisual } from "@/components/ui/ProjectVisual";
 import { cn } from "@/lib/utils";
 
 export function Projects() {
@@ -17,10 +18,9 @@ export function Projects() {
           const external = !project.caseStudy ? { target: "_blank", rel: "noopener noreferrer" } : {};
           return (
             <article key={project.slug} className={cn("project-card", project.featured && "featured", project.caseStudy && "has-case-study")} aria-labelledby={`project-${project.slug}`}>
-              <Link href={destination} className={cn("project-visual", project.imageStyle === "brand" && "brand-visual")} aria-label={`${title} — ${project.caseStudy ? copy.caseStudy : copy.live}`} {...external}>
+              <ProjectVisual href={destination} className={cn(project.imageStyle === "brand" && "brand-visual")} label={`${title} — ${project.caseStudy ? copy.caseStudy : copy.live}`} index={index} external={!project.caseStudy}>
                 {project.image && <Image src={project.image} alt={project.title} fill sizes={project.featured ? "(max-width: 767px) calc(100vw - 44px), (max-width: 1599px) 80vw, 1250px" : "(max-width: 767px) calc(100vw - 44px), (max-width: 1599px) 38vw, 610px"} />}
-                <span className="project-index">{String(index + 1).padStart(2, "0")}</span>
-              </Link>
+              </ProjectVisual>
               <div className="project-body">
                 <div className="project-identity">
                   {project.category && <p className="project-category">{project.category}</p>}

@@ -1,0 +1,48 @@
+.frame {
+  isolation: isolate;
+}
+
+.imageMotion {
+  transform-origin: 50% 50%;
+}
+
+.panel {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: calc(100% / 3 + 0.5px);
+  display: block;
+  background: linear-gradient(180deg, var(--background), color-mix(in srgb, var(--foreground) 3%, var(--background)));
+  box-shadow: 0 -6px 18px color-mix(in srgb, var(--foreground) 8%, transparent), inset 0 -1px color-mix(in srgb, var(--border-strong) 45%, transparent);
+  opacity: 0;
+  pointer-events: none;
+  backface-visibility: hidden;
+  transform-origin: 50% 100%;
+}
+
+.panel:nth-of-type(3) {
+  top: calc(100% / 3);
+}
+
+.panel:nth-of-type(4) {
+  top: calc(200% / 3);
+  height: calc(100% / 3);
+}
+
+.frame:focus-visible .panel {
+  visibility: hidden;
+}
+
+.frame:focus-visible .imageMotion {
+  transform: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel {
+    visibility: hidden;
+  }
+
+  .imageMotion {
+    transform: none !important;
+  }
+}

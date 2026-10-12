@@ -1,0 +1,9 @@
+.lineMask {
+  overflow: clip;
+  overflow-clip-margin: .08em;
+}
+
+.lineInner {
+  display: block;
+  transform-origin: left center;
+}

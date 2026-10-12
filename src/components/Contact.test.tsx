@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { Contact } from '@/components/Contact';
 import { ModeProvider } from '@/components/Providers';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 const originalFetch = global.fetch;
 afterEach(() => { global.fetch = originalFetch; });
@@ -33,4 +34,21 @@ it('rejects whitespace-only input before making a request', () => {
   fireEvent.submit(form);
   expect(global.fetch).not.toHaveBeenCalled();
   expect(screen.getByText('All fields are required.')).toBeInTheDocument();
+});
+
+it('keeps contact controls usable while the closing title moves and cleans up on unmount', () => {
+  const { container, unmount } = render(<ModeProvider><Contact /></ModeProvider>);
+  const heading = screen.getByRole('heading', { level: 2 });
+  const trigger = ScrollTrigger.getAll().find(item => item.trigger === heading);
+  expect(trigger?.animation).toBeDefined();
+  act(() => { trigger!.animation!.progress(0.25); });
+  expect(heading.style.transform).toBe('');
+  expect(screen.getByRole('button', { name: /Send Message/i })).toBeEnabled();
+  expect(screen.getByLabelText('Email')).toBeVisible();
+  container.querySelectorAll<HTMLElement>('form, input, textarea, button, a, p').forEach(element => {
+    expect(element.style.transform).toBe('');
+    expect(element.style.opacity).toBe('');
+  });
+  unmount();
+  expect(ScrollTrigger.getAll().some(item => item.trigger === heading)).toBe(false);
 });
