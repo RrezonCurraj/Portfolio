@@ -9,9 +9,9 @@ import { Experience } from "@/components/Experience";
 import { Contributions } from "@/components/Contributions";
 import { Contact } from "@/components/Contact";
 import { RecruiterDashboard } from "@/components/RecruiterDashboard";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 
-export function PageContent() {
+export function PageContent({ githubActivity }: { githubActivity?: ReactNode }) {
   const { isRecruiterMode } = useMode();
   const content = useRef<HTMLDivElement>(null);
   const previousMode = useRef(isRecruiterMode);
@@ -34,7 +34,7 @@ export function PageContent() {
           <About />
           <Skills />
           <Experience />
-          <Contributions />
+          <Contributions>{githubActivity}</Contributions>
           <Contact />
         </>
       )}

@@ -78,6 +78,8 @@ section[id] { scroll-margin-top: 110px; }
 .text-link { display: inline-flex; align-items: center; gap: 14px; padding-block: 10px; font-size: 14px; text-decoration: none; color: var(--foreground); }
 .text-link:hover, .muted-link:hover { color: var(--primary); }
 .muted-link { color: var(--muted); }
+.github-activity { min-width: 0; margin-bottom: 40px; }
+.github-activity-status { padding-block: 24px; color: var(--muted); font-size: 14px; }
 .icon-button { display: inline-flex; justify-content: center; align-items: center; width: 44px; height: 44px; background: none; color: var(--muted); border: 0; padding: 0; }
 .icon-button:hover { color: var(--foreground); }
 .accent-period { color: var(--primary); }

@@ -2,8 +2,9 @@ import { ArrowUpRight, ChevronDown } from "lucide-react";
 import { portfolioCopy, portfolioData } from "@/data/portfolio";
 import { ResponsiveDisclosure } from "@/components/ui/ResponsiveDisclosure";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import type { ReactNode } from "react";
 
-export function Contributions() {
+export function Contributions({ children }: { children?: ReactNode }) {
   const copy = portfolioCopy.contributions;
   return (
     <section
@@ -17,6 +18,7 @@ export function Contributions() {
         description={copy.intro}
       />
       }>
+      {children}
       {portfolioData.contributions.map((contribution) => (
         <article key={contribution.project} className="contribution">
           <div>

@@ -564,6 +564,15 @@ export const portfolioCopy = {
     repository: "Repository",
     details: "Explore contributions",
     pullRequest: "View pull request",
+    activity: {
+      profile: "View activity on GitHub",
+      loading: "Loading GitHub activity…",
+      unavailable: "GitHub activity is temporarily unavailable. Explore my profile below.",
+      palette: {
+        light: ["#d4e6a0", "#a7c76d", "#7f9b47", "#53682d"],
+        dark: ["#354526", "#607b3c", "#94b861", "#c9e58b"],
+      },
+    },
   },
   contact: {
     number: "05",
