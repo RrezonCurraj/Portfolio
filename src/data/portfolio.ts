@@ -56,12 +56,14 @@ interface PortfolioData {
     }[];
   }[];
   experience: {
+    startDate: string;
     company: string;
     role: string;
     period: string;
     description: string;
   }[];
   education: {
+    startDate: string;
     degree: string;
     institution: string;
     location: string;
@@ -418,6 +420,7 @@ export const portfolioData: PortfolioData = {
   experience: [
     {
       company: "Freelance",
+      startDate: "2024-06",
       role: "Frontend Developer",
       period: "06.2024 - Present",
       description: `• Delivering pixel-perfect, responsive websites for small businesses, ensuring high conversion rates and optimal user experience.
@@ -427,6 +430,7 @@ export const portfolioData: PortfolioData = {
     },
     {
       company: "Demiraj Concepts",
+      startDate: "2022",
       role: "Web Developer and Graphic Designer",
       period: "2022 - 2026",
       description: `• Engineered custom web solutions using React and WordPress, delivering high-performance and SEO-optimized sites.
@@ -435,6 +439,7 @@ export const portfolioData: PortfolioData = {
     },
     {
       company: "StarLabs",
+      startDate: "2024-02",
       role: "Web Developer (Internship)",
       period: "02.2024 - 04.2024",
       description: `• Built and optimized full-stack web applications using the MERN stack (MongoDB, Express, React, Node.js).
@@ -447,6 +452,7 @@ export const portfolioData: PortfolioData = {
     {
       degree:
         "Bachelor of Science (BSc) in Computer Science with Specialization in Software Design",
+      startDate: "2019",
       institution: 'University of Prizren "Ukshin Hoti"',
       location: "Prizren, Kosovo",
       period: "2019 - 2025",
@@ -455,6 +461,7 @@ export const portfolioData: PortfolioData = {
     },
     {
       degree: "Microsoft Azure Cloud",
+      startDate: "2023-11",
       institution: "Cacttus Education",
       location: "Prizren, Kosovo",
       period: "11.2023 - 04.2024",
@@ -462,6 +469,7 @@ export const portfolioData: PortfolioData = {
     },
     {
       degree: "iOS Developer",
+      startDate: "2022-05",
       institution: "Rit Kosovo / Cactus Education",
       location: "Prishtina, Kosovo",
       period: "05.2022 - 11.2022",
@@ -469,6 +477,7 @@ export const portfolioData: PortfolioData = {
     },
     {
       degree: "Graphic Designer",
+      startDate: "2020-11",
       institution: "UnitedPixels",
       location: "Prishtina, Kosovo",
       period: "11.2020 - 02.2021",
@@ -538,6 +547,13 @@ export const portfolioCopy = {
     intro:
       "A few things I’ve designed and built. Each with its own story, and a careful eye for the details.",
     featured: "Featured project",
+    carousel: {
+      label: "Selected projects",
+      previews: "Project previews",
+      hint: "Scroll to explore · Use arrow keys to browse",
+      viewProject: "View Project",
+      viewSource: "View Source Code",
+    },
     caseStudy: "Case study",
     live: "Live site",
     source: "Source",
@@ -556,6 +572,13 @@ export const portfolioCopy = {
     title: "Along the way",
     intro: "Experience in design, development, and bringing ideas to life.",
     education: "Education & training",
+    timelinePeriod: "2022 — Present",
+    timelineLabel: "Career timeline",
+    timelineHint: "Scroll to follow the journey · Use ← → to explore",
+    educationTimelineTitle: "Design, development & cloud",
+    educationTimelinePeriod: "2019 — 2025",
+    educationTimelineLabel: "Education timeline",
+    educationTimelineHint: "Scroll through education & training · Use ← → to explore",
   },
   contributions: {
     number: "04",

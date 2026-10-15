@@ -1,0 +1,51 @@
+.root { --milestone-width: clamp(400px, 43vw, 480px); --intro-width: 260px; --timeline-height: calc(100svh - var(--sticky-header-height, 88px) - 24px); }
+.viewport { position: relative; }
+.viewport:focus-visible { outline-offset: 4px; }
+.intro { margin-bottom: 32px; }
+.portrait { display: none; }
+.introTitle { margin: 0 0 8px; max-width: 220px; font-size: 25px; font-weight: 500; letter-spacing: -.04em; line-height: 1.15; }
+.periodLabel { margin: 0; color: var(--muted); font-size: 12px; }
+.milestones { position: relative; display: flex; flex-direction: column; gap: 32px; list-style: none; padding: 0 0 0 24px; margin: 0; }
+.milestone { position: relative; min-width: 0; }
+.period { margin: 0 0 9px; color: var(--primary); font: 11px var(--font-mono), sans-serif; }
+.company { margin: 0 0 6px; color: var(--foreground); font-size: 28px; font-weight: 500; line-height: 1.08; letter-spacing: -.045em; }
+.role { margin: 0 0 16px; color: var(--muted-strong); font-size: 14px; line-height: 1.4; }
+.description { padding: 0; margin: 0; list-style: none; color: var(--muted); font-size: 12px; line-height: 1.55; }
+.description li+li { margin-top: 7px; }
+.baseline { display: none; }
+.dot { position: absolute; left: -25px; top: 4px; width: 9px; height: 9px; border-radius: 50%; background: var(--primary); }
+.hint { display: none; }
+
+.root[data-animated] { height: calc(var(--timeline-height) + var(--timeline-travel, 0px)); }
+.root[data-animated] .viewport { position: sticky; top: calc(var(--sticky-header-height, 88px) + 12px); height: var(--timeline-height); overflow: hidden; }
+.root[data-animated] .slider { display: flex; align-items: stretch; gap: 40px; width: max-content; height: calc(100% - 40px); }
+.root[data-animated] .intro { display: flex; flex: 0 0 var(--intro-width); flex-direction: column; justify-content: center; margin: 0; padding: 24px 0; }
+.root[data-animated] .portrait { display: block; position: relative; width: 100%; height: min(40svh, 300px); margin-bottom: 22px; overflow: hidden; border-radius: 8px; }
+.portrait img { object-fit: cover; object-position: center 25%; filter: grayscale(1); }
+.root[data-animated] .milestones { display: grid; flex: none; grid-template-columns: repeat(var(--milestone-count), var(--milestone-width)); grid-template-rows: repeat(2, minmax(0, 1fr)); width: max-content; padding: 0; gap: 0; }
+.root[data-animated] .milestone { padding-inline: 30px; }
+.root[data-animated] .top { grid-row: 1; align-self: end; padding-bottom: 38px; }
+.root[data-animated] .bottom { grid-row: 2; align-self: start; padding-top: 38px; }
+.root[data-animated] .baseline { display: block; position: absolute; top: 50%; left: 30px; right: 30px; height: 1px; background: var(--border-strong); }
+.progress { position: absolute; inset: 0; background: var(--primary); transform-origin: left; }
+.root[data-animated] .stem { position: absolute; left: 30px; width: 1px; height: 28px; background: var(--primary); }
+.root[data-animated] .top .stem { bottom: 0; transform-origin: bottom; }
+.root[data-animated] .bottom .stem { top: 0; transform-origin: top; }
+.root[data-animated] .dot { left: 26px; }
+.root[data-animated] .top .dot { top: auto; bottom: -4px; }
+.root[data-animated] .bottom .dot { top: -4px; }
+.root[data-animated] .hint { display: block; position: absolute; bottom: 4px; left: 0; margin: 0; color: var(--muted); font-size: 11px; }
+
+@media (max-width: 767px), (max-height: 820px) {
+  .root { --milestone-width: min(86vw, 390px); --intro-width: min(70vw, 240px); }
+  .root[data-animated] .slider { gap: 24px; }
+  .root[data-animated] .milestones { grid-template-rows: 1fr; align-items: center; padding-bottom: 50px; }
+  .root[data-animated] .milestone { grid-row: 1; align-self: stretch; display: flex; flex-direction: column; justify-content: center; padding: 0 22px 38px; }
+  .root[data-animated] .baseline { top: auto; bottom: 50px; left: 22px; right: 22px; }
+  .root[data-animated] .milestone .stem { top: auto; bottom: 0; left: 22px; transform-origin: bottom; }
+  .root[data-animated] .milestone .dot { top: auto; bottom: -4px; left: 18px; }
+  .root[data-animated] .portrait { height: min(38svh, 260px); }
+  .root[data-animated] .introTitle { font-size: 25px; }
+  .company { font-size: 27px; }
+  .description { font-size: 13px; line-height: 1.6; }
+}

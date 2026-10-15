@@ -1,0 +1,29 @@
+.section[data-scroll-driven] .track {
+  --step-distance: 75svh;
+  height: calc(100svh - var(--sticky-header-height, 88px) - 24px + var(--carousel-scroll-steps) * var(--step-distance));
+}
+
+.section[data-scroll-driven] .panel {
+  position: sticky;
+  top: calc(var(--sticky-header-height, 88px) + 12px);
+  height: calc(100svh - var(--sticky-header-height, 88px) - 24px);
+  display: flex;
+  flex-direction: column;
+}
+
+.section[data-scroll-driven] :global(.project-carousel) {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.section[data-scroll-driven] :global(.carousel-stage) {
+  flex: 1;
+  height: auto;
+  min-height: 120px;
+}
+
+@media (max-width: 767px), (max-width: 1024px) and (max-height: 500px) and (pointer: coarse) {
+  .section[data-scroll-driven] .track { --step-distance: 45svh; }
+}

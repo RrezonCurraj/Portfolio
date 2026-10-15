@@ -1,7 +1,7 @@
-import { ChevronDown } from "lucide-react";
 import { portfolioCopy, portfolioData } from "@/data/portfolio";
-import { ResponsiveDisclosure } from "@/components/ui/ResponsiveDisclosure";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { Timeline } from "@/components/ui/Timeline";
+import profileImage from "@/images/profile.png";
 
 export function Experience() {
   const copy = portfolioCopy.experience;
@@ -15,61 +15,34 @@ export function Experience() {
         title={copy.title} compactTitle={portfolioCopy.mobile.experience}
         description={copy.intro}
       />
-      {portfolioData.experience.map((job, index) => (
-        <details
-          key={`${job.company}-${job.period}`}
-          className="experience-row"
-          open={index === 0}
-        >
-          <summary>
-            <span className="experience-date">{job.period}</span>
-            <div>
-              <h3>{job.company}</h3>
-              <span className="experience-role">{job.role}</span>
-            </div>
-            <ChevronDown
-              size={18}
-              className="details-chevron"
-              aria-hidden="true"
-            />
-          </summary>
-          <ul className="experience-description">
-            {job.description
-              .split("\n")
-              .filter(Boolean)
-              .map((line) => (
-                <li key={line}>{line.replace(/^[•-]\s*/, "")}</li>
-              ))}
-          </ul>
-        </details>
-      ))}
+      <Timeline
+        title={portfolioData.personal.role}
+        periodLabel={copy.timelinePeriod}
+        label={copy.timelineLabel}
+        hint={copy.timelineHint}
+        image={profileImage}
+        imageAlt={portfolioCopy.about.photoAlt}
+        items={[...portfolioData.experience].sort((a, b) => a.startDate.localeCompare(b.startDate)).map(job => ({
+          id: `${job.company}-${job.startDate}`, title: job.company, role: job.role,
+          period: job.period, description: job.description,
+        }))}
+      />
       {portfolioData.education.length > 0 && (
-        <div id="education">
-          <ResponsiveDisclosure anchorId="education" title={copy.education} headingLevel={3} className="education-disclosure" desktopHeading={<h3 className="education-heading">{copy.education}</h3>}>
-          <div className="education-grid">
-            {portfolioData.education.map((education) => (
-              <div
-                key={`${education.institution}-${education.degree}`}
-                className="education-item"
-              >
-                <span className="experience-date">{education.period}</span>
-                <h4>{education.degree}</h4>
-                <p>
-                  {education.institution} · {education.location}
-                </p>
-                {education.description && (
-                  <p>
-                    {education.description
-                      .replace(/^[•-]\s*/gm, "")
-                      .split("\n")
-                      .join(" · ")}
-                  </p>
-                )}
-              </div>
-            ))}
-          </div>
-          </ResponsiveDisclosure>
-        </div>
+        <section id="education" aria-labelledby="education-heading">
+          <h3 id="education-heading" className="education-heading">{copy.education}</h3>
+          <Timeline
+            title={copy.educationTimelineTitle}
+            periodLabel={copy.educationTimelinePeriod}
+            label={copy.educationTimelineLabel}
+            hint={copy.educationTimelineHint}
+            headingLevel={4}
+            items={[...portfolioData.education].sort((a, b) => a.startDate.localeCompare(b.startDate)).map(entry => ({
+              id: `${entry.institution}-${entry.startDate}`, title: entry.degree,
+              role: `${entry.institution} · ${entry.location}`,
+              period: entry.period, description: entry.description,
+            }))}
+          />
+        </section>
       )}
     </section>
   );

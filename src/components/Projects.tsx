@@ -1,44 +1,88 @@
-import Image from "next/image";
-import Link from "next/link";
+"use client";
+
+import { useCallback, useRef, useState, type CSSProperties } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowUpRight } from "lucide-react";
 import { portfolioCopy, portfolioData } from "@/data/portfolio";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { ProjectVisual } from "@/components/ui/ProjectVisual";
+import { ProjectCarousel, type ProjectCarouselHandle } from "@/components/ui/ProjectCarousel";
+import { scrollImmediately } from "@/lib/scroll";
+import { COMPACT_LAYOUT_QUERY } from "@/lib/useCompactLayout";
 import { cn } from "@/lib/utils";
+import styles from "./Projects.module.css";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 export function Projects() {
   const copy = portfolioCopy.projects;
+  const [index, setIndex] = useState(0);
+  const projects = portfolioData.projects;
+  const section = useRef<HTMLElement>(null);
+  const track = useRef<HTMLDivElement>(null);
+  const panel = useRef<HTMLDivElement>(null);
+  const carousel = useRef<ProjectCarouselHandle>(null);
+  const scrollTrigger = useRef<ScrollTrigger | null>(null);
+
+  const selectProject = useCallback((next: number) => {
+    const trigger = scrollTrigger.current;
+    if (trigger && projects.length > 1) {
+      carousel.current?.seek(next);
+      scrollImmediately(trigger.start + (next / (projects.length - 1)) * (trigger.end - trigger.start));
+    }
+    setIndex(next);
+  }, [projects.length]);
+
+  useGSAP(() => {
+    const root = section.current;
+    const runway = track.current;
+    const sticky = panel.current;
+    if (!root || !runway || !sticky || projects.length < 2) return;
+    const media = gsap.matchMedia();
+    media.add({ all: "all", reduce: "(prefers-reduced-motion: reduce)" }, context => {
+      if (context.conditions?.reduce) return;
+      root.setAttribute("data-scroll-driven", "");
+      if (!runway.offsetHeight) { root.removeAttribute("data-scroll-driven"); return; }
+      const position = { value: 0 };
+      const animation = gsap.to(position, {
+        value: projects.length - 1,
+        ease: "none",
+        onUpdate: () => {
+          carousel.current?.seek(position.value);
+          setIndex(Math.round(position.value));
+        },
+        scrollTrigger: {
+          trigger: runway,
+          start: () => {
+            const top = (document.querySelector(".site-header")?.getBoundingClientRect().height ?? 88) + 12;
+            const start = window.matchMedia(COMPACT_LAYOUT_QUERY).matches ? Math.max(top, window.innerHeight * 0.3) : top;
+            return `top top+=${start}`;
+          },
+          end: "bottom bottom-=12",
+          scrub: true,
+          invalidateOnRefresh: true,
+        },
+      });
+      scrollTrigger.current = animation.scrollTrigger ?? null;
+      return () => {
+        scrollTrigger.current = null;
+        carousel.current?.seek(null);
+        root.removeAttribute("data-scroll-driven");
+      };
+    });
+    return () => media.revert();
+  }, { scope: section, dependencies: [projects.length], revertOnUpdate: true });
+  const project = projects[index] ?? projects[0];
+
   return (
-    <section id="projects" className="section-shell content-section projects-section">
+    <section ref={section} id="projects" className={cn("section-shell content-section projects-section", styles.section)} style={{ "--carousel-scroll-steps": Math.max(0, projects.length - 1) } as CSSProperties}>
       <SectionHeading number={copy.number} title={copy.title} description={copy.intro} />
-      <div className="project-grid">
-        {portfolioData.projects.map((project, index) => {
-          const title = project.displayTitle ?? project.title;
-          const destination = project.caseStudy ? `/projects/${project.slug}` : project.link;
-          const external = !project.caseStudy ? { target: "_blank", rel: "noopener noreferrer" } : {};
-          return (
-            <article key={project.slug} className={cn("project-card", project.featured && "featured", project.caseStudy && "has-case-study")} aria-labelledby={`project-${project.slug}`}>
-              <ProjectVisual href={destination} className={cn(project.imageStyle === "brand" && "brand-visual")} label={`${title} — ${project.caseStudy ? copy.caseStudy : copy.live}`} index={index} external={!project.caseStudy}>
-                {project.image && <Image src={project.image} alt={project.title} fill sizes={project.featured ? "(max-width: 767px) calc(100vw - 44px), (max-width: 1599px) 80vw, 1250px" : "(max-width: 767px) calc(100vw - 44px), (max-width: 1599px) 38vw, 610px"} />}
-              </ProjectVisual>
-              <div className="project-body">
-                <div className="project-identity">
-                  {project.category && <p className="project-category">{project.category}</p>}
-                  <h3 id={`project-${project.slug}`} className="project-title">{title}</h3>
-                </div>
-                <p className="project-description">{project.summary ?? project.description}</p>
-                <div className="project-links">
-                  <Link href={destination} className="text-link project-primary" {...external}>{portfolioCopy.mobile.project}<ArrowUpRight size={16} aria-hidden="true" /></Link>
-                  {project.caseStudy && <Link href={destination} className="text-link project-case-link">{copy.caseStudy}<ArrowUpRight size={14} aria-hidden="true" /></Link>}
-                  {project.link && <a href={project.link} target="_blank" rel="noopener noreferrer" className="text-link muted-link project-live-link" aria-label={`${copy.live}: ${title}`}>{copy.live}<ArrowUpRight size={14} aria-hidden="true" /></a>}
-                  {project.github && <a href={project.github} target="_blank" rel="noopener noreferrer" className="text-link muted-link project-source-link" aria-label={`${copy.source}: ${title}`}>{copy.source}<ArrowUpRight size={14} aria-hidden="true" /></a>}
-                </div>
-                <ul className="project-stack" aria-label={project.title}>{project.tech.map(technology => <li key={technology}>{technology}</li>)}</ul>
-              </div>
-            </article>
-          );
-        })}
-      </div>
+      {project && <>
+        <div ref={track} className={cn("project-scroll-track", styles.track)}><div ref={panel} className={cn("project-scroll-panel", styles.panel)}>
+        <ProjectCarousel ref={carousel} projects={projects} index={index} onIndexChange={selectProject} />
+        </div></div>
+      </>}
       <a href="#contact" className="text-link work-contact-prompt">{portfolioCopy.mobile.contactPrompt}<ArrowUpRight size={18} aria-hidden="true" /></a>
     </section>
   );
