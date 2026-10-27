@@ -37,35 +37,37 @@ export function Navbar() {
 
   useEffect(() => {
     let frame = 0;
-    const update = () => {
-      frame = 0;
+    let needsMeasurement = true;
+    let distance = 0;
+    let cursorOffset = 0;
+    let sections: { id: string; top: number }[] = [];
+    const ids = compact && !isRecruiterMode
+      ? portfolioCopy.mobile.navigation.flatMap(item => item.members)
+      : portfolioCopy.navigation.map(item => item.id);
+    const measure = () => {
+      const scrollY = window.scrollY;
       const height = Math.max(
         document.documentElement.scrollHeight,
         document.body.scrollHeight,
       );
-      const distance = Math.max(0, height - window.innerHeight);
-      const progress = distance
-        ? Math.min(100, Math.max(0, (window.scrollY / distance) * 100))
-        : 0;
-      const ids = compact && !isRecruiterMode
-        ? portfolioCopy.mobile.navigation.flatMap(item => item.members)
-        : portfolioCopy.navigation.map(item => item.id);
-      const sections = ids
-        .flatMap((id) => {
-          const element = document.getElementById(id);
-          return element
-            ? [
-                {
-                  id,
-                  top: element.getBoundingClientRect().top + window.scrollY,
-                },
-              ]
-            : [];
-        })
-        .sort((a, b) => a.top - b.top);
-      const cursor = Math.max(0, window.scrollY) + (compact
+      distance = Math.max(0, height - window.innerHeight);
+      sections = ids.flatMap((id) => {
+        const element = document.getElementById(id);
+        return element ? [{ id, top: element.getBoundingClientRect().top + scrollY }] : [];
+      }).sort((a, b) => a.top - b.top);
+      cursorOffset = compact
         ? (header.current?.getBoundingClientRect().height ?? 100) + 13
-        : window.innerHeight * 0.22);
+        : window.innerHeight * 0.22;
+      needsMeasurement = false;
+    };
+    const update = () => {
+      frame = 0;
+      if (needsMeasurement) measure();
+      const scrollY = window.scrollY;
+      const progress = distance
+        ? Math.min(100, Math.max(0, (scrollY / distance) * 100))
+        : 0;
+      const cursor = Math.max(0, scrollY) + cursorOffset;
       const current =
         progress === 100
           ? sections.at(-1)
@@ -73,26 +75,31 @@ export function Navbar() {
             sections[0]);
       const active = current?.id ?? "home";
       setScroll((previous) =>
-        previous.progress === progress && previous.active === active
+        (compact || previous.progress === progress) && previous.active === active
           ? previous
-          : { progress, active },
+          : { progress: compact ? previous.progress : progress, active },
       );
     };
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(update);
     };
+    const scheduleMeasurement = () => {
+      needsMeasurement = true;
+      schedule();
+    };
     schedule();
     window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", schedule);
+    window.addEventListener("resize", scheduleMeasurement);
     const observer =
       typeof ResizeObserver === "undefined"
         ? null
-        : new ResizeObserver(schedule);
+        : new ResizeObserver(scheduleMeasurement);
     observer?.observe(document.body);
+    if (header.current) observer?.observe(header.current);
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", schedule);
+      window.removeEventListener("resize", scheduleMeasurement);
       observer?.disconnect();
     };
   }, [isRecruiterMode, compact]);

@@ -1,4 +1,5 @@
 import { act, fireEvent, render, screen, within } from "@testing-library/react";
+import { Profiler, type ProfilerOnRenderCallback } from "react";
 import { Navbar } from "@/components/Navbar";
 import { ModeProvider } from "@/components/Providers";
 import gsap from "gsap";
@@ -28,10 +29,10 @@ afterEach(() => {
   jest.useRealTimers();
 });
 
-function renderNavigation() {
+function renderNavigation(onRender: ProfilerOnRenderCallback = () => {}) {
   const result = render(
     <ModeProvider>
-      <Navbar />
+      <Profiler id="navbar" onRender={onRender}><Navbar /></Profiler>
       <section id="home" />
       <section id="projects" />
       <section id="about" />
@@ -74,6 +75,15 @@ it("updates the ruler and current section when the document scrolls", () => {
       { name: "Work" },
     ),
   ).toHaveAttribute("aria-current", "location");
+});
+
+it("keeps fractional desktop progress between rounded percentage labels", () => {
+  const { container } = renderNavigation();
+  Object.defineProperty(window, "scrollY", { configurable: true, value: 1001 });
+  fireEvent.scroll(window);
+  act(() => { jest.runOnlyPendingTimers(); });
+  expect(container.querySelector<HTMLElement>(".ruler-marker")!.style.top).toBe("50.05%");
+  expect(screen.getByRole("slider")).toHaveAttribute("aria-valuenow", "50");
 });
 
 it("clamps scroll progress and selects the last section at the bottom", () => {
@@ -367,12 +377,75 @@ describe("compact navigation", () => {
       section.getBoundingClientRect = () => ({ top: 1700 + index * 30 - window.scrollY }) as DOMRect;
       container.append(section);
     }
+    fireEvent.resize(window);
     for (const position of [1700, 1730, 1760, 1790]) {
       Object.defineProperty(window, "scrollY", { configurable: true, value: position });
       fireEvent.scroll(window);
       act(() => { jest.runOnlyPendingTimers(); });
       expect(within(screen.getByRole("navigation", { name: "Mobile sections" })).getByRole("link", { name: "About" })).toHaveAttribute("aria-current", "location");
     }
+  });
+
+  it("avoids progress-only commits while keeping the current subsection", () => {
+    const commits = jest.fn();
+    renderNavigation(commits);
+    const initialCommits = commits.mock.calls.length;
+    for (const position of [100, 200, 300]) {
+      Object.defineProperty(window, "scrollY", { configurable: true, value: position });
+      fireEvent.scroll(window);
+      act(() => { jest.runOnlyPendingTimers(); });
+    }
+    expect(commits).toHaveBeenCalledTimes(initialCommits);
+    Object.defineProperty(window, "scrollY", { configurable: true, value: 1800 });
+    fireEvent.scroll(window);
+    act(() => { jest.runOnlyPendingTimers(); });
+    expect(within(screen.getByRole("navigation", { name: "Mobile sections" })).getByRole("link", { name: "About" })).toHaveAttribute("aria-current", "location");
+    fireEvent.click(screen.getByRole("button", { name: "Open menu" }));
+    expect(within(screen.getByRole("navigation", { name: "Additional navigation" })).getByRole("link", { name: "About" })).toHaveAttribute("aria-current", "location");
+  });
+
+  it("reuses section measurements until the layout changes", () => {
+    const { container } = renderNavigation();
+    const section = container.querySelector<HTMLElement>("#about")!;
+    const measure = jest.spyOn(section, "getBoundingClientRect");
+    for (const position of [100, 200, 300]) {
+      Object.defineProperty(window, "scrollY", { configurable: true, value: position });
+      fireEvent.scroll(window);
+      act(() => { jest.runOnlyPendingTimers(); });
+    }
+    expect(measure).not.toHaveBeenCalled();
+    measure.mockImplementation(() => ({ top: 250 - window.scrollY }) as DOMRect);
+    fireEvent.resize(window);
+    act(() => { jest.runOnlyPendingTimers(); });
+    expect(measure).toHaveBeenCalledTimes(1);
+    expect(within(screen.getByRole("navigation", { name: "Mobile sections" })).getByRole("link", { name: "About" })).toHaveAttribute("aria-current", "location");
+  });
+
+  it("invalidates cached section positions when document content resizes", () => {
+    const originalObserver = window.ResizeObserver;
+    const observers: { callback: ResizeObserverCallback; elements: Element[] }[] = [];
+    window.ResizeObserver = class {
+      private observation: typeof observers[number];
+      constructor(callback: ResizeObserverCallback) {
+        this.observation = { callback, elements: [] };
+        observers.push(this.observation);
+      }
+      observe(element: Element) { this.observation.elements.push(element); }
+      unobserve() {}
+      disconnect() {}
+    } as unknown as typeof ResizeObserver;
+    try {
+      const { container } = renderNavigation();
+      const section = container.querySelector<HTMLElement>("#about")!;
+      const measure = jest.spyOn(section, "getBoundingClientRect").mockImplementation(() => ({ top: 250 - window.scrollY }) as DOMRect);
+      Object.defineProperty(window, "scrollY", { configurable: true, value: 300 });
+      const observation = observers.find(entry => entry.elements.includes(document.body))!;
+      observation.callback([], {} as ResizeObserver);
+      observation.callback([], {} as ResizeObserver);
+      act(() => { jest.runOnlyPendingTimers(); });
+      expect(measure).toHaveBeenCalledTimes(1);
+      expect(within(screen.getByRole("navigation", { name: "Mobile sections" })).getByRole("link", { name: "About" })).toHaveAttribute("aria-current", "location");
+    } finally { window.ResizeObserver = originalObserver; }
   });
 
   it("offers secondary actions and returns focus on Escape", () => {

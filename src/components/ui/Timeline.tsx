@@ -47,21 +47,55 @@ export function Timeline({ items, title, periodLabel, label, hint, image, imageA
       if (context.conditions?.reduce || context.conditions?.short) return;
       section.setAttribute("data-animated", "");
       if (!frame.clientWidth) { section.removeAttribute("data-animated"); return; }
-      const milestones = Array.from(track.querySelectorAll<HTMLElement>("[data-milestone]"));
-      const distance = () => Math.max(0, track.scrollWidth - frame.clientWidth);
-      const measure = () => section.style.setProperty("--timeline-travel", `${distance()}px`);
+      const milestones = Array.from(track.querySelectorAll<HTMLElement>("[data-milestone]")).map(element => {
+        const stem = element.querySelector<HTMLElement>("[data-stem]");
+        const dot = element.querySelector<HTMLElement>("[data-dot]");
+        const content = Array.from(element.querySelectorAll<HTMLElement>("[data-reveal]"));
+        gsap.set(stem, { scaleY: 0 });
+        gsap.set(dot, { scale: 0 });
+        gsap.set(content, { force3D: true, y: 24, opacity: 0 });
+        return {
+          element,
+          left: 0,
+          eased: undefined as number | undefined,
+          stem: gsap.quickSetter(stem, "scaleY"),
+          dotX: gsap.quickSetter(dot, "scaleX"),
+          dotY: gsap.quickSetter(dot, "scaleY"),
+          content: content.map(node => ({
+            y: gsap.quickSetter(node, "y", "px"),
+            opacity: gsap.quickSetter(node, "opacity"),
+          })),
+        };
+      });
+      let width = 0;
+      let travel = 0;
+      const distance = () => travel;
+      const measure = () => {
+        width = frame.clientWidth;
+        travel = Math.max(0, track.scrollWidth - width);
+        const left = frame.getBoundingClientRect().left;
+        const x = Number(gsap.getProperty(track, "x"));
+        for (const milestone of milestones) {
+          milestone.left = milestone.element.getBoundingClientRect().left - left - x;
+        }
+        section.style.setProperty("--timeline-travel", `${travel}px`);
+      };
       measure();
       const reveal = () => {
-        const left = frame.getBoundingClientRect().left;
+        const offset = Number(gsap.getProperty(track, "x"));
         for (const milestone of milestones) {
-          const x = milestone.getBoundingClientRect().left - left;
-          const amount = gsap.utils.clamp(0, 1, (frame.clientWidth * 0.95 - x) / (frame.clientWidth * 0.42));
+          const x = milestone.left + offset;
+          const amount = gsap.utils.clamp(0, 1, (width * 0.95 - x) / (width * 0.42));
           const eased = 1 - Math.pow(1 - amount, 3);
-          gsap.set(milestone.querySelector("[data-stem]"), { scaleY: eased });
-          gsap.set(milestone.querySelector("[data-dot]"), { scale: eased });
-          gsap.set(milestone.querySelectorAll("[data-reveal]"), {
-            force3D: true, y: 24 * (1 - eased), opacity: eased,
-          });
+          if (milestone.eased === eased) continue;
+          milestone.eased = eased;
+          milestone.stem(eased);
+          milestone.dotX(eased);
+          milestone.dotY(eased);
+          for (const content of milestone.content) {
+            content.y(24 * (1 - eased));
+            content.opacity(eased);
+          }
         }
       };
       const animation = gsap.timeline({
@@ -82,8 +116,9 @@ export function Timeline({ items, title, periodLabel, label, hint, image, imageA
       trigger.current = animation.scrollTrigger ?? null;
       reveal();
       const resize = new ResizeObserver(() => {
-        const travel = `${distance()}px`;
-        if (section.style.getPropertyValue("--timeline-travel") === travel) return;
+        const nextWidth = frame.clientWidth;
+        const nextTravel = Math.max(0, track.scrollWidth - nextWidth);
+        if (width === nextWidth && travel === nextTravel) return;
         measure();
         ScrollTrigger.refresh();
       });

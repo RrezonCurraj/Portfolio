@@ -561,7 +561,10 @@ export function ContributionSkyline({
     let polys = new Float32Array(0)
     let faces = new Uint8Array(0)
     let order: number[] = []
+    let sortCs = NaN
+    let sortSn = NaN
     let months: { week: number; label: string }[] = []
+    let monthWidths: number[] = []
     let weekdayRows: { day: number; label: string }[] = []
     // interaction
     let hovered = -1
@@ -595,6 +598,7 @@ export function ContributionSkyline({
         hgt[i] = barHeight(c.count, m.max, cfg.current.heightScale)
       }
       months = m.months
+      sortCs = sortSn = NaN
       const wf = new Intl.DateTimeFormat(locale, { weekday: "short", timeZone: "UTC" })
       weekdayRows = []
       for (let d = 0; d < 7 && d < n; d++) {
@@ -603,6 +607,11 @@ export function ContributionSkyline({
       }
       if (hovered >= n) hovered = -1
       if (pinned >= n) pinned = -1
+    }
+
+    const measureMonths = () => {
+      ctx.font = font
+      monthWidths = months.map((month) => ctx.measureText(month.label).width)
     }
 
     const retheme = () => {
@@ -622,6 +631,7 @@ export function ContributionSkyline({
       }
       ctx.font = font
       labelW = Math.ceil(Math.max(20, ...weekdayRows.map((r) => ctx.measureText(r.label).width))) + 8
+      measureMonths()
       const sw = all.map((c) => rgbString(c[0], c[1], c[2]))
       cfg.current.setTheme((prev) =>
         prev.dark === isDark && prev.swatches.join() === sw.join() ? prev : { dark: isDark, swatches: sw, accent: sw[4] },
@@ -638,11 +648,12 @@ export function ContributionSkyline({
       let miny = Infinity
       let maxy = -Infinity
       const add = (x: number, y: number, z: number) => {
-        const p = project(cam, x, y, z)
-        if (p[0] < minx) minx = p[0]
-        if (p[0] > maxx) maxx = p[0]
-        if (p[1] < miny) miny = p[1]
-        if (p[1] > maxy) maxy = p[1]
+        const px = x * cam.cs - y * cam.sn
+        const py = (x * cam.sn + y * cam.cs) * cam.se - z * cam.ce
+        if (px < minx) minx = px
+        if (px > maxx) maxx = px
+        if (py < miny) miny = py
+        if (py > maxy) maxy = py
       }
       for (let i = 0; i < n; i++) {
         const x0 = wk[i] + off
@@ -711,7 +722,11 @@ export function ContributionSkyline({
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
       ctx.clearRect(0, 0, W, Hmax)
 
-      order.sort((a, c) => (wk[a] + 0.5) * sn + (dy[a] + 0.5) * cs - ((wk[c] + 0.5) * sn + (dy[c] + 0.5) * cs))
+      if (cs !== sortCs || sn !== sortSn) {
+        order.sort((a, c) => (wk[a] + 0.5) * sn + (dy[a] + 0.5) * cs - ((wk[c] + 0.5) * sn + (dy[c] + 0.5) * cs))
+        sortCs = cs
+        sortSn = sn
+      }
 
       const w = lerp(0.78, 0.9, e)
       const off = (1 - w) / 2
@@ -807,9 +822,10 @@ export function ContributionSkyline({
         ctx.textAlign = "left"
         ctx.textBaseline = "bottom"
         let edge = -Infinity
-        for (const m of months) {
+        for (let i = 0; i < months.length; i++) {
+          const m = months[i]
           const x = px(m.week + off, -0.3)
-          const tw = ctx.measureText(m.label).width
+          const tw = monthWidths[i]
           if (x < edge || x + tw > W) continue
           ctx.fillText(m.label, x, py(m.week + off, -0.3, 0) - 3)
           edge = x + tw + 6
@@ -823,11 +839,13 @@ export function ContributionSkyline({
         ctx.textAlign = "left"
         ctx.textBaseline = "top"
         let edge = -Infinity
-        for (const m of months) {
+        for (let i = 0; i < months.length; i++) {
+          const m = months[i]
           const x = px(m.week + 0.5, 7.3)
-          if (x < edge || x + ctx.measureText(m.label).width > W) continue
+          const tw = monthWidths[i]
+          if (x < edge || x + tw > W) continue
           ctx.fillText(m.label, x, py(m.week + 0.5, 7.3, 0) + 2)
-          edge = x + ctx.measureText(m.label).width + 10
+          edge = x + tw + 10
         }
       }
 
@@ -1089,6 +1107,7 @@ export function ContributionSkyline({
     }
     reduceMq.addEventListener("change", onReduce)
     darkMq.addEventListener("change", retheme)
+    document.fonts?.addEventListener("loadingdone", measureMonths)
 
     canvas.addEventListener("pointerdown", onDown)
     canvas.addEventListener("pointermove", onMove)
@@ -1123,6 +1142,7 @@ export function ContributionSkyline({
       mo.disconnect()
       reduceMq.removeEventListener("change", onReduce)
       darkMq.removeEventListener("change", retheme)
+      document.fonts?.removeEventListener("loadingdone", measureMonths)
       canvas.removeEventListener("pointerdown", onDown)
       canvas.removeEventListener("pointermove", onMove)
       canvas.removeEventListener("pointerup", onUp)

@@ -29,12 +29,28 @@ export function ProjectCarousel({ projects, index, onIndexChange, ref }: {
   const titleStage = useRef<HTMLDivElement>(null);
   const titlePosition = useRef({ value: index });
   const titleTween = useRef<gsap.core.Tween | null>(null);
+  const titleRows = useRef<{
+    projects: Project[];
+    titles: { element: HTMLElement; offset: number }[];
+    actions: { element: HTMLElement; offset: number }[];
+    descriptions: { element: HTMLElement; offset: number }[];
+  } | null>(null);
   const renderTitles = useCallback((position: number) => {
     titlePosition.current.value = position;
-    titleStage.current?.querySelectorAll<HTMLElement>("[data-carousel-title]").forEach((line, i) => {
+    const host = titleStage.current;
+    if (!host) return;
+    if (titleRows.current?.projects !== projects) {
+      const rows = (selector: string) => Array.from(host.querySelectorAll<HTMLElement>(selector), element => ({ element, offset: NaN }));
+      titleRows.current = {
+        projects, titles: rows("[data-carousel-title]"), actions: rows("[data-carousel-actions]"), descriptions: rows("[data-carousel-description]"),
+      };
+    }
+    titleRows.current.titles.forEach((row, i) => {
       const offset = Math.max(-1.2, Math.min(1.2, i - position));
+      if (row.offset === offset) return;
+      row.offset = offset;
       const distance = Math.min(1, Math.abs(offset));
-      gsap.set(line, {
+      gsap.set(row.element, {
         force3D: true,
         y: 0,
         yPercent: offset * 115,
@@ -43,26 +59,30 @@ export function ProjectCarousel({ projects, index, onIndexChange, ref }: {
         opacity: Math.max(0, 1 - distance * distance * (3 - 2 * distance)),
       });
     });
-    titleStage.current?.querySelectorAll<HTMLElement>("[data-carousel-actions]").forEach((line, i) => {
+    titleRows.current.actions.forEach((row, i) => {
       const offset = Math.max(-1.2, Math.min(1.2, (i - position) * 1.12));
+      if (row.offset === offset) return;
+      row.offset = offset;
       const distance = Math.min(1, Math.abs(offset));
-      gsap.set(line, {
+      gsap.set(row.element, {
         force3D: true, y: 0, yPercent: offset * 100,
         opacity: Math.max(0, 1 - distance * distance * (3 - 2 * distance)),
       });
     });
-    titleStage.current?.querySelectorAll<HTMLElement>("[data-carousel-description]").forEach((line, i) => {
+    titleRows.current.descriptions.forEach((row, i) => {
       const offset = Math.max(-1.2, Math.min(1.2, i - position));
+      if (row.offset === offset) return;
+      row.offset = offset;
       const distance = Math.min(1, Math.abs(offset));
-      gsap.set(line, {
+      gsap.set(row.element, {
         force3D: true, y: 0, yPercent: offset * 100,
         opacity: Math.max(0, 1 - distance * distance * (3 - 2 * distance)),
       });
     });
-  }, []);
+  }, [projects]);
   useGSAP(() => {
     renderTitles(activeIndex.current);
-    return () => { titleTween.current?.kill(); };
+    return () => { titleTween.current?.kill(); titleRows.current = null; };
   }, { scope: titleStage });
   useImperativeHandle(ref, () => ({
     seek(position) {

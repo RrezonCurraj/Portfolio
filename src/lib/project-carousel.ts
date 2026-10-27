@@ -49,8 +49,11 @@ function makeDust() {
       const i = row * columns + column;
       const u = (column + 0.5) / columns;
       const v = (row + 0.5) / rows;
-      positions.set([(u - 0.5) * CARD_WIDTH, (v - 0.5) * CARD_HEIGHT, 0], i * 3);
-      uvs.set([u, v], i * 2);
+      positions[i * 3] = (u - 0.5) * CARD_WIDTH;
+      positions[i * 3 + 1] = (v - 0.5) * CARD_HEIGHT;
+      positions[i * 3 + 2] = 0;
+      uvs[i * 2] = u;
+      uvs[i * 2 + 1] = v;
       for (let channel = 0; channel < 4; channel++) random[i * 4 + channel] = Math.random();
     }
   }
@@ -138,6 +141,8 @@ export async function createProjectCarousel(
   let visible = true;
   let depth = 1;
   let spacing = 1;
+  let renderWidth = 0;
+  let renderHeight = 0;
 
   function draw() {
     for (let index = 0; index < cards.length; index++) {
@@ -175,6 +180,9 @@ export async function createProjectCarousel(
   function resize() {
     const width = Math.max(1, host.clientWidth);
     const height = Math.max(1, host.clientHeight);
+    if (width === renderWidth && height === renderHeight) return;
+    renderWidth = width;
+    renderHeight = height;
     const aspect = width / height;
     const tangent = Math.tan(32 * Math.PI / 360);
     const widthFraction = width < 520 ? 0.58 : 0.56;
