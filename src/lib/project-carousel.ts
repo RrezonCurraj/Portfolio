@@ -1,9 +1,11 @@
 import {
-  BufferAttribute, BufferGeometry, CanvasTexture, Color, DoubleSide, LinearMipmapLinearFilter,
+  BufferAttribute, BufferGeometry, CanvasTexture, Color, DynamicDrawUsage, LinearMipmapLinearFilter,
   Mesh, PerspectiveCamera, PlaneGeometry, Points, Scene, ShaderMaterial, Vector2, WebGLRenderer,
 } from "three";
 import type { Project } from "@/data/portfolio";
 import { cardVertex, cardFragment, particleVertex, particleFragment } from "@/lib/carousel-shaders";
+import { createCarouselParticleField } from "@/lib/carousel-noise";
+import { writeActiveParticleIndices } from "@/lib/carousel-particles";
 
 export interface ProjectCarouselEngine {
   seek: (position: number) => void;
@@ -15,6 +17,8 @@ export interface ProjectCarouselEngine {
 
 const CARD_WIDTH = 0.8;
 const CARD_HEIGHT = 1;
+const DISSOLVE_MIX = 0.45;
+const PARTICLE_SPAN = 0.4;
 const wrap = (index: number, count: number) => ((index % count) + count) % count;
 
 function particleColor(image: HTMLCanvasElement) {
@@ -105,6 +109,8 @@ export async function createProjectCarousel(
   const camera = new PerspectiveCamera(32, 1, 0.05, 100);
   const geometry = new PlaneGeometry(CARD_WIDTH, CARD_HEIGHT);
   const dustGeometry = makeDust();
+  const field = createCarouselParticleField(renderer, dustGeometry.getAttribute("aUv") as BufferAttribute, DISSOLVE_MIX);
+  if (field) dustGeometry.setAttribute("aField", new BufferAttribute(field, 2));
   const viewHeight = { value: 1 };
   const size = { value: new Vector2(CARD_WIDTH, CARD_HEIGHT) };
   const cards = images.map(image => {
@@ -113,25 +119,31 @@ export async function createProjectCarousel(
     texture.minFilter = LinearMipmapLinearFilter;
     const shared = {
       map: { value: texture }, uSize: size, uRadius: { value: 0.0272 },
-      uThanos: { value: 0 }, uThMix: { value: 0.45 }, uFade: { value: 1 },
+      uThanos: { value: 0 }, uThMix: { value: DISSOLVE_MIX }, uFade: { value: 1 },
     };
     const material = new ShaderMaterial({
       uniforms: { ...shared, uThEdge: { value: 0.05 }, uThAsh: { value: 0 }, uSheen: { value: 0 }, uAngle: { value: 0 } },
-      vertexShader: cardVertex, fragmentShader: cardFragment, transparent: true, depthWrite: false, side: DoubleSide,
+      vertexShader: cardVertex, fragmentShader: cardFragment, transparent: true, depthWrite: false,
     });
     const dustMaterial = new ShaderMaterial({
-      uniforms: { ...shared, uSpan: { value: 0.4 }, uDist: { value: 1.05 }, uSwirl: { value: 0.08 },
+      defines: field ? { CAROUSEL_PARTICLE_FIELD: 1 } : {},
+      uniforms: { ...shared, uSpan: { value: PARTICLE_SPAN }, uDist: { value: 1.05 }, uSwirl: { value: 0.08 },
         uTint: { value: particleColor(image) },
         uAsh: { value: 0 }, uPt: { value: 1.5 }, uCell: { value: CARD_WIDTH / 160 }, uViewH: viewHeight },
       vertexShader: particleVertex, fragmentShader: particleFragment, transparent: true, depthWrite: false,
     });
     const mesh = new Mesh(geometry, material);
-    const dust = new Points(dustGeometry, dustMaterial);
+    const particleGeometry = field ? new BufferGeometry() : dustGeometry;
+    if (field) {
+      for (const [name, attribute] of Object.entries(dustGeometry.attributes)) particleGeometry.setAttribute(name, attribute);
+      particleGeometry.setIndex(new BufferAttribute(new Uint16Array(field.length / 2), 1).setUsage(DynamicDrawUsage));
+    }
+    const dust = new Points(particleGeometry, dustMaterial);
     dust.frustumCulled = false;
     dust.renderOrder = 1;
     mesh.add(dust);
     scene.add(mesh);
-    return { mesh, material, dust, dustMaterial, texture };
+    return { mesh, material, dust, dustMaterial, texture, particleGeometry };
   });
   let current = initialIndex;
   let target = initialIndex;
@@ -143,6 +155,7 @@ export async function createProjectCarousel(
   let spacing = 1;
   let renderWidth = 0;
   let renderHeight = 0;
+  let renderedPosition = NaN;
 
   function draw() {
     for (let index = 0; index < cards.length; index++) {
@@ -158,9 +171,24 @@ export async function createProjectCarousel(
       const amount = Math.sign(offset) * 0.72 * Math.pow(distance, 1.3);
       card.material.uniforms.uThanos.value = amount;
       card.material.uniforms.uFade.value = fade;
+      card.material.visible = Math.abs(amount) < 1;
       card.dust.visible = distance > 0.001;
+      if (field) {
+        const index = card.particleGeometry.getIndex()!;
+        // Pad the interval for float rounding; the shader still rejects its edges.
+        const count = card.dust.visible ? writeActiveParticleIndices(field, amount > 0 ? 1 : 0,
+          Math.fround(Math.abs(amount)) + 1e-6, Math.fround(PARTICLE_SPAN) + 2e-6, index.array as Uint16Array) : 0;
+        card.particleGeometry.setDrawRange(0, count);
+        card.dust.visible = count > 0;
+        if (count) {
+          index.clearUpdateRanges();
+          index.addUpdateRange(0, count);
+          index.needsUpdate = true;
+        }
+      }
     }
     renderer.render(scene, camera);
+    renderedPosition = current;
   }
   function tick(now: number) {
     frame = 0;
@@ -220,8 +248,12 @@ export async function createProjectCarousel(
   resize();
   return {
     seek(position) {
+      if (disposed) return;
       current = target = Math.max(0, Math.min(cards.length - 1, position));
-      kick();
+      cancelAnimationFrame(frame);
+      frame = 0;
+      // Submit scroll-linked cards with their text, without another frame of delay.
+      if (visible && !document.hidden && renderedPosition !== current) draw();
     },
     show(index) {
       let offset = wrap(index - Math.round(target), cards.length);
@@ -242,7 +274,10 @@ export async function createProjectCarousel(
       intersection.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
       renderer.domElement.removeEventListener("webglcontextlost", onContextLost);
-      for (const card of cards) { card.texture.dispose(); card.material.dispose(); card.dustMaterial.dispose(); }
+      for (const card of cards) {
+        card.texture.dispose(); card.material.dispose(); card.dustMaterial.dispose();
+        if (card.particleGeometry !== dustGeometry) card.particleGeometry.dispose();
+      }
       geometry.dispose();
       dustGeometry.dispose();
       renderer.dispose();

@@ -1,5 +1,8 @@
-const dissolveField = `
+export const carouselHashGLSL = `
 float thHash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+`;
+
+export const carouselFieldGLSL = carouselHashGLSL + `
 float thNoise(vec2 p) {
   vec2 i = floor(p);
   vec2 f = fract(p);
@@ -25,7 +28,7 @@ void main() {
   gl_Position = projectionMatrix * mv;
 }`;
 
-export const cardFragment = dissolveField + `
+export const cardFragment = carouselFieldGLSL + `
 uniform sampler2D map;
 uniform float uThanos;
 uniform float uThMix;
@@ -60,9 +63,12 @@ void main() {
   gl_FragColor = vec4(c, alpha);
 }`;
 
-export const particleVertex = dissolveField + `
+export const particleVertex = carouselFieldGLSL + `
 attribute vec2 aUv;
 attribute vec4 aRnd;
+#ifdef CAROUSEL_PARTICLE_FIELD
+attribute vec2 aField;
+#endif
 uniform sampler2D map;
 uniform vec2 uSize;
 uniform float uRadius;
@@ -81,7 +87,11 @@ varying vec4 vCol;
 void main() {
   float p = abs(uThanos);
   float side = sign(uThanos);
+#ifdef CAROUSEL_PARTICLE_FIELD
+  float n = side > 0.0 ? aField.y : aField.x;
+#else
   float n = thField(aUv, side, uThMix);
+#endif
   float e = (p - n) / uSpan;
   vec2 q = (aUv - 0.5) * uSize;
   vec2 qq = abs(q) - (0.5 * uSize - uRadius);
