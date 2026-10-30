@@ -215,6 +215,9 @@ export function ProjectCarousel({ projects, index, onIndexChange, ref }: {
             {item.github && <a href={item.github} target="_blank" rel="noopener noreferrer" className={styles.action}>
               {copy.viewSource}<ArrowUpRight size={14} aria-hidden="true" />
             </a>}
+            {item.caseStudy && item.link && !item.github && <a href={item.link} target="_blank" rel="noopener noreferrer" className={styles.action}>
+              {copy.visitWebsite}<ArrowUpRight size={14} aria-hidden="true" />
+            </a>}
           </div>;
         })}
       </div>

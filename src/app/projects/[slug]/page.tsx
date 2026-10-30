@@ -75,7 +75,7 @@ export default async function ProjectCaseStudyPage({
           {copy.live}
           <ArrowUpRight size={16} aria-hidden="true" />
         </a>
-        <a
+        {project.github && <a
           href={project.github}
           target="_blank"
           rel="noopener noreferrer"
@@ -83,7 +83,7 @@ export default async function ProjectCaseStudyPage({
         >
           {copy.source}
           <ArrowUpRight size={16} aria-hidden="true" />
-        </a>
+        </a>}
       </div>
       <div
         className={cn(

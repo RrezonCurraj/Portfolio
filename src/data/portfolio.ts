@@ -142,6 +142,50 @@ export const portfolioData: PortfolioData = {
   ],
   projects: [
     {
+      slug: "kosova-training-space",
+      displayTitle: "Kosova Training",
+      category: "Education platform · Design & development",
+      summary:
+        "A bilingual cybersecurity training platform with course discovery, verified enrollment, and student and organizer dashboards.",
+      imageStyle: "website",
+      featured: true,
+      title: "Kosova Training Space",
+      description:
+        "A responsive Albanian and English platform for practical cybersecurity training. The site connects a four-module curriculum with email-verified enrollment, bank-transfer payment tracking, and dedicated student and organizer interfaces.",
+      tech: ["Next.js 16", "React 19", "TypeScript", "Tailwind CSS", "PostgreSQL", "Resend"],
+      link: "https://www.kosovotrainingspace.com/sq",
+      github: "",
+      image: "/projects/kosova-training-space.webp",
+      metrics: ["Albanian + English", "Email-verified enrollment", "Student + organizer dashboards"],
+      caseStudy: {
+        role: "Interface design, full-stack development, bilingual content structure, and responsive implementation.",
+        problem:
+          "Kosova Training Space needed a clear way to explain its practical cybersecurity course and guide prospective students from exploring the curriculum to registering and tracking their enrollment.",
+        approach:
+          "I built a bilingual course website with a structured learning path, expandable curriculum modules, and an enrollment flow backed by persistent records. Separate student and organizer interfaces support the work that continues after registration.",
+        decisions: [
+          {
+            title: "One experience in two languages",
+            body: "Albanian and English routes share the same interface and structured content, keeping course information and enrollment guidance consistent across both languages.",
+          },
+          {
+            title: "Verified enrollment with clear payment status",
+            body: "Email verification precedes registration, while bank-transfer payments are confirmed manually by the organizer. Persistent enrollment records and retryable email delivery help recover interrupted submissions without treating an unsaved registration as successful.",
+          },
+          {
+            title: "Dedicated student and organizer interfaces",
+            body: "Student dashboard and organizer management screens separate course participation from the administrative work of reviewing enrollments, payments, and communication.",
+          },
+        ],
+        stack:
+          "Next.js App Router, React, TypeScript, Tailwind CSS, PostgreSQL, Resend email delivery, and Argon2id password hashing.",
+        outcome:
+          "The bilingual course website is live, with curriculum discovery and registration entry points. The codebase includes verified enrollment, payment management, and student and organizer dashboards.",
+        learnings:
+          "A course platform needs clear communication beyond its landing page: verification, payment status, and recovery paths are part of the student experience, while manual payment review needs a dedicated organizer workflow.",
+      },
+    },
+    {
       slug: "fibo",
       displayTitle: "Fibo",
       category: "Brand studio · Design & development",
@@ -553,6 +597,7 @@ export const portfolioCopy = {
       hint: "Scroll to explore · Use arrow keys to browse",
       viewProject: "View Project",
       viewSource: "View Source Code",
+      visitWebsite: "Visit Website",
     },
     caseStudy: "Case study",
     live: "Live site",

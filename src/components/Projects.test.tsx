@@ -14,7 +14,13 @@ it("keeps the active preview and project actions on the same case study", () => 
     expect(heading.compareDocumentPosition(preview) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(screen.getByRole("link", { name: "View Project" })).toHaveAttribute("href", `/projects/${project.slug}`);
     expect(screen.getByRole("link", { name: `${project.displayTitle ?? project.title} — Case study` })).toHaveAttribute("href", `/projects/${project.slug}`);
-    expect(screen.getByRole("link", { name: "View Source Code" })).toHaveAttribute("href", project.github);
+    if (project.github) expect(screen.getByRole("link", { name: "View Source Code" })).toHaveAttribute("href", project.github);
+    else {
+      expect(screen.queryByRole("link", { name: "View Source Code" })).not.toBeInTheDocument();
+      const website = screen.getByRole("link", { name: "Visit Website" });
+      expect(website).toHaveAttribute("href", project.link);
+      expect(website).toHaveAttribute("target", "_blank");
+    }
     expect(screen.getByText(project.summary ?? project.description)).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Next project" })).not.toBeInTheDocument();
     expect(document.querySelector(".carousel-details")).not.toBeInTheDocument();
@@ -26,19 +32,19 @@ it("loops through projects with keyboard controls", () => {
   fireEvent.keyDown(screen.getByRole("group", { name: "Project previews" }), { key: "ArrowLeft" });
   expect(screen.getByRole("heading", { name: "Maxi24" })).toBeInTheDocument();
   fireEvent.keyDown(screen.getByRole("group", { name: "Project previews" }), { key: "ArrowRight" });
-  expect(screen.getByRole("heading", { name: "Fibo" })).toBeInTheDocument();
+  expect(screen.getByRole("heading", { name: portfolioData.projects[0].displayTitle! })).toBeInTheDocument();
   const stage = screen.getByRole("group", { name: "Project previews" });
   fireEvent.keyDown(stage, { key: "ArrowRight" });
-  expect(screen.getByRole("heading", { name: "Hireon" })).toBeInTheDocument();
+  expect(screen.getByRole("heading", { name: "Fibo" })).toBeInTheDocument();
   fireEvent.keyDown(stage, { key: "End" });
   expect(screen.getByRole("heading", { name: "Maxi24" })).toBeInTheDocument();
   fireEvent.keyDown(stage, { key: "Home" });
-  expect(screen.getByRole("heading", { name: "Fibo" })).toBeInTheDocument();
+  expect(screen.getByRole("heading", { name: portfolioData.projects[0].displayTitle! })).toBeInTheDocument();
 });
 
 it("keeps live-only projects accessible when there is a single slide", () => {
   const original = portfolioData.projects;
-  portfolioData.projects = [{ ...original[0], caseStudy: undefined }];
+  portfolioData.projects = [{ ...original.find(project => project.slug === "fibo")!, caseStudy: undefined }];
   try {
     render(<Projects />);
     const action = screen.getByRole("link", { name: "View Project" });
